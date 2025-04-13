@@ -10,12 +10,12 @@ public class UserTokenUtil {
     public static String getToken(HttpServletRequest request, String tokenName) {
         String token = null;
 
-        // 1. header
+
         token = request.getHeader(tokenName);
         if (StringUtils.isNotBlank(token)) {
             return token;
         }
-        // 2. cookie
+
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {
@@ -28,7 +28,7 @@ public class UserTokenUtil {
         if (StringUtils.isNotBlank(token)) {
             return token;
         }
-        // 3. parameter
+
         token = request.getParameter(tokenName);
         return token;
     }

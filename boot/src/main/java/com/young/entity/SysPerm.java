@@ -1,7 +1,6 @@
 package com.young.entity;
 
 
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -13,20 +12,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * created by Young at 2018/4/17 14:55<br>
- */
+
 @TableName("sys_perm")
 public class SysPerm extends Model<SysPerm> {
 
     @TableId(type = IdType.INPUT)
-    private String pval;    // 权限值，shiro的权限控制表达式
-    private String parent;  // 父节点权限值
-    private String pname;   // 权限名称
-    private Integer ptype;  // 权限类型：1.菜单；2.按钮
-    private Boolean leaf;   // 是否叶子节点
-    private Date created;   // 创建时间
-    private Date updated;   // 修改时间
+    private String pval;
+    private String parent;
+    private String pname;
+    private Integer ptype;
+    private Boolean leaf;
+    private Date created;
+    private Date updated;
 
     @TableField(exist = false)
     private List<SysPerm> children = new ArrayList<>();
@@ -34,7 +31,7 @@ public class SysPerm extends Model<SysPerm> {
     private String color;
     @TableField(exist = false)
     private String icon;
-    //新增权限时前端传数组
+
     @TableField(exist = false)
     private String[] perms;
 

@@ -11,10 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * @author
- * @description PostgreSql jsonb 数据处理器
- **/
+
 @MappedTypes({Object.class})
 public class JsonbTypeHandler extends BaseTypeHandler<Object> {
     private static final PGobject jsonObject = new PGobject();

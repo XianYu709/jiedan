@@ -14,11 +14,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- * created by Young at 2018/4/17 14:55<br>
- */
+
 @Data
-@TableName("sys_role" )
+@TableName("sys_role")
 public class SysRole extends Model<SysRole> {
 
     @TableId(type = IdType.ID_WORKER_STR)
@@ -35,11 +33,11 @@ public class SysRole extends Model<SysRole> {
     private String rval;
 
     @ApiModelProperty(value = "创建时间", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date created;
 
     @ApiModelProperty(value = "修改时间", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updated;
 
 

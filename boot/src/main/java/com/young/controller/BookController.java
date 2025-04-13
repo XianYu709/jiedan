@@ -38,9 +38,8 @@ public class BookController {
             dataBookQueryWrapper.eq("book_name", dataBook.getBookName());
         }
         Page page = dataBookService.page(PageUtils.getPageParam(dataBook.getPage(), dataBook.getPageSize()), dataBookQueryWrapper);
-//        List<DataBook> list = dataBookService.list(dataBookQueryWrapper);
-//        System.out.println(list.get(0).toString());
-//        List<DataBook> dataBooks = dataBookService.getDataBookList(dataBook);
+
+
         return Json.succ(oper).data(page);
     }
 
@@ -50,31 +49,25 @@ public class BookController {
     public Json deleteItemBook(@RequestBody List<String> ids) {
         String oper = "";
         boolean success = dataBookService.remove(new QueryWrapper<DataBook>().in("id", ids));
-        if(success) {
+        if (success) {
             oper = "删除成功";
         } else {
             oper = "删除失败";
         }
-        return Json.result(oper,success);
+        return Json.result(oper, success);
     }
 
     @ResponseBody
     @ApiOperation(value = "新增一条标签")
     @PostMapping("/addBookDataItem")
     public Json addBookDataItem(@RequestBody String body) {
-        String oper = "add Book info" ;
+        String oper = "add Book info";
         DataBook ret = JSON.parseObject(body, DataBook.class);
         ret.setBookDate(new Date());
         boolean save = dataBookService.save(ret);
-//        return Json.result(oper, save).data(ret);
+
         return Json.succ(oper).data(ret);
 
-
-//        return Json.succ().data(save);
-//        boolean ret = dataBookService.save(dataBook);
-//        DataBook dept = JSON.parseObject(body, DataBook.class);
-//        dept.setBookDate(new Date());
-//        boolean save = dataBookService.save(dataBook);
 
     }
 

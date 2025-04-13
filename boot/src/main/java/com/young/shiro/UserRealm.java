@@ -23,14 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/***
- * 功能描述:这个类是参照JDBCRealm写的，主要是自定义了如何查询用户信息，如何查询用户的角色和权限，如何校验密码等逻辑
- * @author Young
- * @date 2022/11/30
- * @return
- * @description
- */
-
 
 public class UserRealm extends AuthorizingRealm {
 
@@ -44,19 +36,12 @@ public class UserRealm extends AuthorizingRealm {
     private SysPermService permService;
 
 
-    // 不写该方法，会报错不支持自定义的token
     @Override
     public boolean supports(AuthenticationToken token) {
         return token instanceof JwtToken;
     }
 
 
-    /**
-     * 授权
-     *
-     * @param principals
-     * @return
-     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         if (principals == null) {
@@ -74,18 +59,9 @@ public class UserRealm extends AuthorizingRealm {
         return info;
     }
 
-    /**
-     * 登录认证
-     *
-     * @param authenticationToken
-     * @return
-     * @throws AuthenticationException
-     */
+
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-
-//        UsernamePasswordToken upToken = (UsernamePasswordToken) token;
-//        String username = upToken.getUsername();
 
 
         String token = authenticationToken.getPrincipal().toString();
@@ -100,8 +76,7 @@ public class UserRealm extends AuthorizingRealm {
             throw new UnknownAccountException("找不到用户（" + username + "）的帐号信息");
         }
 
-        //查询用户的角色和权限存到SimpleAuthenticationInfo中，这样在其它地方
-        //SecurityUtils.getSubject().getPrincipal()就能拿出用户的所有信息，包括角色和权限
+
         Set<AuthVo> roles = roleService.getRolesByUserId(userDB.getUid());
         Set<AuthVo> perms = permService.getPermsByUserId(userDB.getUid());
         userDB.getRoles().addAll(roles);

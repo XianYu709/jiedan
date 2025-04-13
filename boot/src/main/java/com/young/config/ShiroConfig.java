@@ -18,13 +18,6 @@ import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.Map;
 
-/***
- * 功能描述:权限配置中心
- * @author Young
- * @date 2022/11/30
- * @return
- * @description
- */
 
 @Configuration
 public class ShiroConfig {
@@ -37,11 +30,7 @@ public class ShiroConfig {
     @Bean
     public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator creator = new DefaultAdvisorAutoProxyCreator();
-        /**
-         * setUsePrefix(false)用于解决一个奇怪的bug。在引入spring aop的情况下。
-         * 在@Controller注解的类的方法中加入@RequiresRole注解，会导致该方法无法映射请求，导致返回404。
-         * 加入这项配置能解决这个bug
-         */
+
         creator.setUsePrefix(true);
         return creator;
     }
@@ -58,24 +47,21 @@ public class ShiroConfig {
     }
 
 
-    // 1.shiroFilter：负责拦截所有请求
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
 
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        // 给filter设置安全管理器
-        shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
-        // 默认认证界面路径---当认证不通过时跳转
-//        shiroFilterFactoryBean.setLoginUrl("/login.jsp");
 
-        // 添加自己的过滤器并且取名为jwt
+        shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
+
+
         Map<String, Filter> filterMap = new HashMap<>();
         filterMap.put("jwt", new JwtFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
 
-        // 配置系统受限资源
+
         Map<String, String> map = new HashMap<String, String>();
-//        map.put("/index.jsp", "authc");
+
         map.put("/auth/login", "anon");
         map.put("/auth/logout", "anon");
         map.put("/sys_user/add", "anon");
@@ -88,21 +74,21 @@ public class ShiroConfig {
         map.put("/swagger-resources/**", "anon");
         map.put("/configuration/ui", "anon");
         map.put("/configuration/security", "anon");
-        map.put("/**", "jwt");   // 所有请求通过我们自己的过滤器
-        // 访问 /unauthorized/** 不通过JWTFilter
+        map.put("/**", "jwt");
+
         map.put("/common/unauthorized/**", "anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
 
         return shiroFilterFactoryBean;
     }
 
-    //2.创建安全管理器
+
     @Bean
     public DefaultWebSecurityManager getDefaultWebSecurityManager(UserRealm realm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        // 给安全管理器设置realm
+
         securityManager.setRealm(realm);
-        // 关闭shiro的session（无状态的方式使用shiro）
+
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
         defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
@@ -116,15 +102,15 @@ public class ShiroConfig {
      * 添加注解支持，如果不加的话很有可能注解失效(暂无效果)
      */
     @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
 
-        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator=new DefaultAdvisorAutoProxyCreator();
+        DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
         return defaultAdvisorAutoProxyCreator;
     }
 
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager defaultWebSecurityManager){
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager defaultWebSecurityManager) {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(defaultWebSecurityManager);
         return advisor;
@@ -134,7 +120,6 @@ public class ShiroConfig {
     public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
         return new LifecycleBeanPostProcessor();
     }
-
 
 
 }

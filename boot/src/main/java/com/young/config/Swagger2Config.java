@@ -16,14 +16,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 功能描述:swagger配置器 访问路径 ”http://localhost:9000/twin/doc.html“，其中twin为项目路径
- *
- * @param * @param null
- * @author Young
- * @date 2021/2/1
- * @return
- */
 
 @Configuration
 @EnableSwagger2

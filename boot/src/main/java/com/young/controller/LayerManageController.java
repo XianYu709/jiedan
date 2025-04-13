@@ -49,25 +49,25 @@ public class LayerManageController {
 
         try {
             if (StringUtils.isEmpty(layerManage.getDeptId())) {
-                // 如果没有提供deptId，返回所有图层信息的分页查询
+
                 Page<LayerManage> page = layerManageService.selectLayerManage(PageUtils.getPageParam(layerManage.getPage(), layerManage.getPageSize()));
                 return Json.succ(oper).data(page);
             } else {
-                // 根据部门ID查询所有相关的LayerDept
+
                 QueryWrapper<LayerDept> wrapper = new QueryWrapper<>();
                 wrapper.eq("did", layerManage.getDeptId());
                 List<LayerDept> depts = layerDeptService.list(wrapper);
 
-                // 提取所有的layerId
+
                 List<String> layerIds = depts.stream().map(LayerDept::getLayerId).collect(Collectors.toList());
 
-                // 根据layerId查询所有相关的LayerManage
+
                 if (!layerIds.isEmpty()) {
                     QueryWrapper<LayerManage> manageWrapper = new QueryWrapper<>();
                     manageWrapper.in("id", layerIds);
                     List<LayerManage> manages = layerManageService.list(manageWrapper);
                     Map<String, List<LayerManage>> stringListMap = new HashMap<>();
-                    stringListMap.put("records",manages);
+                    stringListMap.put("records", manages);
                     return Json.succ(oper).data(stringListMap);
                 } else {
                     return Json.succ(oper).data("No data found for given deptId");
@@ -87,7 +87,7 @@ public class LayerManageController {
         String oper = "add layerManage info";
         LayerManage layerManage = JSON.parseObject(body, LayerManage.class);
 
-        // 增加到图层部门关联表
+
         if (AirUtils.hv(layerManage.getDeptList())) {
             List<LayerDept> layerDeptList = new ArrayList<>();
             for (SysDept dept : layerManage.getDeptList()) {
@@ -110,10 +110,10 @@ public class LayerManageController {
     public Json update(@RequestBody LayerManage layerManage) {
         String oper = "update layerManage info";
 
-        // 删除原本的关系--图层部门关联表
+
         layerDeptService.remove(new QueryWrapper<LayerDept>().eq("layer_id", layerManage.getId()));
         if (AirUtils.hv(layerManage.getDeptList())) {
-            // 增加新的的关系--图层部门关联表
+
             List<LayerDept> layerDeptList = new ArrayList<>();
             for (SysDept dept : layerManage.getDeptList()) {
                 LayerDept layerDept = new LayerDept();
@@ -135,7 +135,7 @@ public class LayerManageController {
         String oper = "delete layerManage info";
         log.info("{},body:{}", oper);
 
-        // 删除图层相关的关系--图层部门关联表
+
         layerDeptService.remove(new QueryWrapper<LayerDept>().in("layer_id", ids));
 
         boolean success = layerManageService.remove(new QueryWrapper<LayerManage>().in("id", ids));

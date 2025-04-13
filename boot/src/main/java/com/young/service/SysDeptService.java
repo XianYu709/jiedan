@@ -6,14 +6,7 @@ import com.young.entity.SysDept;
 
 import java.util.List;
 
-/**
- * <p>
- * 服务类
- * </p>
- *
- * @author Young
- * @since 2023-09-05
- */
+
 public interface SysDeptService extends IService<SysDept> {
 
 

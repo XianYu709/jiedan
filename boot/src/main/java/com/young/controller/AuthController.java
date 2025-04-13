@@ -35,14 +35,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 
-/***
- * 功能描述: 登陆验证
- * @author Young
- * @date 2022/11/30
- * @return
- * @description
- */
-
 @Api(tags = {"登录模块"})
 @RestController
 @RequestMapping("/auth")
@@ -59,45 +51,25 @@ public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-    /**
-     * shiro.loginUrl映射到这里，我在这里直接抛出异常交给GlobalExceptionHandler来统一返回json信息，
-     * 您也可以在这里直接返回json，不过这样子就跟GlobalExceptionHandler中返回的json重复了。
-     *
-     * @return
-     */
+
     @RequestMapping("/page/401")
     public Json page401() {
         throw new UnauthenticatedException();
     }
 
-    /**
-     * shiro.unauthorizedUrl映射到这里。由于约定了url方式只做鉴权控制，不做权限访问控制，
-     * 也就是说在ShiroConfig中如果没有做roles[js],perms[mvn:install]这样的权限访问控制配置的话，是不会跳转到这里的。
-     *
-     * @return
-     */
+
     @RequestMapping("/page/403")
     public Json page403() {
         throw new UnauthorizedException();
     }
 
-    /**
-     * 登录成功跳转到这里，直接返回json。但是实际情况是在login方法中登录成功后返回json了。
-     *
-     * @return
-     */
+
     @RequestMapping("/page/index")
     public Json pageIndex() {
         return new Json("index", true, 1, "index page", null);
     }
 
-    /**
-     * 登录接口，由于UserService中是模拟返回用户信息的，
-     * 所以用户名随意，密码123456
-     *
-     * @param body
-     * @return
-     */
+
     @ApiOperation(value = "登录接口", notes = "登录")
     @PostMapping("/login")
     public Json login(@RequestBody String body) {
@@ -117,12 +89,12 @@ public class AuthController {
         }
 
         try {
-            //登录
+
             String token = JwtUtil.createToken(uname, 24 * 60 * 60 * 1000L);
             Subject subject = SecurityUtils.getSubject();
             JwtToken jwtToken = new JwtToken(token);
             subject.login(jwtToken);
-            //验证密码是否正确
+
             SysUser user = (SysUser) subject.getPrincipal();
             if (!pwd.equals(user.getPwd())) {
                 log.warn("自检测用户密码不正确");
@@ -132,7 +104,7 @@ public class AuthController {
                 throw new AuthenticationException();
             }
 
-//            返回登录用户的信息给前台，含用户的所有角色和权限
+
             return Json.succ(oper)
                     .data("token", token)
                     .data("userInfo", user)
@@ -177,7 +149,7 @@ public class AuthController {
         Serializable sessionId = subject.getSession().getId();
         log.info("{}, sessionId: {}", oper, sessionId);
 
-        //从session取出用户信息
+
         SysUser user = (SysUser) subject.getPrincipal();
         QueryWrapper<SysDeptUser> wrapper = Wrappers.query();
         wrapper.eq("uid", user.getUid());
@@ -186,10 +158,10 @@ public class AuthController {
 
 
         if (user == null) {
-            //告知前台，登录失效
+
             return new Json(oper, false, Codes.SESSION_TIMEOUT, "登录已失效", null);
         } else {
-            //返回登录用户的信息给前台，含用户的所有角色和权限
+
             return Json.succ(oper)
                     .data("userInfo", user);
         }

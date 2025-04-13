@@ -18,9 +18,6 @@ public class JwtUtil {
     private static final String secret = "secret";
 
 
-    /**
-     * 创建token
-     */
     public static String createToken(String username, Long time) throws UnsupportedEncodingException {
         long expiration = System.currentTimeMillis() + time;
         Date expireDate = new Date(expiration);
@@ -32,9 +29,7 @@ public class JwtUtil {
         return token;
     }
 
-    /**
-     * 校验token是否正确
-     */
+
     public static boolean verify(String token, String username) throws UnsupportedEncodingException, TokenExpiredException {
         Algorithm algorithm = Algorithm.HMAC256(secret);
         JWTVerifier verifier = JWT.require(algorithm)
@@ -48,9 +43,7 @@ public class JwtUtil {
         return true;
     }
 
-    /**
-     * 解析token，获取用户名
-     */
+
     public static String getUsername(String token) {
         DecodedJWT decode = JWT.decode(token);
         return decode.getClaim("uname").asString();

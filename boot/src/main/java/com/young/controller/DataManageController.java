@@ -59,9 +59,9 @@ public class DataManageController {
     public Json add(@RequestBody List<DataManage> newDataList) {
         String oper = "add dataManage info";
 
-        // 获取原始数据
+
         List<DataManage> originalDataList = dataManageService.selectDataManage();
-        // 存储处理后的数据
+
         List<DataManage> dealAfterDataList = new ArrayList<>();
 
         Map<DataManage, Integer> map = new HashMap<>();
@@ -81,21 +81,21 @@ public class DataManageController {
         for (Map.Entry<DataManage, Integer> entry : map.entrySet()) {
             if (entry.getValue() == 1) {
                 entry.getKey().setStatus("1");
-                //获取正常数据
+
                 dealAfterDataList.add(entry.getKey());
             } else if (entry.getValue() == 2) {
                 entry.getKey().setStatus("2");
-                //获取新增数据
+
                 dealAfterDataList.add(entry.getKey());
             } else {
                 entry.getKey().setStatus("3");
-                //获取异常数据
+
                 dealAfterDataList.add(entry.getKey());
             }
         }
-        // 删除所有数据
+
         dataManageService.deleteAll();
-        // 新增状态修改后的数据
+
         boolean saveBatch = dataManageService.saveBatch(dealAfterDataList);
 
         return Json.result(oper, saveBatch).data(dealAfterDataList);
