@@ -3,18 +3,10 @@ package com.young.util;
 
 import java.math.BigDecimal;
 
-/**lw
- * Double精度计算
- */
+
 public class DoubleUtils {
 
-    /**
-     * 提供精确的加法运算。
-     *
-     * @param v1 被加数
-     * @param v2 加数
-     * @return 两个参数的和
-     */
+
     public static Double add(Double v1, Double v2, Integer scale) {
         BigDecimal b1 = new BigDecimal(Double.toString(v1));
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
@@ -32,13 +24,6 @@ public class DoubleUtils {
     }
 
 
-    /**
-     * 提供精确的减法运算。
-     *
-     * @param v1 被减数
-     * @param v2 减数
-     * @return 两个参数的差
-     */
     public static Double sub(Double v1, Double v2, Integer scale) {
         BigDecimal b1 = new BigDecimal(Double.toString(v1));
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
@@ -55,13 +40,7 @@ public class DoubleUtils {
         return round(v1.subtract(v2), scale);
     }
 
-    /**
-     * 提供精确的乘法运算。
-     *
-     * @param v1 被乘数
-     * @param v2 乘数
-     * @return 两个参数的积
-     */
+
     public static Double mul(Double v1, Double v2, Integer scale) {
         BigDecimal b1 = new BigDecimal(Double.toString(v1));
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
@@ -79,14 +58,6 @@ public class DoubleUtils {
     }
 
 
-    /**
-     * 提供（相对）精确的除法运算。当发生除不尽的情况时，由scale参数指 定精度，以后的数字四舍五入。
-     *
-     * @param v1    被除数
-     * @param v2    除数
-     * @param scale 表示表示需要精确到小数点以后几位。
-     * @return 两个参数的商
-     */
     public static Double div(Double v1, Double v2, Integer scale) {
         BigDecimal b1 = new BigDecimal(Double.toString(v1));
         BigDecimal b2 = new BigDecimal(Double.toString(v2));
@@ -106,15 +77,9 @@ public class DoubleUtils {
 
     }
 
-    /**
-     * 提供精确的小数位四舍五入处理。
-     *
-     * @param v     需要四舍五入的数字
-     * @param scale 小数点后保留几位
-     * @return 四舍五入后的结果
-     */
+
     public static Double round(Double v, Integer scale) {
-        if(!AirUtils.hv(v)){
+        if (!AirUtils.hv(v)) {
             return 0.0;
         }
         BigDecimal rs = new BigDecimal(Double.toString(v));
@@ -125,39 +90,24 @@ public class DoubleUtils {
         return v.setScale(scale, BigDecimal.ROUND_HALF_UP);
     }
 
-    /**
-     * 约等于
-     *
-     * @param v1
-     * @param v2
-     * @param v3 允许的偏差，正整数
-     * @return 两个参数的差
-     */
+
     public static Boolean ApproximatelyEqualTo(Double v1, Double v2, Double v3) {
         v1 = Math.abs(v1);
         v2 = Math.abs(v2);
-        if(sub(Math.abs(sub(v1,v2)),v3)<=0){
+        if (sub(Math.abs(sub(v1, v2)), v3) <= 0) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    /**
-     * 约等于
-     *
-     * @param v1
-     * @param v2
-     * @return 两个参数的差，默认10
-     */
+
     public static Boolean ApproximatelyEqualTo(Double v1, Double v2) {
         v1 = Math.abs(v1);
         v2 = Math.abs(v2);
-        if(sub(Math.abs(sub(v1,v2)),10.0)<=0){
+        if (sub(Math.abs(sub(v1, v2)), 10.0) <= 0) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

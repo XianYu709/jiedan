@@ -11,10 +11,8 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * created by Young at 2018/4/17 14:55<br>
- */
-@TableName("sys_user" )
+
+@TableName("sys_user")
 @Data
 public class SysUser extends Model<SysUser> {
 
@@ -37,14 +35,13 @@ public class SysUser extends Model<SysUser> {
     @ApiModelProperty(value = "头像", required = true)
     private String avatar;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty(value = "创建时间", required = true)
     private Date created;
 
     @ApiModelProperty(value = "修改时间", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updated;
-
 
 
     @TableField(exist = false)

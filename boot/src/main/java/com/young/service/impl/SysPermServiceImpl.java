@@ -38,7 +38,6 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
     }
 
 
-    //始树形结构创建
     @Override
     public List<SysPerm> builTree(List<SysPerm> list) {
         List<SysPerm> sysPermList = new ArrayList<>();
@@ -54,9 +53,9 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
         }
         if (AirUtils.hv(rootNode)) {
             for (SysPerm sysPerm : rootNode) {
-                //建立子树节点
+
                 sysPerm = this.buildChilTree(sysPerm, leafNode);
-                //为根节点设置子树节点
+
                 sysPermList.add(sysPerm);
             }
             return sysPermList;
@@ -65,12 +64,12 @@ public class SysPermServiceImpl extends ServiceImpl<SysPermMapper, SysPerm> impl
 
     }
 
-    //通过递归来创建子树形结构
+
     @Override
     public SysPerm buildChilTree(SysPerm sysPerm, List<SysPerm> list) {
         List<SysPerm> sysPermList = new ArrayList<>();
         for (SysPerm t : list) {
-            //判断当前父节点是否存在子节点
+
             if (t.getParent().equals(sysPerm.getPval())) {
                 sysPermList.add(this.buildChilTree(t, list));
             }

@@ -27,17 +27,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-/**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author Young
- * @since 2023-09-05
- */
 @Api(tags = {"部门管理"})
 @RestController
-@RequestMapping("/sys_dept" )
+@RequestMapping("/sys_dept")
 public class SysDeptController {
 
     private static final Logger log = LoggerFactory.getLogger(SysDeptController.class);
@@ -46,26 +38,26 @@ public class SysDeptController {
 
 
     @SysLog
-    @ApiOperation(value = "查询部门信息" )
-    @GetMapping("/list" )
+    @ApiOperation(value = "查询部门信息")
+    @GetMapping("/list")
     public Json exclude(SysDept dept) {
-        String oper = "query deptList" ;
+        String oper = "query deptList";
         log.info("{}", oper);
-        // 部门树状结构
+
         List<SysDept> list = sysDeptService.list();
         List<SysDept> listTree = sysDeptService.builTree(list);
-        return Json.succ("success" )
+        return Json.succ("success")
                 .data(listTree);
     }
 
     @SysLog
-    @ApiOperation(value = "添加部门信息" )
+    @ApiOperation(value = "添加部门信息")
     @PostMapping
     public Json add(@RequestBody String body) {
-        String oper = "add dept info" ;
+        String oper = "add dept info";
         SysDept dept = JSON.parseObject(body, SysDept.class);
         if (StringUtils.isEmpty(dept.getDname())) {
-            return Json.fail(oper, "部门名称不能为空" );
+            return Json.fail(oper, "部门名称不能为空");
         }
         if (AirUtils.hv(dept.getDparent())) {
             dept.setDleaf(1);
@@ -78,13 +70,13 @@ public class SysDeptController {
     }
 
     @SysLog
-    @ApiOperation(value = "修改部门信息" )
+    @ApiOperation(value = "修改部门信息")
     @PutMapping
     public Json update(@RequestBody SysDept dept) {
-        String oper = "update  dept info" ;
+        String oper = "update  dept info";
 
         if (!AirUtils.hv(dept)) {
-            return Json.fail("did参数为空" );
+            return Json.fail("did参数为空");
         }
         if (AirUtils.hv(dept.getDparent())) {
             dept.setDleaf(1);
@@ -97,13 +89,13 @@ public class SysDeptController {
     }
 
     @SysLog
-    @ApiOperation(value = "删除部门信息" )
+    @ApiOperation(value = "删除部门信息")
     @DeleteMapping
     public Json delete(@RequestBody List<String> ids) {
-        String oper = "delete dept info" ;
+        String oper = "delete dept info";
         log.info("{},body:{}", oper);
 
-        // 拿到要删除的部门信息，判断其有无子部门，有则删除
+
         List<SysDept> sysDeptList = sysDeptService.listByIds(ids);
         for (SysDept sysDept : sysDeptList) {
             List<SysDept> sysDepts = sysDeptService.list(new QueryWrapper<SysDept>().eq("dparent", sysDept.getDid()));

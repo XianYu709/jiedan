@@ -10,14 +10,6 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
-/**
- * <p>
- *
- * </p>
- *
- * @author Young
- * @since 2023-09-05
- */
 
 @TableName("sys_dept_user")
 public class SysDeptUser extends Model<SysDeptUser> {

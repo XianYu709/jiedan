@@ -9,13 +9,6 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/***
- * 功能描述: MyBatisPlus的dao层配置
- * @author Young
- * @date 2022/11/30
- * @return
- * @description
- */
 
 @Configuration
 @MapperScan("com.young.dao")
@@ -25,10 +18,7 @@ public class MyBatisPlusConfig {
      * 分页插件，自动识别数据库类型
      * 多租户，请参考官网【插件扩展】
      */
-//    @Bean
-//    public PaginationInterceptor  paginationInterceptor() {
-//        return new PaginationInterceptor ();
-//    }
+
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

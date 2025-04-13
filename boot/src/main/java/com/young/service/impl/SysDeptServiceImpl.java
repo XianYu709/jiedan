@@ -13,23 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author Young
- * @since 2023-09-05
- */
+
 @Service
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements SysDeptService {
 
 
-    /**
-     * 始树形结构创建
-     * @param list
-     * @return
-     */
     @Override
     public List<SysDept> builTree(List<SysDept> list) {
         List<SysDept> sysDeptList = new ArrayList<>();
@@ -45,9 +33,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         }
         if (AirUtils.hv(rootNode)) {
             for (SysDept sysDept : rootNode) {
-                //建立子树节点
+
                 sysDept = this.buildChilTree(sysDept, leafNode);
-                //为根节点设置子树节点
+
                 sysDeptList.add(sysDept);
             }
             return sysDeptList;
@@ -56,17 +44,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     }
 
-    /**
-     * 通过递归来创建子树形结构
-     * @param sysDept
-     * @param list
-     * @return
-     */
+
     @Override
     public SysDept buildChilTree(SysDept sysDept, List<SysDept> list) {
         List<SysDept> sysDeptList = new ArrayList<>();
         for (SysDept t : list) {
-            //判断当前父节点是否存在子节点
+
             if (t.getDparent().equals(sysDept.getDid())) {
                 sysDeptList.add(this.buildChilTree(t, list));
             }
@@ -76,7 +59,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     }
 
     @Override
-    public Page<SysDept> selectDepts(Page page,  String dName) {
+    public Page<SysDept> selectDepts(Page page, String dName) {
         return page.setRecords(baseMapper.selectDepts(page, dName));
     }
 }

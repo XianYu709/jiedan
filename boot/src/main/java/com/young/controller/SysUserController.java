@@ -21,13 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-/***
- * 功能描述:系统用户模块
- * @author Young
- * @date 2022/11/30
- * @return
- * @description
- */
 
 @Api(tags = {"账户管理"})
 @RestController
@@ -76,12 +69,12 @@ public class SysUserController {
         }
         user.setCreated(new Date());
         boolean success = sysUserService.save(user);
-        //增加用户的角色到关联表中
+
         SysUserRole sysUserRole = new SysUserRole();
         sysUserRole.setUserId(user.getUid());
         sysUserRole.setRoleId(user.getRoleId());
         sysUserRoleService.save(sysUserRole);
-        //增加用户的部门到关联表中
+
         SysDeptUser sysDeptUser = new SysDeptUser();
         sysDeptUser.setDid(user.getDeptId());
         sysDeptUser.setUid(user.getUid());
@@ -101,7 +94,7 @@ public class SysUserController {
 
         SysUser user = JSON.parseObject(body, SysUser.class);
 
-        // 不能修改成已有的uname
+
         SysUser userDB = sysUserService.getOne(new QueryWrapper<SysUser>().eq("uname", user.getUname()));
         if (AirUtils.hv(userDB) && !user.getUid().equals(userDB.getUid())) {
             return Json.fail(oper, "用户已注册");
@@ -110,33 +103,32 @@ public class SysUserController {
         user.setUpdated(new Date());
         boolean success = sysUserService.updateById(user);
 
-        // 添加角色
+
         List<SysUserRole> sysUserRoleList = sysUserRoleService.list(new QueryWrapper<SysUserRole>().eq("user_id", user.getUid()));
         if (sysUserRoleList.size() != 0) {
-            //删除：原来绑定的角色
+
             boolean deleteSucc = sysUserRoleService.remove(new QueryWrapper<SysUserRole>().eq("user_id", user.getUid()));
             if (!deleteSucc) {
                 return Json.fail(oper, "无法解除原来的用户-角色关系");
             }
         }
-        //更新：绑定新的角色
+
         sysUserRoleService.save(new SysUserRole(user.getUid(), user.getRoleId()));
 
 
-        //部门关联表-更新内容
         SysDeptUser sysDeptUser = new SysDeptUser();
         sysDeptUser.setDid(user.getDeptId());
         sysDeptUser.setUid(user.getUid());
-        //部门关联表-更新条件
+
         LambdaQueryWrapper<SysDeptUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysDeptUser::getUid, user.getUid());
         SysDeptUser one = sysDeptUserService.getOne(queryWrapper);
         if (AirUtils.hv(one)) {
-            //更新
+
             sysDeptUserService.remove(queryWrapper);
             sysDeptUserService.save(sysDeptUser);
         } else {
-            //增加
+
             sysDeptUserService.save(sysDeptUser);
         }
         return Json.result(oper, success).data("updated", user.getUpdated());
@@ -155,7 +147,7 @@ public class SysUserController {
                 return Json.fail(oper, "无法删除用户：参数为空（用户id）");
             }
 
-            //限制：不能删当前登录用户
+
             SysUser user = (SysUser) SecurityUtils.getSubject().getPrincipal();
             if (StringUtils.equals(uid, user.getUid())) {
                 return Json.fail(oper, "系统限制：不能删除当前登录账号");

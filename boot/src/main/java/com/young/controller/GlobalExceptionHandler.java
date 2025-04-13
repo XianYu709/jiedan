@@ -18,13 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.HashMap;
 import java.util.Map;
 
-/***
- * 功能描述:统一捕捉异常，返回给前台一个json信息，前台根据这个信息显示对应的提示，或者做页面的跳转。
- * @author Young
- * @date 2022/11/30
- * @return
- * @description
- */
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -34,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    //不满足@RequiresGuest注解时抛出的异常信息
+
     private static final String GUEST_ONLY = "Attempting to perform a guest-only operation";
 
 

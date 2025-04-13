@@ -10,11 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * @author Young
- * @date 2020/3/9 11:03
- * @des 跟随系统自启动，调用Service 层的方法查询所有的param。存放在静态集合中供查询
- */
+
 @Component
 public class ParamReadUtil implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(ParamReadUtil.class);

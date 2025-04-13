@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
-/**
- * created by Young at 2018/4/17 14:55<br>
- */
+
 @TableName("sys_role_perm")
 public class SysRolePerm implements Serializable {
 
@@ -21,7 +19,7 @@ public class SysRolePerm implements Serializable {
     public SysRolePerm() {
     }
 
-    public SysRolePerm(String roleId, String permVal,Integer permType) {
+    public SysRolePerm(String roleId, String permVal, Integer permType) {
         this.roleId = roleId;
         this.permVal = permVal;
         this.permType = permType;

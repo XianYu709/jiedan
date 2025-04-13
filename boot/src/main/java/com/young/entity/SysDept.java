@@ -15,15 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * <p>
- *
- * </p>
- *
- * @author Young
- * @since 2023-09-05
- */
-@TableName("sys_dept" )
+
+@TableName("sys_dept")
 @Data
 public class SysDept extends Model<SysDept> {
 
@@ -46,11 +39,11 @@ public class SysDept extends Model<SysDept> {
     private int dleaf;
 
     @ApiModelProperty(value = "创建时间", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date dcreated;
 
     @ApiModelProperty(value = "更新时间", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date dupdated;
 
 

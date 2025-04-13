@@ -32,21 +32,21 @@ public class SysLogAspect {
 
         ExceptionLog operateLog = new ExceptionLog();
         String jwt = request.getHeader("Authorization");
-        // 使用之前编写好的解析JWT令牌的工具类来解析获取到的JWT令牌
-        // 获取用户名
+
+
         if (AirUtils.hv(jwt)) {
             String uname = JWT.decode(jwt).getClaim("uname").asString();
-            // 获取url
+
             String url = request.getRequestURI();
-            // 获取ip
+
             String ip = request.getRemoteAddr();
-            // 获取操作时间
+
             Date creatTime = new Date();
-            // 获取操作类名
+
             String classname = proceedingJoinPoint.getTarget().getClass().getName();
-            // 获取操方法名
+
             String methodName = proceedingJoinPoint.getSignature().getName();
-            // 获取操作方法参数
+
             Object[] args = proceedingJoinPoint.getArgs();
             String methodParams = JSON.toJSONString(args);
 
@@ -55,7 +55,7 @@ public class SysLogAspect {
             try {
                 result = proceedingJoinPoint.proceed();
 
-                // 获取操作方法返回值
+
                 returnValue = JSONObject.toJSONString(result);
                 operateLog = new ExceptionLog(null, uname, url, ip, null, null, classname, methodName, methodParams, returnValue, creatTime, 0, 0);
 

@@ -1,15 +1,12 @@
 package com.young.entity;
 
 
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
-/**
- * created by Young at 2018/4/17 14:55<br>
- */
+
 @TableName("sys_user_role")
 public class SysUserRole implements Serializable {
 

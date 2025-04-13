@@ -45,7 +45,7 @@ public class SysParamTypeController {
         QueryWrapper<SysParamType> queryParams = new QueryWrapper<>();
         queryParams.orderByDesc("created");
         queryParams.orderByDesc("updated");
-        Page<SysParamType> pages = sysParamTypeService.page(PageUtils.getPageParam(paramType.getPage(), paramType.getPageSize()),queryParams);
+        Page<SysParamType> pages = sysParamTypeService.page(PageUtils.getPageParam(paramType.getPage(), paramType.getPageSize()), queryParams);
 
         return Json.succ("success").data(pages);
     }
@@ -75,11 +75,11 @@ public class SysParamTypeController {
 
         SysParamType one = sysParamTypeService.getOne(new QueryWrapper<SysParamType>().eq("dict_type", sysParamType.getDictType()));
         if (AirUtils.hv(one) && !one.getParamId().equals(sysParamType.getParamId())) {
-            // 不能修改成已有的键值
+
             return Json.fail(oper, "该键值已存在！");
         }
 
-        // 批量更新paramData中的dictType
+
         if (AirUtils.hv(sysParamType.getOrlDictType())) {
             List<SysParamData> paramDataList = sysParamDataService.list(new QueryWrapper<SysParamData>().eq("dict_type", sysParamType.getOrlDictType()));
             paramDataList.forEach(data -> {
@@ -100,7 +100,7 @@ public class SysParamTypeController {
         String oper = "delete paramType info";
         log.info("{}", oper);
 
-        // 拿到要删除的数据，将其dict_type修改为"已删除"并更新
+
         List<SysParamType> sysParamTypes = sysParamTypeService.listByIds(ids);
         for (SysParamType sysParamType : sysParamTypes) {
             List<SysParamData> paramDataList = sysParamDataService.list(new QueryWrapper<SysParamData>().eq("dict_type", sysParamType.getDictType()));

@@ -15,7 +15,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
-//表明
+
 @TableName("data_book")
 @Data
 public class DataBook extends Model<DataBook> {
@@ -27,13 +27,13 @@ public class DataBook extends Model<DataBook> {
     private String id;
 
     @ApiModelProperty(value = "书签名称", required = true)
-    private String bookName;  // book_name
+    private String bookName;
 
     @ApiModelProperty(value = "书签类型", required = true)
     private String bookType;
 
     @ApiModelProperty(value = "时间", required = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8" )
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date bookDate;
 
     @ApiModelProperty(value = "JSON内容", required = true)
