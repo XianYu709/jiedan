@@ -1,0 +1,8 @@
+{
+  "moduleName": "监控中心",
+  "log": "系统日志",
+  "markdown": "markdown编辑器",
+  "tinymce": "富文本",
+  "tinymceBasic": "基础使用",
+  "tinymceForm": "嵌入form"
+}

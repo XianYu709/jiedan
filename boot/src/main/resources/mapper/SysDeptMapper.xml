@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.dao.SysDeptMapper">
+
+    <select id="selectDepts" resultType="com.young.entity.SysDept">
+        SELECT * FROM
+            sys_dept
+        <where>
+            1=1
+           <if test="dname !=null and dname !=''">
+               and `dname`like concat('%',#{dname},'%')
+           </if>
+        </where>
+    </select>
+
+
+
+<!--    <select id="selectById" resultMap="DeptMap" parameterType="java.lang.String">-->
+<!--        SELECT <include refid="Base_Column_List" />-->
+<!--        FROM sys_dept-->
+<!--        WHERE did = #{did}-->
+<!--    </select>-->
+
+<!--    <insert id="insert" parameterType="com.young.entity.SysDept">-->
+<!--        INSERT INTO sys_dept (did, dname, dcreated, dnotes, dupdated,dparent,dleaf)-->
+<!--        VALUES (#{did}, #{dname}, #{dcreated}, #{dnotes}, #{dupdated},#{dparent},#{dleaf})-->
+<!--    </insert>-->
+
+<!--    <update id="updateById" parameterType="com.young.entity.SysDept">-->
+<!--        UPDATE sys_dept-->
+<!--        SET dname = #{dname}, dcreated = #{dcreated}, dnotes = #{dnotes}, dupdated = #{dupdated},dparent =#{dparent},-->
+<!--            dleaf = #{dleaf}-->
+<!--        WHERE did = #{did}-->
+<!--    </update>-->
+
+<!--    <delete id="deleteById" parameterType="java.lang.String">-->
+<!--        DELETE FROM sys_dept-->
+<!--        WHERE did = #{did}-->
+<!--    </delete>-->
+</mapper>

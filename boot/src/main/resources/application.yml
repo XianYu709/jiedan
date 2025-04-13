@@ -1,0 +1,24 @@
+db: 101.43.167.87:25432/twin-city-public
+server:
+  port: 8999
+  servlet:
+    context-path: /twin
+    #ip+端口后的系统路径
+    session:
+      cookie:
+        name: BIUSID
+spring:
+  profiles:
+    active: dev
+    include: druid,mybatisplus,shiro
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${db}?useUnicode=true&characterEncoding=utf8
+    username: postgres
+    password: 123456
+
+logging:
+  config: classpath:slf4j.xml
+  level:
+    com.young.test: info
+    org.springframework: info

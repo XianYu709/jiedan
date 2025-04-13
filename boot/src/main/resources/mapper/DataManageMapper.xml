@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.young.dao.DataManageMapper">
+
+    <select id="selectDataManages" resultType="com.young.entity.DataManage">
+        SELECT work_space,
+               data_source,
+               data_set,
+               url
+        FROM data_manage
+    </select>
+
+    <delete id="deleteAll">
+        DELETE
+        FROM data_manage
+    </delete>
+
+</mapper>

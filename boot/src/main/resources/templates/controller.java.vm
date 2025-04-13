@@ -1,0 +1,160 @@
+package ${package.Controller};
+
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import com.young.annotation.PermInfo;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+import $!{package.Service}.$!{table.serviceName};
+import $!{package.Entity}.$!{table.entityName};
+
+#if(${restControllerStyle})
+import org.springframework.web.bind.annotation.RestController;
+#else
+import org.springframework.stereotype.Controller;
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+#if(${restControllerStyle})
+@RestController
+#else
+@Controller
+#end
+@Api(tags = "$!{table.entityName}", description = "$!{table.comment}")
+@PermInfo(value = "$!{table.entityName} $!{table.comment}管理", pval = "a:bus:$!{table.entityName}")
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+    #if(${superControllerClass})
+    public class ${table.controllerName} extends ${superControllerClass} {
+    #else
+    public class ${table.controllerName} {
+    #end
+private static final Logger log=LoggerFactory.getLogger(${table.controllerName}.class);
+
+@Autowired
+private $!{table.serviceName} service;
+
+@ApiOperation(value = "查询所有$!{table.entityName}")
+@PermInfo("查询所有$!{table.entityName}")
+@RequiresPermissions("a:bus:$!{table.entityName}:list")
+@GetMapping("/list")
+public Json list(){
+        String oper="list $!{table.entityName}" ;
+        log.info("{}, body: {}",oper);
+        List<$!{table.entityName}> list=service.list();
+        return Json.succ(oper).data("result",list);
+        }
+
+@ApiOperation(value = "根据条件分页查询$!{table.entityName}")
+@PermInfo("根据条件分页查有$!{table.entityName}")
+@RequiresPermissions("a:bus:$!{table.entityName}:queryPageByParam")
+@PostMapping("/queryPageByParam")
+public Json queryPageByParam(
+@RequestParam(value = "current", required = false) Integer current,
+@RequestParam(value = "size", required = false) Integer size,
+@ModelAttribute @Valid $!{table.entityName} entity){
+        String oper="queryPageByParam $!{table.entityName}" ;
+        log.info("{}, body: {}",oper,entity);
+        QueryWrapper<$!{table.entityName}> queryWrapper = new QueryWrapper<$!{table.entityName}>();
+        #foreach($field in ${table.fields})
+            #if(!${field.keyIdentityFlag})
+                #set($AttrName=$field.propertyName.substring(0,1).toUpperCase() + ${field.propertyName.substring(1)})
+                    if(!StringUtils.isEmpty(entity.get${AttrName}())){
+                        queryWrapper.like(SnakeNameUtil.SnakeToLine("${field.propertyName}"),entity.get${AttrName}());
+                    }
+            #end
+        #end
+        Page page=service.page(
+        new Page<$!{table.entityName}>()
+        .setCurrent(PageUtils.getPageCurrentByParam(current))
+        .setSize(PageUtils.getPageSizeByParam(size)),
+        queryWrapper
+        );
+        return Json.succ(oper).data("result",page);
+        }
+
+@ApiOperation(value = "根据ID查询指定$!{table.entityName}")
+@PermInfo("根据ID查询指定$!{table.entityName}")
+@RequiresPermissions("a:bus:$!{table.entityName}:getOne")
+@GetMapping("/getOne/{id}")
+public Json getById(@PathVariable("id") int id){
+        String oper="getOne $!{table.entityName}" ;
+        log.info("{}, body: {}",oper,id);
+    $!{table.entityName} entity=service.getById(id);
+        return Json.succ(oper).data("result",entity);
+        }
+
+
+@ApiOperation(value = "保存实体$!{table.entityName}")
+@PermInfo("保存实体$!{table.entityName}")
+@RequiresPermissions("a:bus:$!{table.entityName}:save")
+@PostMapping("/save")
+public Json save(@RequestBody @Valid $!{table.entityName} entity){
+        String oper="save $!{table.entityName}" ;
+        log.info("{}, body: {}",oper,entity);
+        boolean result=service.save(entity);
+        return Json.result(oper,result).data("result",entity);
+        }
+
+@ApiOperation(value = "更新实体$!{table.entityName}")
+@PermInfo("更新实体$!{table.entityName}")
+@RequiresPermissions("a:bus:$!{table.entityName}:update")
+@PutMapping("/update")
+public Json update(@RequestBody $!{table.entityName} entity){
+        String oper="update $!{table.entityName}" ;
+        log.info("{}, body: {}",oper,entity);
+    #foreach($entity in ${table.fields})
+        #if(${entity.keyFlag})##生成主键排在第一位
+            #set($getId =
+                "entity.get" + $entity.propertyName.substring(0, 1).toUpperCase() + $entity.propertyName.substring(1) +
+                "()")
+                if(Objects.isNull($getId)){
+                return Json.fail(oper,"参数ID为空,无法更新！");
+                }
+            $!{table.entityName} one=service.getById($getId);
+        #end
+    #end
+        if(Objects.nonNull(one)){
+        boolean result=service.updateById(entity);
+        return Json.result(oper,result).data("result",entity);
+        }else{
+        return Json.fail(oper,"无对应更新记录！");
+        }
+        }
+
+@ApiOperation(value = "删除实体$!{table.entityName}")
+@PermInfo("删除实体$!{table.entityName}")
+@RequiresPermissions("a:bus:$!{table.entityName}:remove")
+@DeleteMapping("/remove/{id}")
+public Json remove(@PathVariable("id") int id){
+        String oper="remove $!{table.entityName}" ;
+        log.info("{}, body: {}",oper,id);
+    $!{table.entityName} one=service.getById(id);
+        if(Objects.nonNull(one)){
+        boolean result=service.removeById(id);
+        return Json.result(oper,result);
+        }else{
+        return Json.fail(oper,"无对应更新记录！");
+        }
+        }
+        }
+
+#end
