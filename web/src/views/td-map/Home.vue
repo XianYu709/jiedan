@@ -67,6 +67,13 @@
       v-model:open="menuOpen.regressionLine"
       class="absolute left-3/5 top-2/6"
     ></RegressionLine>
+    <ToolBar
+      :data="toolBarData"
+      :open="[menuOpen.layerControl, menuOpen.scene, menuOpen.models, menuOpen.weather]"
+      @selectHandler="selectHandler"
+      class="left-1/2 top-5/6 -translate-x-1/2"
+    >
+    </ToolBar>
   </div>
 </template>
 
@@ -96,8 +103,10 @@
   import BestPath from './components/BestPath.vue';
   import SiteZoning from './components/SiteZoning.vue';
   import Scene from './components/Scene.vue';
+  import ToolBar from './components/ToolBar.vue';
   import { useUserStore } from '@/store/modules/user';
   import map from '@/api/map/index';
+  import {toolBarData} from './data'
 
   const sceneUrls = ref<any>({});
   const { userInfo } = useUserStore();

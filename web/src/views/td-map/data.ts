@@ -123,24 +123,6 @@ const s3mModels = <S3mModels[]>[
 
 const toolBarData = <ToolbarItem[]>[
   {
-    icon: 'icon-layer',
-    title: '图层',
-    name: 'layers',
-    selected: false,
-  },
-  {
-    icon: 'icon-add-model',
-    title: '添加小品',
-    name: 'model',
-    size: 22,
-    selected: false,
-  },
-  {
-    icon: '',
-    title: '',
-    name: 'division',
-  },
-  {
     icon: 'ant-design:zoom-in-outlined',
     title: '放大',
     name: 'zoomIn',

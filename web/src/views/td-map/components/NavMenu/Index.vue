@@ -32,24 +32,23 @@
   const selectedKeys = ref<string[]>([]);
   const items = ref<MenuProps['items']>([
     {
-      key: 'select',
-      icon: () => createVNode(SelectOutlined),
-      label: '几何查询',
-      title: '几何查询',
-    },
-    {
-      key: 'measure',
-      // icon: () => createVNode('span', { class: 'iconfont icon-distance text-lg' }),
-      icon: () => createVNode(CalculatorOutlined),
-      label: '空间量算',
-      title: '空间量算',
-    },
-    {
       key: 'layers',
       // icon: () => createVNode('span', { class: 'iconfont icon-distance text-lg' }),
       icon: () => createVNode(CalculatorOutlined),
       label: '图层管理',
       title: '图层管理',
+    },
+    {
+      key: 'select',
+      icon: () => createVNode(SelectOutlined),
+      label: '设施查询',
+      title: '设施查询',
+    },
+    {
+      key: 'measure',
+      icon: () => createVNode(CalculatorOutlined),
+      label: '空间量算',
+      title: '空间量算',
     },
     {
       key: 'analyze',
