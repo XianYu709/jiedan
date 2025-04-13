@@ -2,6 +2,9 @@ export enum RoleEnum {
   // 具有本系统中最高权限
   SUPER = '超级管理员',
 
-  // 仅可查看图层书签和数据
-  READ = '普通管理员',
-}
+  EDIT = '普通用户', //录入信息资源
+
+  OPERATE = '应急指挥调度员',
+
+  SUPERVISION = '政府监管人员', // 仅可查看数据
+} 

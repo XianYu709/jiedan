@@ -1,20 +1,5 @@
 {
-  "name": "twin-city-web",
-  "version": "0.1.0",
-  "homepage": "https://",
-  "bugs": {
-    "url": "https:///issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://"
-  },
-  "license": "MIT",
-  "author": {
-    "name": "",
-    "email": "",
-    "url": "https://"
-  },
+  "name": "disasters-city-web",
   "scripts": {
     "bootstrap": "pnpm install",
     "build": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 pnpm vite build",

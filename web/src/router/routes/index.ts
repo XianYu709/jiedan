@@ -1,4 +1,5 @@
 import type { AppRouteRecordRaw, AppRouteModule } from '@/router/types';
+import { RoleEnum } from '@/enums/roleEnum';
 
 import { PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE } from '@/router/routes/basic';
 
@@ -38,31 +39,11 @@ export const LoginRoute: AppRouteRecordRaw = {
   },
 };
 
-export const HomeRoute: AppRouteRecordRaw = {
-  path: '/home',
-  name: 'Home',
-  component: () => import('@/views/td-map/Home.vue'),
-  meta: {
-    title: t('routes.basic.home'),
-  },
-};
-
-export const newRouter: AppRouteRecordRaw = {
-  path: '/new',
-  name: 'new',
-  component: () => import('@/views/new/index.vue'),
-  meta: {
-    title: t('routes.basic.home'),
-  },
-};
-
 // Basic routing without permission
 // 未经许可的基本路由
 export const basicRoutes = [
-  HomeRoute,
   LoginRoute,
   RootRoute,
-  newRouter,
   // ...mainOutRoutes,
   REDIRECT_ROUTE,
   PAGE_NOT_FOUND_ROUTE,

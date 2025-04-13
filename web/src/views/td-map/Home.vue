@@ -393,8 +393,8 @@
     top: 64px;
     width: 100%;
     height: 100%;
-    background: url('@/assets/images/cover.png') center center no-repeat;
     opacity: 0.7;
+    background: url('@/assets/images/cover.png') center center no-repeat;
     background-size: cover;
     pointer-events: none;
   }
