@@ -45,16 +45,11 @@
       title: '空间量算',
     },
     {
-      key: 'crop',
-      icon: () => createVNode(ScissorOutlined),
-      label: '模型裁剪',
-      title: '模型裁剪',
-    },
-    {
-      key: 'compare',
-      icon: () => createVNode(BlockOutlined),
-      label: '场景对比',
-      title: '场景对比',
+      key: 'layers',
+      // icon: () => createVNode('span', { class: 'iconfont icon-distance text-lg' }),
+      icon: () => createVNode(CalculatorOutlined),
+      label: '图层管理',
+      title: '图层管理',
     },
     {
       key: 'analyze',
@@ -87,41 +82,13 @@
           label: '坡度分析',
         },
         {
-          key: 'regressionLine',
-          label: '退线分析',
-        },
-        {
-          key: 'affixedTo',
-          label: '贴线分析',
-        },
-        {
-          key: 'highLimit',
-          label: '限高分析',
-        },
-        {
-          key: 'shade',
-          label: '阴影分析',
-        },
-        {
-          key: 'bisect',
-          label: '剖面分析',
-        },
-        {
-          key: 'facade',
-          label: '立面分析',
-        },
-        {
           key: 'viewDome',
           label: '开敞度分析',
         },
-        {
-          key: 'greeningRate',
-          label: '绿地率分析',
-        },
-        {
-          key: 'bestPath',
-          label: '最佳路径分析',
-        },
+        // {
+        //   key: 'bestPath',
+        //   label: '最佳路径分析',
+        // },
         {
           key: 'siteZoning',
           label: '选址分区分析',

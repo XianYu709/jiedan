@@ -1,12 +1,4 @@
 export { default as Viewer } from "./Viewer";
-export {
-  default as Crop,
-  BoxCrop,
-  PlanarCrop,
-  CrossCrop,
-  PolygonCrop,
-  CropWithSeal,
-} from "./Crop";
 export { default as Measure } from "./Measure";
 export { default as MultiScreen } from "./MultiScreen";
 export { default as RollerShutters, ImageRoller, ModelRoller, RollerLine } from "./RollerShutters";
@@ -21,7 +13,6 @@ export { default as Facade } from "./Facade";
 export { default as ViewDome } from "./ViewDome";
 export { default as RegressionLine } from "./RegressionLine";
 export { default as Scene } from "./Scene";
-export { default as Properties } from "./Properties";
 export { default as HighLimit } from "./HighLimit";
 export { default as SceneDrawn } from "./SceneDrawn";
 export { default as WeatherSimulation } from "./WeatherSimulation";

@@ -25,10 +25,6 @@
       @click="clickHandler"
       @instance="readyHandler"
     />
-    <div class="top-19 left-6 absolute z-10 w-64">
-      <Properties> </Properties>
-    </div>
-    <GreeningRate v-model:open="menuOpen.greeningRate"></GreeningRate>
     <Scene v-model:open="menuOpen.scene"></Scene>
     <Measure v-model:open="menuOpen.measure" class="top-20 right-10 absolute"></Measure>
     <ServiceAnalysis
@@ -36,7 +32,6 @@
       class="top-20 right-90 absolute"
     ></ServiceAnalysis>
     <Comparison v-model:open="menuOpen.compare"></Comparison>
-    <Crop v-model:open="menuOpen.crop" class="left-10 top-150 absolute"></Crop>
     <Models
       v-model:open="menuOpen.models"
       :iconSize="40"
@@ -49,13 +44,12 @@
       class="right-174 top-60 absolute"
     ></InterVisibility>
     <SkyLine v-model:open="menuOpen.skyLine" class="right-174 top-60 absolute"></SkyLine>
-    <Terrain v-model:open="menuOpen.terrain" class="right-174 top-90 absolute"></Terrain>
+   
     <Slope v-model:open="menuOpen.slope" class="right-174 top-90 absolute"></Slope>
     <Shade v-model:open="menuOpen.shade" class="right-100 top-100 absolute"></Shade>
     <Bisect v-model:open="menuOpen.bisect" class="right-100 top-100 absolute"></Bisect>
     <Facade v-model:open="menuOpen.facade" class="right-100 top-100 absolute"></Facade>
     <ViewDome v-model:open="menuOpen.viewDome" class="right-100 top-100 absolute"></ViewDome>
-    <Weather v-model:open="menuOpen.weather" class="absolute right-70 top-100"></Weather>
     <BestPath v-model:open="menuOpen.bestPath" class="absolute right-70 top-100"></BestPath>
     <SiteZoning v-model:open="menuOpen.siteZoning" class="absolute right-70 top-100"></SiteZoning>
 
@@ -65,7 +59,7 @@
       :coord="coord"
     ></GeometryQueries>
     <LayerControl
-      v-model:open="menuOpen.layerControl"
+      v-model:open="menuOpen.layers"
       class="absolute right-200 top-20"
     ></LayerControl>
     <RegressionLine
@@ -73,19 +67,6 @@
       v-model:open="menuOpen.regressionLine"
       class="absolute left-3/5 top-2/6"
     ></RegressionLine>
-    <AffixedTo v-model:open="menuOpen.affixedTo" class="absolute left-1/5 top-2/6"></AffixedTo>
-    <HighLimit
-      v-model:open="menuOpen.highLimit"
-      layerType="simpleBuild"
-      class="absolute left-1/5 top-4/6"
-    ></HighLimit>
-    <ToolBar
-      :data="toolBarData"
-      :open="[menuOpen.layerControl, menuOpen.scene, menuOpen.models, menuOpen.weather]"
-      @selectHandler="selectHandler"
-      class="left-1/2 top-5/6 -translate-x-1/2"
-    >
-    </ToolBar>
   </div>
 </template>
 
@@ -94,18 +75,15 @@
   import Icon from '@/components/Icon/Icon.vue';
   import { useGlobSetting } from '@/hooks/setting';
   import { Divider } from 'ant-design-vue';
-  import { Viewer, Properties } from 'td-gis';
+  import { Viewer } from 'td-gis';
   import emitter from '@/td-gis/hooks/useMitt';
   import NavMenu from './components/NavMenu/Index.vue';
-  import Crop from './components/Crop.vue';
   import Measure from './components/Measure.vue';
   import Comparison from './components/Comparison.vue';
-  import ToolBar from './components/ToolBar.vue';
+  import GeometryQueries from './components/GeometryQueries.vue';
   import ViewShed from './components/ViewShed.vue';
   import InterVisibility from './components/InterVisibility.vue';
   import SkyLine from './components/SkyLine.vue';
-  import Terrain from './components/Terrain.vue';
-  import Slope from './components/Slope.vue';
   import Shade from './components/Shade.vue';
   import Bisect from './components/Bisect.vue';
   import Facade from './components/Facade.vue';
@@ -113,18 +91,11 @@
   import Models from './components/Models.vue';
   import Date from './components/Date.vue';
   import RegressionLine from './components/RegressionLine.vue';
-  import AffixedTo from './components/AffixedTo.vue';
-  import HighLimit from './components/HighLimit.vue';
-  import Weather from './components/Weather.vue';
-  import GeometryQueries from './components/GeometryQueries.vue';
   import LayerControl from './components/LayerControl.vue';
   import ServiceAnalysis from './components/ServiceAnalysis.vue';
   import BestPath from './components/BestPath.vue';
   import SiteZoning from './components/SiteZoning.vue';
   import Scene from './components/Scene.vue';
-  // import Properties from './components/Properties.vue';
-  import GreeningRate from './components/GreeningRate.vue';
-  import { toolBarData, sceneUrls as staticSceneUrl, s3mModels } from './data';
   import { useUserStore } from '@/store/modules/user';
   import map from '@/api/map/index';
 
@@ -139,7 +110,7 @@
   const menuOpen = ref<any>({
     select: false,
     measure: false,
-    crop: false,
+    layers: false,
     compare: false,
     ServiceAnalysis: false,
     models: false,

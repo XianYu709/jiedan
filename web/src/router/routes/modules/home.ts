@@ -10,6 +10,8 @@ const data: AppRouteModule = {
    meta: {
      title: t('routes.basic.home'),
      roles: [RoleEnum.SUPER,RoleEnum.OPERATE],
+     hideBreadcrumb: true,
+     hideMenu: true,
    },
 };
 

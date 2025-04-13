@@ -77,8 +77,7 @@
       unref(statusMapRef).set(ExceptionEnum.PAGE_NOT_FOUND, {
         title: '404',
         status: `${ExceptionEnum.PAGE_NOT_FOUND}`,
-        subTitle: t('sys.exception.subTitle404'),
-        btnText: props.full ? backLoginI18n : backHomeI18n,
+        subTitle: "您访问的页面不存在，或无访问权限。",
         handler: () => (props.full ? go(PageEnum.BASE_LOGIN) : go()),
       });
 

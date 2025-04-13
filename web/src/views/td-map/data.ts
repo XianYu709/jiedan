@@ -129,22 +129,10 @@ const toolBarData = <ToolbarItem[]>[
     selected: false,
   },
   {
-    icon: 'icon-message',
-    title: '图查属性',
-    name: 'scene',
-    selected: false,
-  },
-  {
     icon: 'icon-add-model',
     title: '添加小品',
     name: 'model',
     size: 22,
-    selected: false,
-  },
-  {
-    icon: 'icon-weather',
-    title: '天气模拟',
-    name: 'weather',
     selected: false,
   },
   {
