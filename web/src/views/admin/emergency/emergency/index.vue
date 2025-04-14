@@ -39,7 +39,7 @@ import {BasicTable, TableAction, useTable} from '@/components/Table';
 import Modal from './Modal.vue';
 import {useModal} from '@/components/Modal';
 import {columns} from './data';
-import map from '@/api/map/index';
+import emergency from '@/api/emergency/index';
 import {usePermission} from '@/hooks/web/usePermission';
 import {RoleEnum} from '@/enums/roleEnum';
 
@@ -47,7 +47,7 @@ const {hasPermission} = usePermission();
 
 const [registerModal, {openModal}] = useModal();
 const [registerTable, {reload, setTableData}] = useTable({
-  title: '图层管理',
+  title: '应急数据',
   columns,
   bordered: true,
   size: 'middle',
@@ -66,36 +66,13 @@ const [registerTable, {reload, setTableData}] = useTable({
   },
 });
 
-const flat = (data, childrenKey = 'children') => {
-  let result = [];
-  const flatten = (node) => {
-    let flatNode = {...node};
-    delete flatNode[childrenKey];
-    result.push(flatNode);
-    if (node[childrenKey] && node[childrenKey].length > 0) {
-      node[childrenKey].forEach((child) => flatten(child));
-    }
-  };
-  data.forEach((node) => flatten(node));
-  return result;
-};
-
-const getDeptName = (data) => {
-  let name = '';
-  data.forEach((item, index) => {
-    name += item.dname + (index == data.length - 1 ? '' : ' ，');
-  });
-  return name;
-};
 
 const getMapList = async () => {
-  const {data} = await map.layerListApi({pageSize: 999});
+  const {data} = await emergency.dataEmergencyListApi({pageSize: 999});
   setTableData(
     data.records.map((item) => {
       return {
-        ...item,
-        deptNameList: getDeptName(flat(item.deptList)),
-        fieldsMap: item.fieldsMap.value,
+        ...item
       };
     }),
   );
@@ -103,15 +80,6 @@ const getMapList = async () => {
 };
 getMapList();
 
-const rName = (arr) => {
-  return arr.map((item) => {
-    return {
-      label: item.dname,
-      value: item.did,
-      options: item.children.length > 0 ? rName(item.children) : [],
-    };
-  });
-};
 
 const handleEdit = (record) => {
   openModal(true, {
@@ -120,7 +88,7 @@ const handleEdit = (record) => {
   });
 };
 const handleDelete = async (f) => {
-  let resp = await map.layerDelApi([f.id]);
+  let resp = await emergency.dataEmergencyDelApi(f.id);
   if (resp.succ == true) {
     message.success('删除成功');
     getMapList();
