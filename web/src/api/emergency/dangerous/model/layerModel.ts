@@ -1,5 +1,5 @@
-import {BasicRequest} from '../../model/baseModel';
-import {Department} from '../../system/model/deptModel';
+import {BasicRequest} from '../../../model/baseModel';
+import {Department} from '../../../system/model/deptModel';
 
 type Data = {
   records: DataItem[];

@@ -28,6 +28,9 @@
           <FormItem label="位置" name="location">
             <Input v-model:value="formState.location"/>
           </FormItem>
+          <FormItem label="类型" name="type">
+            <Select v-model:value="formState.type" :options="typeOptions"></Select>
+          </FormItem>
         </Form>
       </template>
     </Comment>
@@ -36,12 +39,12 @@
 
 <script setup lang="ts">
 import type {TreeProps} from 'ant-design-vue';
-import {Comment, Form, Input, message} from 'ant-design-vue';
+import {Comment, Form, Input, message, Select} from 'ant-design-vue';
 import {BasicModal, useModalInner} from '@/components/Modal';
 import {ref, Ref, unref, watch} from 'vue';
 import {FormState} from './data';
 import {deptInfoApi} from '@/api/system/dept';
-import emergency from '@/api/emergency/index';
+import emergency from '@/api/emergency/emergency';
 
 const FormItem = Form.Item;
 const formRef = ref<any>(null);
@@ -51,7 +54,19 @@ const formState = ref<FormState>({
   name: '',
   capacity: '',
   location: '',
+  type: '',
 });
+
+const typeOptions = [
+  {
+    label: '医院',
+    value: '医院',
+  },
+  {
+    label: '防空洞',
+    value: '防空洞',
+  },
+]
 
 const deptValue = (arr) => {
   return arr.map((item) => {
@@ -92,6 +107,7 @@ const rules: any = {
   name: [{required: true, message: '名称不能为空!', trigger: 'blur'}],
   capacity: [{required: true, message: '容量不能为空!', trigger: 'blur'}],
   location: [{required: true, message: '位置不能为空!', trigger: 'blur'}],
+  type: [{required: true, message: '类型不能为空!', trigger: 'blur'}],
 };
 
 const handleSubmit = () => {
@@ -138,6 +154,7 @@ watch(open, () => {
       name: '',
       capacity: '',
       location: '',
+      type: '',
     });
   }
 });

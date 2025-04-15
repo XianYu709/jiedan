@@ -39,7 +39,7 @@ import {BasicTable, TableAction, useTable} from '@/components/Table';
 import Modal from './Modal.vue';
 import {useModal} from '@/components/Modal';
 import {columns} from './data';
-import emergency from '@/api/emergency/index';
+import emergency from '@/api/emergency/emergency';
 import {usePermission} from '@/hooks/web/usePermission';
 import {RoleEnum} from '@/enums/roleEnum';
 

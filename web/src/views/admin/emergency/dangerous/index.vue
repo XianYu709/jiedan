@@ -10,12 +10,6 @@
         <TableAction
           :actions="[
             {
-              icon: 'clarity:note-edit-line',
-              label: '修改',
-              onClick: handleEdit.bind(null, record),
-              disabled: !hasPermission(RoleEnum.SUPER),
-            },
-            {
               icon: 'ant-design:delete-outlined',
               label: '删除',
               color: 'error',
@@ -28,6 +22,12 @@
           ]"
         />
       </template>
+
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'area'">
+          {{ record.area }}
+        </template>
+      </template>
     </BasicTable>
     <Modal @register="registerModal" @success="getMapList"/>
   </div>
@@ -39,7 +39,7 @@ import {BasicTable, TableAction, useTable} from '@/components/Table';
 import Modal from './Modal.vue';
 import {useModal} from '@/components/Modal';
 import {columns} from './data';
-import emergency from '@/api/emergency/index';
+import dangerous from '@/api/emergency/dangerous';
 import {usePermission} from '@/hooks/web/usePermission';
 import {RoleEnum} from '@/enums/roleEnum';
 
@@ -68,7 +68,7 @@ const [registerTable, {reload, setTableData}] = useTable({
 
 
 const getMapList = async () => {
-  const {data} = await emergency.dataEmergencyListApi({pageSize: 999});
+  const {data} = await dangerous.riskyAreaListApi({pageSize: 999});
   setTableData(
     data.records.map((item) => {
       return {
@@ -81,14 +81,8 @@ const getMapList = async () => {
 getMapList();
 
 
-const handleEdit = (record) => {
-  openModal(true, {
-    isUpdate: true,
-    record,
-  });
-};
 const handleDelete = async (f) => {
-  let resp = await emergency.dataEmergencyDelApi(f.id);
+  let resp = await dangerous.riskyAreaDelApi(f.id);
   if (resp.succ == true) {
     message.success('删除成功');
     getMapList();

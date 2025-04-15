@@ -7,8 +7,13 @@ export const columns: BasicColumn[] = [
     width: 170,
   },
   {
-    title: '位置',
-    dataIndex: 'location',
+    title: '类型',
+    dataIndex: 'type',
+    width: 170,
+  },
+  {
+    title: '区域',
+    dataIndex: 'area',
     width: 170,
   }
 ];

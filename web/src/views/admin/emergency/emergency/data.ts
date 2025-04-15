@@ -15,6 +15,11 @@ export const columns: BasicColumn[] = [
     title: '位置',
     dataIndex: 'location',
     width: 170,
+  },
+  {
+    title: '类型',
+    dataIndex: 'type',
+    width: 170,
   }
 ];
 
@@ -23,4 +28,5 @@ export interface FormState {
   name: string;
   capacity: string;
   location: string;
+  type: string;
 }

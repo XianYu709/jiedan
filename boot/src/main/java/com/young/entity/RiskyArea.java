@@ -13,9 +13,9 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 
-@TableName("data_emergency")
+@TableName("risky_area")
 @Data
-public class DataEmergency extends Model<DataEmergency> {
+public class RiskyArea extends Model<RiskyArea> {
 
     private static final long serialVersionUID = 1L;
 
@@ -24,21 +24,17 @@ public class DataEmergency extends Model<DataEmergency> {
     @ApiModelProperty(value = "id", required = true)
     private String id;
 
-    @NotNull(message = "位置不能为空", groups = {AddGroup.class})
-    @ApiModelProperty(value = "位置", required = true)
-    private String location;
-
-    @NotNull(message = "容量不能为空", groups = {AddGroup.class})
-    @ApiModelProperty(value = "容量", required = true)
-    private Double capacity;
-
-    @NotNull(message = "名字不能为空", groups = {AddGroup.class})
-    @ApiModelProperty(value = "名字", required = true)
-    private String name;
-
     @NotNull(message = "类型不能为空", groups = {AddGroup.class})
     @ApiModelProperty(value = "类型", required = true)
     private String type;
+
+    @NotNull(message = "区域不能为空", groups = {AddGroup.class})
+    @ApiModelProperty(value = "区域", required = true)
+    private Object area;
+
+    @NotNull(message = "名称不能为空", groups = {AddGroup.class})
+    @ApiModelProperty(value = "名称", required = true)
+    private String name;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "用作分页", required = false)
