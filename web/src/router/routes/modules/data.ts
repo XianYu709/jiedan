@@ -1,8 +1,8 @@
-import type { AppRouteModule } from '@/router/types';
-import { RoleEnum } from '@/enums/roleEnum';
+import type {AppRouteModule} from '@/router/types';
+import {RoleEnum} from '@/enums/roleEnum';
 
-import { LAYOUT } from '@/router/constant';
-import { t } from '@/hooks/web/useI18n';
+import {LAYOUT} from '@/router/constant';
+import {t} from '@/hooks/web/useI18n';
 
 const data: AppRouteModule = {
   path: '/data',
@@ -14,7 +14,7 @@ const data: AppRouteModule = {
     icon: 'ant-design:database-outlined',
     title: t('routes.data.moduleName'),
     orderNo: 3,
-        roles: [RoleEnum.SUPER,RoleEnum.EDIT,RoleEnum.SUPERVISION],
+    roles: [RoleEnum.SUPER, RoleEnum.EDIT, RoleEnum.SUPERVISION],
   },
   children: [
     {

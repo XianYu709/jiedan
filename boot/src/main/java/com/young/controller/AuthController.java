@@ -1,11 +1,11 @@
 package com.young.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.young.annotation.PermInfo;
 import com.young.aop.SysLog;
 import com.young.constant.Codes;
-import com.young.entity.SysDept;
 import com.young.entity.SysDeptUser;
 import com.young.entity.SysUser;
 import com.young.jwt.JwtToken;
@@ -14,15 +14,15 @@ import com.young.service.SysDeptService;
 import com.young.service.SysDeptUserService;
 import com.young.service.SysUserService;
 import com.young.vo.Json;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
-import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 
 @Api(tags = {"登录模块"})
