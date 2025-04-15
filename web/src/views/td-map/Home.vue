@@ -16,13 +16,13 @@
           <Icon :size="32" icon="ant-design:setting-outlined"/>
         </router-link>
       </div>
-      <!-- <div class="trapezoid"></div> -->
     </div>
     <Viewer
       v-if="viewerFlag"
       ref="viewerIns"
       @click="clickHandler"
       @instance="readyHandler"
+      style="width: 100vw; height: 100vh"
     />
     <BestPath v-model:open="menuOpen.bestPath" class="absolute right-70 top-100"></BestPath>
     <Measure v-model:open="menuOpen.measure" class="top-20 right-10 absolute"></Measure>
@@ -45,7 +45,7 @@ import {ref} from 'vue';
 import Icon from '@/components/Icon/Icon.vue';
 import {useGlobSetting} from '@/hooks/setting';
 import {Divider} from 'ant-design-vue';
-import Viewer from '../Viewer.vue';
+import Viewer from './components/Viewer.vue';
 import NavMenu from './components/NavMenu/Index.vue';
 import Measure from './components/Measure.vue';
 import Date from './components/Date.vue';
@@ -141,10 +141,121 @@ const zoomIn = () => {
 const zoomOut = () => {
 
 };
+const addFloodRiskPolygon = (map) => {
+  const floodRiskPolygon = new AMap.Polygon({
+    path: [
+      [117.01, 36.68],
+      [117.03, 36.68],
+      [117.03, 36.66],
+      [117.01, 36.66]
+    ],
+    fillColor: '#FF0000',
+    fillOpacity: 0.4,
+    strokeColor: '#FF0000',
+    strokeWeight: 2,
+    zIndex: 10
+  });
+  map.add(floodRiskPolygon);
+};
+
+const addDangerSourcePolygon = (map) => {
+  const dangerSourcePolygon = new AMap.Polygon({
+    path: [
+      [117.02, 36.675],
+      [117.025, 36.675],
+      [117.025, 36.67],
+      [117.02, 36.67]
+    ],
+    fillColor: '#FFA500',
+    fillOpacity: 0.6,
+    strokeColor: '#FFA500',
+    strokeWeight: 2,
+    zIndex: 20
+  });
+  map.add(dangerSourcePolygon);
+};
 
 
-const readyHandler = (e) => {
+const mark = (map) => {
+  const facilities = [
+    {
+      type: '医院',
+      name: '济南市中心医院',
+      position: [117.02, 36.675],
+      capacity: 500,
+      color: '#ff4d4f',
+      radius: 1000 // 服务半径 1000 米
+    },
+    {
+      type: '消防站',
+      name: '历下区消防站',
+      position: [117.015, 36.67],
+      capacity: 100,
+      color: '#fa8c16',
+      radius: 800
+    },
+    {
+      type: '避难所',
+      name: '泉城公园避难所',
+      position: [117.025, 36.665],
+      capacity: 1000,
+      color: '#52c41a',
+      radius: 1500
+    }
+  ];
 
+  facilities.forEach(item => {
+    // 创建标注
+    const marker = new AMap.Marker({
+      position: item.position,
+      title: item.name,
+      icon: new AMap.Icon({
+        size: new AMap.Size(30, 30),
+        image: `https://via.placeholder.com/30/${item.color.replace('#', '')}/ffffff?text=${item.type[0]}`,
+        imageSize: new AMap.Size(30, 30)
+      })
+    });
+
+    // 信息窗体
+    const infoWindow = new AMap.InfoWindow({
+      content: `
+      <div style="font-size: 14px;">
+        <b>${item.name}</b><br/>
+        类型：${item.type}<br/>
+        容量：${item.capacity} 人<br/>
+        服务范围：${item.radius} 米
+      </div>
+    `,
+      offset: new AMap.Pixel(0, -30)
+    });
+
+    marker.on('click', () => {
+      infoWindow.open(map, marker.getPosition());
+    });
+
+    map.add(marker);
+
+    // 添加服务范围圆形覆盖物
+    const circle = new AMap.Circle({
+      center: item.position,
+      radius: item.radius,
+      strokeColor: item.color,
+      strokeWeight: 2,
+      fillColor: item.color,
+      fillOpacity: 0.2,
+      zIndex: 5
+    });
+
+    map.add(circle);
+  });
+}
+
+
+const readyHandler = ({map, AMap}) => {
+  map.setCenter([117.000923, 36.675807]);
+  addFloodRiskPolygon(map)
+  addDangerSourcePolygon(map)
+  mark(map)
 };
 
 </script>

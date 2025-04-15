@@ -9,7 +9,6 @@ const system: AppRouteModule = {
   component: LAYOUT,
   redirect: '/emergency/index',
   meta: {
-    hideChildrenInMenu: true,
     icon: 'ant-design:database-outlined',
     title: t('routes.emergency.emergencyName'),
     orderNo: 10,
@@ -22,6 +21,14 @@ const system: AppRouteModule = {
       component: () => import('@/views/admin/emergency/emergency/index.vue'),
       meta: {
         title: t('routes.emergency.emergencyData'),
+      },
+    },
+    {
+      path: 'dangerous',
+      name: 'dangerous',
+      component: () => import('@/views/admin/emergency/dangerous/index.vue'),
+      meta: {
+        title: "风险区域管理",
       },
     }
   ],
