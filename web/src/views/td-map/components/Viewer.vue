@@ -3,51 +3,56 @@
 </template>
 
 <script setup>
-import {onMounted} from 'vue'
-import AMapLoader from '@amap/amap-jsapi-loader'
+  import { onMounted } from 'vue';
+  import AMapLoader from '@amap/amap-jsapi-loader';
 
-const props = defineProps({
-  isDrawing: {
-    type: Boolean,
-    default: false,
-  },
-  modalValue: {
-    type: Array,
-    default: () => [],
-  },
-})
-
-const emit = defineEmits(['instance', 'update:modalValue'])
-
-const drawAre = (map, AMap) => {
-  const mouseTool = new AMap.MouseTool(map);
-  mouseTool.polygon({
-    strokeColor: '#FF33FF',
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    fillColor: '#1791fc',
-    fillOpacity: 0.4,
+  const props = defineProps({
+    isDrawing: {
+      type: Boolean,
+      default: false,
+    },
+    modalValue: {
+      type: Array,
+      default: () => [],
+    },
   });
 
-  mouseTool.on('draw', (e) => {
-    const path = e.obj.getPath();
-    emit('update:modalValue', path);
+  const emit = defineEmits(['instance', 'update:modalValue']);
+
+  const drawAre = (map, AMap) => {
+    const mouseTool = new AMap.MouseTool(map);
+    mouseTool.polygon({
+      strokeColor: '#FF33FF',
+      strokeOpacity: 1,
+      strokeWeight: 2,
+      fillColor: '#1791fc',
+      fillOpacity: 0.4,
+    });
+
+    mouseTool.on('draw', (e) => {
+      const path = e.obj.getPath();
+      emit('update:modalValue', path);
+    });
+  };
+
+  onMounted(() => {
+    window._AMapSecurityConfig = {
+      securityJsCode: 'af525f50a9929aec4afc5b8ee789278c',
+    };
+
+    AMapLoader.load({
+      key: 'e59ccbe7bf31422ace45db6e433af68b',
+      version: '2.0',
+      plugins: ['AMap.MouseTool'],
+    })
+      .then((AMap) => {
+        
+        const map = new AMap.Map('mapContainer');
+       
+
+        emit('instance', { map, AMap });
+        if (props.isDrawing) drawAre(map, AMap);
+      })
+      .catch(console.error);
   });
-}
-
-onMounted(() => {
-  window._AMapSecurityConfig = {
-    securityJsCode: 'af525f50a9929aec4afc5b8ee789278c',
-  }
-
-  AMapLoader.load({
-    key: 'e59ccbe7bf31422ace45db6e433af68b',
-    version: '2.0',
-    plugins: ['AMap.MouseTool'],
-  }).then(AMap => {
-    const map = new AMap.Map('mapContainer')
-    emit('instance', {map, AMap})
-    if (props.isDrawing) drawAre(map, AMap)
-  }).catch(console.error)
-})
 </script>
