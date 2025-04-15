@@ -36,7 +36,6 @@ export default defineApplicationConfig({
     },
     resolve: {
       alias: {
-        'td-gis': resolve(__dirname, 'src/td-gis'),
       },
     },
   },

@@ -1,13 +1,11 @@
 <template>
   <Dialog v-model:open="open" @cancel="handleCancel">
     <template v-slot:title>图层控制</template>
-    <LayerControl></LayerControl>
   </Dialog>
 </template>
 
 <script setup lang="ts">
   import { ref, watch } from 'vue';
-  import { LayerControl } from 'td-gis';
   import Dialog from './Dialog.vue';
   const props = defineProps({
     open: { type: Boolean, default: false },
