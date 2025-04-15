@@ -1,5 +1,5 @@
-import type { AppRouteRecordRaw } from '@/router/types';
-import { t } from '@/hooks/web/useI18n';
+import type {AppRouteRecordRaw} from '@/router/types';
+import {t} from '@/hooks/web/useI18n';
 import { REDIRECT_NAME, LAYOUT, EXCEPTION_COMPONENT } from '@/router/constant';
 import {PAGE_NOT_FOUND_NAME} from "@/router/PAGE_NOT_FOUND_NAME";
 

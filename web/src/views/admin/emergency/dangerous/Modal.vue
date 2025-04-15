@@ -1,7 +1,7 @@
 <template>
   <BasicModal
     v-model:open="open"
-    :title="isUpdate ? '修改应急数据' : '新增应急数据'"
+    :title="isUpdate ? '修改风险区域管理' : '新增风险区域管理'"
     v-bind="$attrs"
     @ok="handleSubmit"
     @register="registerModal"
@@ -41,7 +41,7 @@ import {Comment, Form, Input, message, Select} from 'ant-design-vue';
 import {BasicModal, useModalInner} from '@/components/Modal';
 import {ref, Ref, unref, watch} from 'vue';
 import {deptInfoApi} from '@/api/system/dept';
-import emergency from '@/api/emergency/index';
+import dangerous from '@/api/emergency/dangerous';
 import Viewer from "@/views/td-map/components/Viewer.vue";
 
 const FormItem = Form.Item;
@@ -57,11 +57,11 @@ const formState = ref<any>({
 const typeOptions = [
   {
     label: '洪水',
-    value: 'xx',
+    value: '洪水',
   },
   {
     label: '大风',
-    value: 'pxx',
+    value: '大风',
   },
 ]
 
@@ -103,7 +103,7 @@ const onFinishFailed = (errorInfo: any) => {
 
 
 const [registerModal, {setModalProps, closeModal}] = useModalInner(async (data) => {
-  setModalProps({confirmLoading: false, minHeight: 156, width: '60%', });
+  setModalProps({confirmLoading: false, minHeight: 156, width: '60%',});
   isUpdate.value = !!data?.isUpdate;
   if (unref(isUpdate)) {
     let record = JSON.parse(JSON.stringify(data.record));
@@ -118,6 +118,7 @@ const rules: any = {
 };
 
 const handleSubmit = () => {
+  console.log("formState", formState.value)
   formRef.value
     .validate()
     .then(() => {
@@ -132,7 +133,7 @@ const emits = defineEmits(['success', 'register']);
 
 const addOrEdit = async () => {
   if (unref(isUpdate)) {
-    let resp = await emergency.dataEmergencyEditApi(formState.value);
+    let resp = await dangerous.riskyAreaEditApi(formState.value);
     if (resp.succ == true) {
       message.success('修改成功');
       emits('success');
@@ -141,7 +142,7 @@ const addOrEdit = async () => {
       message.error(resp.msg as string);
     }
   } else {
-    let resp = await emergency.dataEmergencyAddApi(formState.value);
+    let resp = await dangerous.riskyAreaAddApi(formState.value);
     if (resp.succ == true) {
       message.success('添加成功');
       emits('success');

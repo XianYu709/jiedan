@@ -41,7 +41,7 @@ import {BasicModal, useModalInner} from '@/components/Modal';
 import {ref, Ref, unref, watch} from 'vue';
 import {FormState} from './data';
 import {deptInfoApi} from '@/api/system/dept';
-import emergency from '@/api/emergency/index';
+import emergency from '@/api/emergency/emergency';
 
 const FormItem = Form.Item;
 const formRef = ref<any>(null);
