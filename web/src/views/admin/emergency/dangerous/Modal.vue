@@ -6,26 +6,25 @@
     @ok="handleSubmit"
     @register="registerModal"
   >
-    <Comment>
+    <Comment class="px-4">
       <template #content>
         <Form
           ref="formRef"
-          :label-col="{ span: 6 }"
           :model="formState"
           :rules="rules"
-          :wrapper-col="{ span: 16 }"
           autocomplete="off"
           name="basic"
           @finish="onFinish"
           @finishFailed="onFinishFailed"
         >
           <FormItem label="名称" name="name">
-            <Input v-model:value="formState.name"/>
+            <Input v-model:value="formState.name" placeholder="请输入名称"/>
           </FormItem>
-          <FormItem label="类型" name="type">
-            <Select v-model:value="formState.type" :options="typeOptions"></Select>
+          <FormItem label="类型" name="type" required>
+            <Select v-model:value="formState.type" :options="typeOptions" placeholder="请选择类型"></Select>
           </FormItem>
-          <FormItem label="区域" name="area">
+          <FormItem label="区域" name="area" required>
+            <Input v-model:value="formState.area" placeholder="请选择区域" disabled class="mb-2"/>
             <Viewer v-model:modal-value="formState.area" :is-drawing="true"
                     style="width: 100%; height: 500px" @instance="onSuccess"></Viewer>
           </FormItem>
@@ -66,15 +65,10 @@ const typeOptions = [
 ]
 
 const onSuccess = ({map}) => {
+  map.setFitView();
   map.setCenter([117.000923, 36.675807]);
 };
-
-const getLine = (value) => {
-  formState.value.location = [{
-    name: value.name,
-    area: value,
-  }]
-};
+ 
 
 const deptValue = (arr) => {
   return arr.map((item) => {

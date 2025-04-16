@@ -47,6 +47,7 @@
     })
       .then((AMap) => {
         const map = new AMap.Map('mapContainer');
+        map.setCenter([117.000923, 36.675807]);
         emit('instance', { map, AMap });
         if (props.isDrawing) drawAre(map, AMap);
       })
