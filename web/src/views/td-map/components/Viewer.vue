@@ -46,10 +46,7 @@
       plugins: ['AMap.MouseTool'],
     })
       .then((AMap) => {
-        
         const map = new AMap.Map('mapContainer');
-       
-
         emit('instance', { map, AMap });
         if (props.isDrawing) drawAre(map, AMap);
       })
