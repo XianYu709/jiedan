@@ -1,8 +1,7 @@
-import type { AppRouteModule } from '@/router/types';
-import { RoleEnum } from '@/enums/roleEnum';
+import type {AppRouteModule} from '@/router/types';
+import {RoleEnum} from '@/enums/roleEnum';
 
-import { LAYOUT } from '@/router/constant';
-import { t } from '@/hooks/web/useI18n';
+import {LAYOUT} from '@/router/constant';
 
 const bookmark: AppRouteModule = {
   path: '/bookmark',
@@ -14,7 +13,7 @@ const bookmark: AppRouteModule = {
     icon: 'ant-design:book-outlined',
     title: '书签管理',
     orderNo: 3,
-    roles: [RoleEnum.SUPER,RoleEnum.EDIT,RoleEnum.SUPERVISION],
+    roles: [RoleEnum.SUPER, RoleEnum.EDIT, RoleEnum.SUPERVISION],
   },
   children: [
     {

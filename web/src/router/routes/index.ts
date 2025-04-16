@@ -1,13 +1,11 @@
-import type { AppRouteRecordRaw, AppRouteModule } from '@/router/types';
-import { RoleEnum } from '@/enums/roleEnum';
+import type {AppRouteModule, AppRouteRecordRaw} from '@/router/types';
 
-import { PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE } from '@/router/routes/basic';
+import {PAGE_NOT_FOUND_ROUTE, REDIRECT_ROUTE} from '@/router/routes/basic';
 
-import { PageEnum } from '@/enums/pageEnum';
-import { t } from '@/hooks/web/useI18n';
+import {t} from '@/hooks/web/useI18n';
 
 // import.meta.glob() 直接引入所有的模块 Vite 独有的功能
-const modules = import.meta.glob('./modules/**/*.ts', { eager: true });
+const modules = import.meta.glob('./modules/**/*.ts', {eager: true});
 const routeModuleList: AppRouteModule[] = [];
 
 // 加入到路由集合中

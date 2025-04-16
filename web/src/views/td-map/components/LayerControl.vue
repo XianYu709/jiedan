@@ -1,28 +1,111 @@
 <template>
-  <Dialog v-model:open="open" @cancel="handleCancel">
+  <Dialog v-model:open="open" @cancel="handleCancel" width="300px">
     <template v-slot:title>图层控制</template>
+    <list size="small" :data-source="listData" class="my-4 w-full">
+      <template #renderItem="{ item, index }">
+        <list-item>
+          <Checkbox v-model:checked="item.checked"
+                    @click="(e) => handleClick(item, e)">{{
+              item.name
+            }}
+          </Checkbox>
+        </list-item>
+      </template>
+    </list>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
-  import Dialog from './Dialog.vue';
-  const props = defineProps({
-    open: { type: Boolean, default: false },
+import {inject, reactive, ref, watch} from 'vue';
+import Dialog from './Dialog.vue';
+import {Checkbox, List, ListItem} from 'ant-design-vue'
+
+const props = defineProps({
+  open: {type: Boolean, default: false},
+});
+const open = ref<Boolean>(false);
+const emit = defineEmits(['lineMode', 'isRoller', 'update:open']);
+
+const instance: any = inject('instance');
+let AMap, map, trafficLayer, satelliteLayer, roadNetLayer;
+const handleCancel = () => {
+  open.value = false;
+  emit('update:open', false);
+};
+watch(
+  () => props,
+  () => {
+    open.value = props.open;
+    if (open.value) {
+      AMap = instance.value.AMap;
+      map = instance.value.map;
+      initTrafficLayer()
+    }
+  },
+  {deep: true},
+);
+
+const initTrafficLayer = () => {
+  if (!AMap) return;
+
+  // 路况
+  trafficLayer = new AMap.TileLayer.Traffic({
+    autoRefresh: true,
+    interval: 180,
+    zIndex: 100
   });
-  const open = ref<Boolean>(false);
-  const emit = defineEmits(['lineMode', 'isRoller', 'update:open']);
-  const handleCancel = () => {
-    open.value = false;
-    emit('update:open', false);
-  };
-  watch(
-    () => props,
-    () => {
-      open.value = props.open;
-    },
-    { deep: true },
-  );
+  // 卫星
+  satelliteLayer = new AMap.TileLayer.Satellite({
+    visible: false
+  });
+  // 路网
+  roadNetLayer = new AMap.TileLayer.RoadNet({
+    visible: false
+  });
+
+
+  roadNetLayer.hide();
+  trafficLayer.hide();
+  trafficLayer.hide();
+  map.add(satelliteLayer);
+  map.add(roadNetLayer);
+  map.add(trafficLayer);
+};
+
+
+const handleClick = (item, e) => {
+  switch (item.name) {
+    case '实时路况':
+      if (e.target.checked) {
+        trafficLayer.show()
+      } else {
+        trafficLayer.hide()
+      }
+      break;
+    case '卫星':
+      if (e.target.checked) {
+        satelliteLayer.show()
+      } else {
+        satelliteLayer.hide()
+      }
+      break;
+    case '路网':
+      if (e.target.checked) {
+        roadNetLayer.show()
+      } else {
+        roadNetLayer.hide()
+      }
+      break;
+  }
+  item.checked = e.target.checked;
+  console.log("选项:", item.name, "状态:", e.target.checked);
+};
+// 表格数据
+const listData = reactive([
+  {name: "实时路况", checked: false},
+  {name: "卫星", checked: false},
+  {name: "路网", checked: false}
+]);
 </script>
 
 <style lang="less" scoped></style>
