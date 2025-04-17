@@ -70,12 +70,13 @@ const initTrafficLayer = () => {
   map.add(satelliteLayer);
   map.add(roadNetLayer);
   map.add(trafficLayer);
+
 };
 
 
 const handleClick = (item, e) => {
   switch (item.name) {
-    case '实时路况':
+    case '路况':
       if (e.target.checked) {
         trafficLayer.show()
       } else {
@@ -102,7 +103,7 @@ const handleClick = (item, e) => {
 };
 // 表格数据
 const listData = reactive([
-  {name: "实时路况", checked: false},
+  {name: "路况", checked: false},
   {name: "卫星", checked: false},
   {name: "路网", checked: false}
 ]);
