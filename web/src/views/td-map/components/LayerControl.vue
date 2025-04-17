@@ -1,6 +1,16 @@
 <template>
-  <Dialog v-model:open="open" noPadding width="300px" @cancel="handleCancel">
-    <template v-slot:title>图层控制</template>
+  <Dialog v-model:open="open" noPadding width="300px" @cancel="handleCancel" title="图层控制">
+<!--    <Tabs defaultActiveKey="1" onChange={callback}>-->
+<!--      <TabPane tab="Tab 1" key="1">-->
+<!--        Content of Tab Pane 1-->
+<!--      </TabPane>-->
+<!--      <TabPane tab="Tab 2" key="2">-->
+<!--        Content of Tab Pane 2-->
+<!--      </TabPane>-->
+<!--      <TabPane tab="Tab 3" key="3">-->
+<!--        Content of Tab Pane 3-->
+<!--      </TabPane>-->
+<!--    </Tabs>,-->
     <div class="p-2">
       <list :data-source="listData" size="small">
         <template #renderItem="{ item, index }">
@@ -20,7 +30,8 @@
 <script lang="ts" setup>
 import {inject, reactive, ref, watch} from 'vue';
 import Dialog from './Dialog.vue';
-import {Checkbox, List, ListItem} from 'ant-design-vue'
+import {Checkbox, List, ListItem,Tabs} from 'ant-design-vue'
+const { TabPane } = Tabs;
 
 const props = defineProps({
   open: {type: Boolean, default: false},
