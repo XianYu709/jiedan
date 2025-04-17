@@ -24,7 +24,7 @@
       @instance="readyHandler"
       style="width: 100vw; height: 100vh"
     />
-    <BestPath v-model:open="menuOpen.bestPath" class="absolute right-70 top-100"></BestPath>
+    <FacilityInquiry v-model:open="menuOpen.inquiry" class="absolute right-70 top-100"></FacilityInquiry>
     <Measure v-model:open="menuOpen.measure" class="top-20 right-10 absolute"></Measure>
     <LayerControl v-model:open="menuOpen.layers" class="absolute right-200 top-20"></LayerControl>
     <ToolBar
@@ -45,6 +45,7 @@ import {Divider} from 'ant-design-vue';
 import Viewer from './components/Viewer.vue';
 import NavMenu from './components/NavMenu/Index.vue';
 import Measure from './components/Measure.vue';
+import FacilityInquiry from './components/FacilityInquiry.vue';
 import Date from './components/Date.vue';
 import LayerControl from './components/LayerControl.vue';
 import BestPath from './components/BestPath.vue';
@@ -61,7 +62,7 @@ const menuOpen = ref<any>({
   models: false,
   viewShed: false,
   interVisibility: false,
-  skyLine: false,
+  inquiry: false,
   regressionLine: false,
   highLimit: false,
   affixedTo: false,

@@ -1,21 +1,23 @@
 <template>
-  <Dialog v-model:open="open" @cancel="handleCancel" width="300px">
+  <Dialog v-model:open="open" noPadding width="300px" @cancel="handleCancel">
     <template v-slot:title>图层控制</template>
-    <list size="small" :data-source="listData" class="my-4 w-full">
-      <template #renderItem="{ item, index }">
-        <list-item>
-          <Checkbox v-model:checked="item.checked"
-                    @click="(e) => handleClick(item, e)">{{
-              item.name
-            }}
-          </Checkbox>
-        </list-item>
-      </template>
-    </list>
+    <div class="p-2">
+      <list :data-source="listData" size="small">
+        <template #renderItem="{ item, index }">
+          <list-item>
+            <Checkbox v-model:checked="item.checked"
+                      @click="(e) => handleClick(item, e)">{{
+                item.name
+              }}
+            </Checkbox>
+          </list-item>
+        </template>
+      </list>
+    </div>
   </Dialog>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import {inject, reactive, ref, watch} from 'vue';
 import Dialog from './Dialog.vue';
 import {Checkbox, List, ListItem} from 'ant-design-vue'
@@ -97,6 +99,11 @@ const handleClick = (item, e) => {
         roadNetLayer.hide()
       }
       break;
+    case '医院' :
+    case '防空洞' :
+    case '避难所' :
+      hanlderEmergency(item.name)
+      break;
   }
   item.checked = e.target.checked;
   console.log("选项:", item.name, "状态:", e.target.checked);
@@ -105,8 +112,29 @@ const handleClick = (item, e) => {
 const listData = reactive([
   {name: "路况", checked: false},
   {name: "卫星", checked: false},
-  {name: "路网", checked: false}
+  {name: "路网", checked: false},
+  {name: "医院", checked: false},
+  {name: "防空洞", checked: false},
+  {name: "避难所", checked: false},
 ]);
+
+const instanceMap={}
+
+const hanlderEmergency = (name: string) => {
+
+  AMap.plugin(['AMap.PlaceSearch'], function () {
+    instanceMap[name] = new AMap.PlaceSearch({
+      city: '370100',
+      map: map,
+    });
+    instanceMap[name] .search(name, function (status, result) {
+      if (status === "complete") {
+
+      }
+    });
+  });
+
+}
 </script>
 
 <style lang="less" scoped></style>

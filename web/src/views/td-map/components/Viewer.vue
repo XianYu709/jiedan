@@ -43,7 +43,10 @@ onMounted(() => {
   AMapLoader.load({
     key: 'e59ccbe7bf31422ace45db6e433af68b',
     version: '2.0',
-    plugins: ['AMap.MouseTool'],
+    plugins: ['AMap.MouseTool',],
+    AMapUI: {
+      plugins: ['overlay/SimpleMarker']
+    }
   })
     .then((AMap) => {
       const map = new AMap.Map('mapContainer', {

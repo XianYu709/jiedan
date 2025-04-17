@@ -39,7 +39,7 @@
       title: '图层管理',
     },
     {
-      key: 'select',
+      key: 'inquiry',
       icon: () => createVNode(SelectOutlined),
       label: '设施查询',
       title: '设施查询',
