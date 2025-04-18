@@ -21,7 +21,8 @@
             <Input v-model:value="formState.name" placeholder="请输入名称"/>
           </FormItem>
           <FormItem label="类型" name="type" required>
-            <Select v-model:value="formState.type" :options="typeOptions" placeholder="请选择类型"></Select>
+            <Select v-model:value="formState.type" :options="typeOptions"
+                    placeholder="请选择类型"></Select>
           </FormItem>
           <FormItem label="区域" name="area" required>
             <Input v-model:value="formState.area" placeholder="请选择区域" disabled class="mb-2"/>
@@ -62,13 +63,17 @@ const typeOptions = [
     label: '大风',
     value: '大风',
   },
+  {
+    label: '危险区',
+    value: '危险区',
+  },
 ]
 
 const onSuccess = ({map}) => {
   map.setFitView();
   map.setCenter([117.000923, 36.675807]);
 };
- 
+
 
 const deptValue = (arr) => {
   return arr.map((item) => {
@@ -158,5 +163,6 @@ watch(open, () => {
       location: '',
     });
   }
+
 });
 </script>

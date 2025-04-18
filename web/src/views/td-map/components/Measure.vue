@@ -1,16 +1,19 @@
 <template>
   <Dialog v-model:open="open" :width="270" noPadding title="量算" @cancel="handleCancel">
     <div class="relative bg-transparent rounded-md flex items-center justify-evenly">
-      <div class="flex flex-col items-center" @click="draw('rule')">
+      <div class="flex flex-col items-center cursor-pointer w-[60px] h-[60px]"
+           :class="{ 'bg-blue-100 text-blue-600': activeTool === 'rule' }" @click="draw('rule')">
         <span class="iconfont icon-distance align-middle" style="font-size: 23px"/>
         <p class="text-[12px]">距离</p>
       </div>
-      <div class="flex flex-col items-center mx-1" @click="draw('measureArea')">
+      <div class="flex flex-col items-center mx-1 cursor-pointer w-[60px] h-[60px]"
+           :class="{ 'bg-blue-100 text-blue-600': activeTool === 'measureArea' }"
+           @click="draw('measureArea')">
         <span class="iconfont icon-area align-middle" style="font-size: 23px"/>
         <p class="text-[12px]">面积测量</p>
       </div>
-      <div class="flex flex-col items-center">
-        <span class="iconfont icon-clear align-middle" style="font-size: 23px" @click="clear"/>
+      <div class="flex flex-col items-center cursor-pointer" @click="clear">
+        <span class="iconfont icon-clear align-middle" style="font-size: 23px"/>
         <p class="text-[12px]">清除</p>
       </div>
     </div>
@@ -25,6 +28,7 @@ const props = defineProps({
 });
 const emits = defineEmits(['update:open']);
 const open = ref(false);
+const activeTool = ref('');
 const instance: any = inject('instance');
 let AMap, map, mouseTool;
 
@@ -80,10 +84,12 @@ const draw = (type) => {
       break;
     }
   }
+  activeTool.value = type;
 };
 
 const clear = () => {
   mouseTool.close(true); //关闭，并清除覆盖物
+  activeTool.value = '';
 };
 
 const handleCancel = () => {

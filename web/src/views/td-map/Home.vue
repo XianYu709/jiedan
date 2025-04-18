@@ -24,7 +24,8 @@
       @instance="readyHandler"
       style="width: 100vw; height: 100vh"
     />
-    <FacilityInquiry v-model:open="menuOpen.inquiry" class="absolute right-70 top-100"></FacilityInquiry>
+    <FacilityInquiry v-model:open="menuOpen.inquiry"
+                     class="absolute right-70 top-100"></FacilityInquiry>
     <Measure v-model:open="menuOpen.measure" class="top-20 right-10 absolute"></Measure>
     <LayerControl v-model:open="menuOpen.layers" class="absolute right-200 top-20"></LayerControl>
     <ToolBar
@@ -48,7 +49,6 @@ import Measure from './components/Measure.vue';
 import FacilityInquiry from './components/FacilityInquiry.vue';
 import Date from './components/Date.vue';
 import LayerControl from './components/LayerControl.vue';
-import BestPath from './components/BestPath.vue';
 import ToolBar from './components/ToolBar.vue';
 import {toolBarData} from './data';
 
@@ -170,6 +170,7 @@ const mark = (map) => {
       capacity: 500,
       color: '#ff4d4f',
       radius: 1000, // 服务半径 1000 米
+      icon: 'yy.png'
     },
     {
       type: '消防站',
@@ -178,6 +179,7 @@ const mark = (map) => {
       capacity: 100,
       color: '#fa8c16',
       radius: 800,
+      icon: 'xfz.png'
     },
     {
       type: '避难所',
@@ -186,6 +188,7 @@ const mark = (map) => {
       capacity: 1000,
       color: '#52c41a',
       radius: 1500,
+      icon: 'bns.png'
     },
   ];
 
@@ -196,9 +199,7 @@ const mark = (map) => {
       title: item.name,
       icon: new AMap.Icon({
         size: new AMap.Size(30, 30),
-        image: `https://via.placeholder.com/30/${item.color.replace('#', '')}/ffffff?text=${
-          item.type[0]
-        }`,
+        image: `http://101.43.167.87:9900/${item.icon}`,
         imageSize: new AMap.Size(30, 30),
       }),
     });
@@ -242,9 +243,9 @@ provide('instance', instance);
 const readyHandler = ({map, AMap}) => {
   instance.value = {map, AMap};
   map.setCenter([117.000923, 36.675807]);
-  addFloodRiskPolygon(map);
-  addDangerSourcePolygon(map);
-  mark(map);
+  // addFloodRiskPolygon(map);
+  // addDangerSourcePolygon(map);
+  // mark(map);
   map_.value = map;
 };
 </script>

@@ -18,15 +18,15 @@
     </Radio.Group>
     <Table v-if="dataSouce.length>0"
            :columns="[{
-      title: '名称',
-      dataIndex: 'name',
-      key: 'name',
-    },   {
-      title: '容量',
-      dataIndex: 'capacity',
-      key: 'capacity',
-      width: 100,
-    }]"
+              title: '名称',
+              dataIndex: 'name',
+              key: 'name',
+            },   {
+              title: '容量',
+              dataIndex: 'capacity',
+              key: 'capacity',
+              width: 100,
+            }]"
            :data-source="dataSouce"
            :pagination="{
        pageSize:5
@@ -40,11 +40,13 @@
 <script lang="ts" setup>
 import {inject, ref, shallowRef, watch} from 'vue';
 import Dialog from './Dialog.vue';
-import {Radio, Table,Empty} from "ant-design-vue";
+import {Empty, Radio, Table} from "ant-design-vue";
 import {CloseCircleOutlined} from "@ant-design/icons-vue";
+import emergency from "@/api/emergency/emergency";
 
 const drawType = ref('rectangle');
 const inquiryType = ref('clear');
+v
 
 const props = defineProps({
   open: {type: Boolean, default: false},
@@ -76,6 +78,32 @@ const clear = (flag = false) => {
 }
 
 const drawEnd = () => {
+  const icons: any = [
+    {
+      name: "医院",
+      url: "http://101.43.167.87:9900/yy.png",
+      width: 20,
+      height: 20
+    },
+    {
+      name: "防空洞",
+      url: "http://101.43.167.87:9900/fkd.png",
+      width: 20,
+      height: 20
+    },
+    {
+      name: "避难所",
+      url: "http://101.43.167.87:9900/bns.png",
+      width: 20,
+      height: 20
+    },
+    {
+      name: "消防站",
+      url: "http://101.43.167.87:9900/xfz.png",
+      width: 20,
+      height: 20
+    },
+  ]
   const bounds = overlays[0].getBounds()
   AMap.plugin(['AMap.PlaceSearch'], function () {
     placeSearch = new AMap.PlaceSearch({
@@ -88,9 +116,15 @@ const drawEnd = () => {
           bounds.contains([poi.location.lng, poi.location.lat])
         );
         filtered.forEach(item => {
+          const {url, width, height} = icons.find(item => item.name === inquiryType.value)
           const marker = new AMap.Marker({
             position: item.location,
             title: item.name,
+            icon: new AMap.Icon({
+              image: url,
+              size: new AMap.Size(width, height),
+              imageSize: new AMap.Size(width, height)
+            })
           });
           marker.on('click', () => {
           });
@@ -103,14 +137,20 @@ const drawEnd = () => {
   });
 }
 
-const next = (marks) => {
-  dataSouce.value = marks.map(item => {
-    return {
+
+const next = async (marks) => {
+  const newData: any = [];
+  for (const item of marks) {
+    const location = `[${item.location.pos[0]},${item.location.pos[1]}]`;
+    const {data} = await emergency.dataEmergencyListApi({location});
+    newData.push({
       name: item.name,
-      capacity: '未知',
-    }
-  })
+      capacity: data.records.length ? data.records[0].capacity : '暂无',
+    });
+  }
+  dataSouce.value = newData;
 }
+
 
 const initDraw = () => {
   if (!AMap) return;
