@@ -1,37 +1,34 @@
 <template>
   <Dialog v-model:open="open" noPadding width="300px" @cancel="handleCancel" title="图层控制">
-<!--    <Tabs defaultActiveKey="1" onChange={callback}>-->
-<!--      <TabPane tab="Tab 1" key="1">-->
-<!--        Content of Tab Pane 1-->
-<!--      </TabPane>-->
-<!--      <TabPane tab="Tab 2" key="2">-->
-<!--        Content of Tab Pane 2-->
-<!--      </TabPane>-->
-<!--      <TabPane tab="Tab 3" key="3">-->
-<!--        Content of Tab Pane 3-->
-<!--      </TabPane>-->
-<!--    </Tabs>,-->
-    <div class="p-2">
-      <list :data-source="listData" size="small">
-        <template #renderItem="{ item, index }">
-          <list-item>
-            <Checkbox v-model:checked="item.checked"
-                      @click="(e) => handleClick(item, e)">{{
-                item.name
-              }}
-            </Checkbox>
-          </list-item>
-        </template>
-      </list>
-    </div>
+    <Tabs style="margin-left: 20px" defaultActiveKey="1" onChange={callback}>
+      <TabPane v-for="(tabName,tabKey) in ['基础地图','应急资源','风险区域']" :tab="tabName"
+               :key="tabKey">
+        <div class="p-2">
+          <list :data-source="listData" size="small">
+            <template #renderItem="{ item, index }">
+              <list-item v-if="item.type === tabKey+1">
+                <Checkbox v-model:checked="item.checked"
+                          @click="(e) => handleClick(item, e)">{{
+                    item.name
+                  }}
+                </Checkbox>
+              </list-item>
+            </template>
+          </list>
+        </div>
+      </TabPane>
+      )}
+    </Tabs>
   </Dialog>
 </template>
 
 <script lang="ts" setup>
 import {inject, reactive, ref, watch} from 'vue';
 import Dialog from './Dialog.vue';
-import {Checkbox, List, ListItem,Tabs} from 'ant-design-vue'
-const { TabPane } = Tabs;
+import {Checkbox, List, ListItem, Tabs} from 'ant-design-vue'
+import emergency from '@/api/emergency/emergency';
+
+const {TabPane} = Tabs;
 
 const props = defineProps({
   open: {type: Boolean, default: false},
@@ -88,6 +85,7 @@ const initTrafficLayer = () => {
 
 
 const handleClick = (item, e) => {
+  item.checked = e.target.checked;
   switch (item.name) {
     case '路况':
       if (e.target.checked) {
@@ -111,39 +109,133 @@ const handleClick = (item, e) => {
       }
       break;
     case '医院' :
+      hanlderEmergency(item.name, "http://101.43.167.87:9900/yy.png", 20, 20);
+      break;
     case '防空洞' :
+      hanlderEmergency(item.name, "http://101.43.167.87:9900/fkd.png", 20, 20);
+      break;
     case '避难所' :
-      hanlderEmergency(item.name)
+      hanlderEmergency(item.name, "http://101.43.167.87:9900/bnc.png", 20, 20);
+      break;
+    case '消防站' :
+      hanlderEmergency(item.name, "http://101.43.167.87:9900/xfz.png", 20, 20);
       break;
   }
-  item.checked = e.target.checked;
-  console.log("选项:", item.name, "状态:", e.target.checked);
+  // console.log("选项:", item.name, "状态:", e.target.checked);
 };
 // 表格数据
 const listData = reactive([
-  {name: "路况", checked: false},
-  {name: "卫星", checked: false},
-  {name: "路网", checked: false},
-  {name: "医院", checked: false},
-  {name: "防空洞", checked: false},
-  {name: "避难所", checked: false},
+  {type: 1, name: "路况", checked: false},
+  {type: 1, name: "卫星", checked: false},
+  {type: 1, name: "路网", checked: false},
+  {type: 2, name: "医院", checked: false},
+  {type: 2, name: "防空洞", checked: false},
+  {type: 2, name: "避难所", checked: false},
+  {type: 2, name: "消防站", checked: false},
+  {type: 3, name: "洪水", checked: false},
+  {type: 3, name: "危险区", checked: false},
 ]);
 
-const instanceMap={}
+const instanceMap = {}
 
-const hanlderEmergency = (name: string) => {
+let total = ref(50);
+let currentPage = ref(1);
+const hanlderEmergency = (name: string, image: string, width, height) => {
+  console.log(instanceMap, 111111)
+  let filter = listData.filter(item => item.type === 2);
+  filter.forEach(item => {
+    if (item.name === name) {
+      if (item.checked) {
+        console.log("创建地点搜索:", item.name, item.checked);
 
-  AMap.plugin(['AMap.PlaceSearch'], function () {
-    instanceMap[name] = new AMap.PlaceSearch({
-      city: '370100',
-      map: map,
-    });
-    instanceMap[name] .search(name, function (status, result) {
+        AMap.plugin(['AMap.PlaceSearch'], function () {
+          instanceMap[name] = new AMap.PlaceSearch({
+            city: '370100',
+            map: null,
+            pageSize: 50,
+            autoFitView: false,
+            showMarker: false
+          });
+          instanceMap[`${name}_markers`] = [];
+
+          searchNextPage()
+        });
+      } else {
+        console.log("移除地点搜索:", name);
+        if (instanceMap[name]) {
+          instanceMap[name].clear();
+          delete instanceMap[name];
+        }
+        clearAllMarkers(name);
+      }
+    }
+  });
+
+
+  function clearAllMarkers(name) {
+    if (instanceMap[`${name}_markers`]) {
+      instanceMap[`${name}_markers`].forEach(marker => {
+        marker.setMap(null);
+      });
+      instanceMap[`${name}_markers`] = [];
+    }
+  }
+
+  function searchNextPage() {
+    if (currentPage.value > Math.ceil(total.value / 50)) return; // 终止
+    instanceMap[name].setPageIndex(currentPage.value);
+    instanceMap[name].search(name, (status, result) => {
+      console.log("status,result", status, result)
       if (status === "complete") {
+        console.log(`第${currentPage.value}页/共${Math.ceil(total.value / 50)}页`, result);
 
+        if (currentPage.value === 1) {
+          total.value = result.poiList.count;
+        }
+
+
+        if (result.poiList && result.poiList.pois) {
+          result.poiList.pois.forEach(poi => {
+            const marker = new AMap.Marker({
+              position: poi.location,
+              batchMode: true,
+              map: map,
+              icon: new AMap.Icon({
+                image: image,
+                size: new AMap.Size(width, height),
+                imageSize: new AMap.Size(width, height)
+              }),
+              title: poi.name,
+              extData: poi
+            });
+
+            marker.on("click", async () => {
+              console.log("点击标记:", poi.name);
+              const location = `[${poi.location.pos[0]},${poi.location.pos[1]}]`
+              const {data} = await emergency.dataEmergencyListApi({location: location});
+              const infoWindow = new AMap.InfoWindow({
+                content: `<div class="custom-info-window">
+                                  <h3>${poi.name}</h3>
+                                  <p>地址：${poi.address || '无'}</p>
+                                  <p>电话：${poi.tel || '暂无'}</p>
+                                  <p>容量：${data.records.length !== 0 ? data.records[0].capacity :
+                  '暂无'}</p>
+                                </div>`,
+                offset: new AMap.Pixel(10, 0),
+                closeWhenClickMap: true
+              });
+              infoWindow.open(map, marker.getPosition());
+            });
+            instanceMap[`${name}_markers`].push(marker);
+          });
+        }
+        setTimeout(() => {
+          currentPage.value++;
+          searchNextPage();
+        }, 500);
       }
     });
-  });
+  }
 
 }
 </script>
