@@ -1,7 +1,7 @@
 <template>
   <Dialog v-model:open="open" noPadding width="300px" @cancel="handleCancel" title="图层控制">
     <Tabs style="margin-left: 20px" defaultActiveKey="1" onChange={callback}>
-      <TabPane v-for="(tabName,tabKey) in ['基础地图','应急资源','风险区域']" :tab="tabName"
+      <TabPane v-for="(tabName,tabKey) in ['基础地图','应急资源','风险区域',]" :tab="tabName"
                :key="tabKey">
         <div class="p-2">
           <list :data-source="listData" size="small">
@@ -28,6 +28,7 @@ import Dialog from './Dialog.vue';
 import {Checkbox, List, ListItem, Tabs} from 'ant-design-vue'
 import emergency from '@/api/emergency/emergency';
 import dangerous from '@/api/emergency/dangerous';
+import {useModalHtml} from "@/views/td-map/hooks/useModal";
 
 const {TabPane} = Tabs;
 
@@ -73,7 +74,6 @@ const initTrafficLayer = () => {
   roadNetLayer = new AMap.TileLayer.RoadNet({
     visible: false
   });
-
 
   roadNetLayer.hide();
   trafficLayer.hide();
@@ -310,6 +310,19 @@ const handlerEmergency = async (type, fillColor, strokeColor) => {
             zIndex: 20,
           });
           emergencyMap[`${type}${index}`] = polygon
+          polygon.on('click',async (e) => {
+            console.log(e)
+            console.log("点击标记:", item);
+            const location = `[${e.pos[0]},${e.pos[0]}]`
+            // const {data} = await emergency.dataEmergencyListApi({location: location});
+            const content =await useModalHtml(item)
+            const infoWindow = new AMap.InfoWindow({
+              content,
+              offset: new AMap.Pixel(10, 0),
+              closeWhenClickMap: true
+            });
+            infoWindow.open(map, e.lnglat);
+          })
           map.add(polygon);
         });
         console.log(data, 'data')
