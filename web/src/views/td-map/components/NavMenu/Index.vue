@@ -2,20 +2,20 @@
   <div class="nav-bar">
     <Menu
       v-model:selectedKeys="selectedKeys"
+      :items="items"
       class="select-none"
       mode="horizontal"
-      :items="items"
       multiple
-      @select="handleSelected"
       @deselect="handleDeSelected"
+      @select="handleSelected"
     ></Menu>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import {createVNode, ref, watch} from 'vue';
 import {Menu, MenuProps} from 'ant-design-vue';
-import {CalculatorOutlined, FundViewOutlined, SelectOutlined,} from '@ant-design/icons-vue';
+import {CalculatorOutlined, SelectOutlined,} from '@ant-design/icons-vue';
 
 const emits = defineEmits(['select', 'deselect']);
 const props = defineProps({
@@ -43,50 +43,6 @@ const items = ref<MenuProps['items']>([
     label: '空间量算',
     title: '空间量算',
   },
-  {
-    key: 'analyze',
-    icon: () => createVNode(FundViewOutlined),
-    label: '三维分析',
-    title: '三维分析',
-    children: [
-      {
-        key: 'ServiceAnalysis',
-        label: '服务区分析',
-      },
-      {
-        key: 'viewShed',
-        label: '视廊分析',
-      },
-      {
-        key: 'interVisibility',
-        label: '通视分析',
-      },
-      {
-        key: 'skyLine',
-        label: '天际线分析',
-      },
-      {
-        key: 'terrain',
-        label: '地形分析',
-      },
-      {
-        key: 'slope',
-        label: '坡度分析',
-      },
-      {
-        key: 'viewDome',
-        label: '开敞度分析',
-      },
-      // {
-      //   key: 'bestPath',
-      //   label: '最佳路径分析',
-      // },
-      {
-        key: 'siteZoning',
-        label: '选址分区分析',
-      },
-    ],
-  },
 ]);
 
 watch(
@@ -112,7 +68,7 @@ const handleDeSelected = ({item, key, selectedKeys}) => {
 };
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 .nav-bar {
   :deep(.ant-menu) {
     font-size: 16px;

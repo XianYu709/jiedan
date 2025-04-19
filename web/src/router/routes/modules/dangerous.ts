@@ -4,13 +4,13 @@ import {LAYOUT} from '@/router/constant';
 import {t} from '@/hooks/web/useI18n';
 
 const system: AppRouteModule = {
-  path: '/emergency',
-  name: 'Emergency',
+  path: '/dangerous',
+  name: 'Sangerous',
   component: LAYOUT,
-  redirect: '/emergency/index',
+  redirect: '/dangerous/index',
   meta: {
     icon: 'ant-design:database-outlined',
-    title: t('routes.emergency.emergencyName'),
+    title: "风险区域管理",
     orderNo: 10,
     roles: [RoleEnum.SUPER],
     hideChildrenInMenu: true,
@@ -18,12 +18,12 @@ const system: AppRouteModule = {
   children: [
     {
       path: 'index',
-      name: 'Index',
-      component: () => import('@/views/admin/emergency/emergency/index.vue'),
+      name: 'dangerous',
+      component: () => import('@/views/admin/emergency/dangerous/index.vue'),
       meta: {
-        title: t('routes.emergency.emergencyData'),
+        title: "风险区域管理",
       },
-    },
+    }
   ],
 };
 

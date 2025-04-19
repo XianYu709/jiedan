@@ -98,9 +98,9 @@ export const useUserStore = defineStore({
         const userRole = roles[0];
         const homePathMap = {
           [RoleEnum.SUPER]: '/home',
-          [RoleEnum.EDIT]: '/map/index',
+          [RoleEnum.EDIT]: '/emergency/index',
           [RoleEnum.OPERATE]: '/home',
-          [RoleEnum.SUPERVISION]: '/map/index',
+          [RoleEnum.SUPERVISION]: '/emergency/index',
         };
         const homePath = homePathMap[userRole];
         const temp = { ...userInfo, homePath };

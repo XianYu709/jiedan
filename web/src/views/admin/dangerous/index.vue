@@ -47,7 +47,7 @@ const {hasPermission} = usePermission();
 
 const [registerModal, {openModal}] = useModal();
 const [registerTable, {reload, setTableData}] = useTable({
-  title: '应急数据',
+  title: '应急数据管理',
   columns,
   bordered: true,
   size: 'middle',
