@@ -187,7 +187,7 @@
     placeSearch.search(v);
     placeSearch.on('markerClick', function ({ data }) {
       formState.value.name = data.name;
-      formState.value.location = data.location.pos;
+      formState.value.location = [data.location.lng, data.location.lat];
     });
   };
 
