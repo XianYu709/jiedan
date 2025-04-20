@@ -13,7 +13,7 @@ const system: AppRouteModule = {
     icon: 'ion:settings-outline',
     title: t('routes.system.moduleName'),
     orderNo: 10,
-    roles: [RoleEnum.SUPER],
+    roles: [RoleEnum.SUPER,RoleEnum.SUPERVISION],
   },
   children: [
     {
@@ -42,15 +42,6 @@ const system: AppRouteModule = {
       meta: {
         title: t('routes.system.dept'),
         icon: 'ant-design:apartment-outlined',
-      },
-    },
-    {
-      path: 'dict',
-      name: 'Dict',
-      component: () => import('@/views/admin/system/Dict.vue'),
-      meta: {
-        title: '字典管理',
-        icon: 'ant-design:hdd-outlined',
       },
     },
   ],

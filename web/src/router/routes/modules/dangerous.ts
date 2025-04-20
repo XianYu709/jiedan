@@ -12,7 +12,7 @@ const system: AppRouteModule = {
     icon: 'ant-design:database-outlined',
     title: "风险区域管理",
     orderNo: 10,
-    roles: [RoleEnum.SUPER],
+    roles: [RoleEnum.SUPER,RoleEnum.EDIT,RoleEnum.SUPERVISION],
     hideChildrenInMenu: true,
   },
   children: [

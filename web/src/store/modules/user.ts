@@ -98,9 +98,9 @@ export const useUserStore = defineStore({
         const userRole = roles[0];
         const homePathMap = {
           [RoleEnum.SUPER]: '/home',
-          [RoleEnum.EDIT]: '/emergency/index',
+          [RoleEnum.EDIT]: '/dangerous/index',
           [RoleEnum.OPERATE]: '/home',
-          [RoleEnum.SUPERVISION]: '/emergency/index',
+          [RoleEnum.SUPERVISION]: '/dangerous/index',
         };
         const homePath = homePathMap[userRole];
         const temp = { ...userInfo, homePath };
@@ -122,15 +122,18 @@ export const useUserStore = defineStore({
         this.setSessionTimeout(false);
       } else {
         const permissionStore = usePermissionStore();
-        // if (!permissionStore.isDynamicAddedRoute) {
-        //   const routes = await permissionStore.buildRoutesAction();
-        //   routes.forEach((route) => {
-        //     router.addRoute(route as unknown as RouteRecordRaw);
-        //   });
-        //   router.addRoute(PAGE_NOT_FOUND_ROUTE as unknown as RouteRecordRaw);
-        //   permissionStore.setDynamicAddedRoute(true);
-        // }
-        await router.replace(userInfo?.homePath || PageEnum.BASE_HOME);
+        const roles = userInfo.roles.map((it) => it.val);
+        const userRole = roles[0];
+        const homePathMap = {
+          [RoleEnum.SUPER]: '/home',
+          [RoleEnum.EDIT]: '/dangerous/index',
+          [RoleEnum.OPERATE]: '/home',
+          [RoleEnum.SUPERVISION]: '/dangerous/index',
+        };
+        const homePath = homePathMap[userRole];
+        console.log('replace', homePath);
+        
+        await router.replace( homePath);
       }
       return userInfo;
     },

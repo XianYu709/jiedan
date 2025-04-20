@@ -11,8 +11,8 @@ const monitor: AppRouteModule = {
   meta: {
     icon: 'ant-design:alert-outlined',
     title: t('routes.monitor.moduleName'),
-    orderNo: 4,
-    roles: [RoleEnum.SUPER],
+    orderNo: 999,
+    roles: [RoleEnum.SUPER,RoleEnum.SUPERVISION],
   },
   children: [
     {

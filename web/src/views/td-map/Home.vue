@@ -11,8 +11,8 @@
       </div>
       <div class="extra flex justify-between items-center">
         <Date class="mr-4"></Date>
-        <Divider class="h-8 bg-gray-400 w-0.5 opacity-60" type="vertical"/>
-        <router-link class="ml-4 text-gray-8" to="/map/index">
+        <Divider class="h-8 bg-gray-400 w-0.5 opacity-60" type="vertical" v-if="managerRoleList.some(some=>some==roles[0])"/>
+        <router-link class="ml-4 text-gray-8" to="/dangerous/index" v-if="managerRoleList.some(some=>some==roles[0])">
           <Icon :size="32" icon="ant-design:setting-outlined"/>
         </router-link>
       </div>
@@ -51,6 +51,11 @@ import Date from './components/Date.vue';
 import LayerControl from './components/LayerControl.vue';
 import ToolBar from './components/ToolBar.vue';
 import {toolBarData} from './data';
+import { useUserStore } from '@/store/modules/user';
+const userStore = useUserStore();
+const roles=userStore.userInfo.roles.map(item => item.name);
+const managerRoleList=['超级管理员']
+
 
 const {title} = useGlobSetting();
 const menuOpen = ref<any>({

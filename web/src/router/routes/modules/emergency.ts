@@ -12,7 +12,7 @@ const system: AppRouteModule = {
     icon: 'ant-design:database-outlined',
     title: t('routes.emergency.emergencyName'),
     orderNo: 10,
-    roles: [RoleEnum.SUPER],
+    roles: [RoleEnum.SUPER,RoleEnum.EDIT,RoleEnum.SUPERVISION],
     hideChildrenInMenu: true,
   },
   children: [

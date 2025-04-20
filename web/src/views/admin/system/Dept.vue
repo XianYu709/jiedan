@@ -2,7 +2,13 @@
   <div class="p-4">
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <Button size="small" type="primary" @click="handleCreate">新增</Button>
+        <Button
+          size="small"
+          type="primary"
+          :disabled="!hasPermission([RoleEnum.SUPER])"
+          @click="handleCreate"
+          >新增</Button
+        >
       </template>
       <template #action="{ record }">
         <TableAction
@@ -11,11 +17,13 @@
               icon: 'clarity:note-edit-line',
               label: '修改',
               onClick: handleEdit.bind(null, record),
+              disabled: !hasPermission([RoleEnum.SUPER]),
             },
             {
               icon: 'ant-design:delete-outlined',
               label: '删除',
               color: 'error',
+              disabled: !hasPermission([RoleEnum.SUPER]),
               popConfirm: {
                 title: '是否确认删除',
                 confirm: handleDelete.bind(null, record),
@@ -35,7 +43,10 @@
   import { useModal } from '@/components/Modal';
   import { columns } from './data/deptData';
   import dept from '@/api/system/dept';
+  import { usePermission } from '@/hooks/web/usePermission';
+  import { RoleEnum } from '@/enums/roleEnum';
   import DeptModal from './components/DeptModal.vue';
+  const { hasPermission } = usePermission();
 
   const [registerModal, { openModal }] = useModal();
   const [registerTable, { reload, setTableData }] = useTable({
