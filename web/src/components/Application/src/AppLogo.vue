@@ -65,7 +65,10 @@
   ]);
 
   function goHome() {
-    go(userStore.getUserInfo.homePath || PageEnum.BASE_HOME);
+  const roles = userStore.userInfo.roles.map((item) => item.name);
+    if (roles[0] == '超级管理员') {
+      go(userStore.getUserInfo.homePath || PageEnum.BASE_HOME);
+    }
   }
 </script>
 <style lang="less" scoped>

@@ -17,13 +17,13 @@
           icon="ion:document-text-outline"
           v-if="getShowDoc"
         /> -->
-        <Menu.Divider v-if="getShowDoc" />
+<!--         <Menu.Divider v-if="getShowDoc" />
         <MenuItem
           v-if="getShowApi"
           key="api"
           :text="t('layout.header.dropdownChangeApi')"
           icon="ant-design:swap-outlined"
-        />
+        /> -->
         <MenuItem
           v-if="getUseLockPage"
           key="lock"

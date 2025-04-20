@@ -13,8 +13,9 @@
         <Date class="mr-4"></Date>
         <Divider class="h-8 bg-gray-400 w-0.5 opacity-60" type="vertical" v-if="managerRoleList.some(some=>some==roles[0])"/>
         <router-link class="ml-4 text-gray-8" to="/dangerous/index" v-if="managerRoleList.some(some=>some==roles[0])">
-          <Icon :size="32" icon="ant-design:setting-outlined"/>
+          <Icon :size="32" icon="ant-design:setting-outlined" />
         </router-link>
+        <UserDropDown v-else class="ml-4" :open="menuOpen.select"></UserDropDown>
       </div>
     </div>
     <Viewer
@@ -39,6 +40,7 @@
 </template>
 
 <script lang="ts" setup>
+import { UserDropDown } from '@/layouts/default/header/components';
 import {provide, ref, shallowRef} from 'vue';
 import Icon from '@/components/Icon/Icon.vue';
 import {useGlobSetting} from '@/hooks/setting';
