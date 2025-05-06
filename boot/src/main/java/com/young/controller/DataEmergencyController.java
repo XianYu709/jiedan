@@ -28,6 +28,7 @@ public class DataEmergencyController {
         lqw.eq(dataEmergency.getCapacity() != null, DataEmergency::getCapacity, dataEmergency.getCapacity());
         lqw.eq(dataEmergency.getLocation() != null, DataEmergency::getLocation, dataEmergency.getLocation());
         lqw.eq(dataEmergency.getName() != null, DataEmergency::getName, dataEmergency.getName());
+        lqw.eq(dataEmergency.getType() != null, DataEmergency::getType, dataEmergency.getType());
         Page page = dataEmergencyService.page(PageUtils.getPageParam(dataEmergency.getPage(), dataEmergency.getPageSize()), lqw);
         return Json.succ().data(page);
     }
