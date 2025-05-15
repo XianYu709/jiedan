@@ -30,7 +30,18 @@ public class UserProfile {
     
     @Column
     private String education;
-    
+
+    @Column
+    private Integer validate_ducation;
+
+    public Integer getValidate_ducation() {
+        return validate_ducation;
+    }
+
+    public void setValidateDucation(Integer validate_ducation) {
+        this.validate_ducation = validate_ducation;
+    }
+
     @Column
     private Integer height;
     

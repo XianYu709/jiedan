@@ -39,6 +39,27 @@ public class UserProfileService {
         }
     }
 
+    public boolean setValidateDucation(String username, int value) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (!userOpt.isPresent()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+        Optional<UserProfile> profileOpt = userProfileRepository.findByUser(user);
+
+        UserProfile profile;
+        if (profileOpt.isPresent()) {
+            profile = profileOpt.get();
+        } else {
+            profile = new UserProfile(user); // 创建新的 UserProfile
+        }
+
+        profile.setValidateDucation(value); // 假设你的实体类中有这个字段
+        userProfileRepository.save(profile);
+        return true;
+    }
+
     /**
      * 获取用户个人信息
      * @param username 用户名

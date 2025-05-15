@@ -58,6 +58,37 @@ public class UserProfileController {
         return ResponseEntity.ok(profiles);
     }
 
+    @PostMapping("/setValidateDucation")
+    public ResponseEntity<?> setValidateDucation(
+            @RequestHeader("Username") String username,
+            @RequestBody Map<String, Integer> requestBody) {
+
+        Integer value = requestBody.get("value");
+        Map<String, Object> response = new HashMap<>();
+
+        // 验证参数
+        if (username == null || username.isEmpty()) {
+            response.put("message", "用户名不能为空");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (value == null || (value != 0 && value != 1)) {
+            response.put("message", "仅允许设置为 0 或 1");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // 调用业务逻辑层设置
+        boolean success = userProfileService.setValidateDucation(username, value);
+        if (success) {
+            response.put("message", "设置成功");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("message", "用户不存在或更新失败");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
     /**
      * 更新用户个人信息
      * @param username 用户名
