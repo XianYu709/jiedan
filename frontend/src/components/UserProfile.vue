@@ -1,13 +1,13 @@
 <template>
   <Dialog
     v-model:show="dialogVisable"
-    title="学历认证"
+    :title="type == 'education' ? '学历认证' : '实名认证'"
     show-cancel-button
     width="75%"
-    @confirm="validateEducation"
+    @confirm="maps"
   >
     <Form style="margin: 20px 0" ref="formRef">
-      <CellGroup>
+      <CellGroup v-if="type == 'education'">
         <Field
           v-model="vcode"
           name="vcode"
@@ -15,6 +15,16 @@
           label-align="top"
           placeholder="请输入学信网报告验证码"
           :rules="[{ required: true, message: '请输入学信网报告验证码' }]"
+        />
+      </CellGroup>
+      <CellGroup v-if="type == 'idcard'">
+        <Field
+          v-model="idcard"
+          name="idcard"
+          label="身份证号："
+          label-align="top"
+          placeholder="请输入身份证号"
+          :rules="[{ required: true, message: '请输入身份证号' }]"
         />
       </CellGroup>
     </Form>
@@ -37,7 +47,9 @@
         <div class="avatar-actions">
           <label for="photo-upload" class="upload-btn">上传头像</label>
           <label class="album-btn" @click="goToAlbum">我的相册</label>
-          <label class="upload-btn" @click="goToCertified">实名认证</label>
+          <label class="upload-btn" @click="goToCertified('idcard')"
+            >实名认证</label
+          >
         </div>
         <input
           type="file"
@@ -293,6 +305,8 @@ export default {
   data() {
     return {
       username: "",
+      type: "",
+      idcard: "",
       vcode: "",
       dialogVisable: false,
       userInfo: {
@@ -631,6 +645,14 @@ export default {
         }
       }
     },
+
+    maps() {
+      const apis = {
+        education: this.validateEducation,
+        idcard: this.validateIdCard,
+      };
+      return apis[this.type]();
+    },
     // 验证学历
     async validateEducation() {
       const key = "1EBvQMhTV0O5JGrG0xlATXoXvfEY18";
@@ -665,16 +687,41 @@ export default {
       this.fetchUserInfo();
     },
     //验证身份证
-    async validateIdCard() {},
+    async validateIdCard() {
+      const appCode = "YOUR_APPCODE"; // 请替换为您的 AppCode
+      const url = `https://idcert.market.alicloudapi.com/idcard?idCard=${encodeURIComponent(
+        this.idcard
+      )}&name=${encodeURIComponent(name)}`;
+
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `APPCODE ${appCode}`,
+          },
+        });
+
+        const data = response.data;
+        if (data.status === "01") {
+          console.log("实名认证成功");
+          return true;
+        } else {
+          console.log("实名认证失败:", data.msg || "未知错误");
+          return false;
+        }
+      } catch (error) {
+        console.error("请求出错:", error.message);
+        return false;
+      }
+    },
 
     async goToCertified(type) {
+      this.type = type;
       switch (type) {
         case "education":
           this.dialogVisable = true;
-          // this.validateEducation();
           break;
         case "idcard":
-          this.validateIdCard();
+          this.dialogVisable = true;
           break;
         default:
           break;
