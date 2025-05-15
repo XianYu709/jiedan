@@ -19,6 +19,14 @@
       </CellGroup>
       <CellGroup v-if="type == 'idcard'">
         <Field
+          v-model="relName"
+          name="relName"
+          label="姓名："
+          label-align="top"
+          placeholder="请输入姓名"
+          :rules="[{ required: true, message: '请输入姓名' }]"
+        />
+        <Field
           v-model="idcard"
           name="idcard"
           label="身份证号："
@@ -307,6 +315,7 @@ export default {
       username: "",
       type: "",
       idcard: "",
+      relName: "",
       vcode: "",
       dialogVisable: false,
       userInfo: {
@@ -688,10 +697,10 @@ export default {
     },
     //验证身份证
     async validateIdCard() {
-      const appCode = "YOUR_APPCODE"; // 请替换为您的 AppCode
+      const appCode = "e1927890228c43eab0c6751a280947b1";
       const url = `https://idcert.market.alicloudapi.com/idcard?idCard=${encodeURIComponent(
         this.idcard
-      )}&name=${encodeURIComponent(name)}`;
+      )}&name=${encodeURIComponent(this.relName)}`;
 
       try {
         const response = await axios.get(url, {
@@ -699,15 +708,13 @@ export default {
             Authorization: `APPCODE ${appCode}`,
           },
         });
-
         const data = response.data;
-        if (data.status === "01") {
-          console.log("实名认证成功");
-          return true;
-        } else {
-          console.log("实名认证失败:", data.msg || "未知错误");
-          return false;
-        }
+        const success = data.status === "01";
+        showToast({
+          message: success ? "实名认证成功" :  data.msg || "未知错误",
+          type: success ? "success" : "fail",
+          duration: success ? 1000 : 2000,
+        });
       } catch (error) {
         console.error("请求出错:", error.message);
         return false;
