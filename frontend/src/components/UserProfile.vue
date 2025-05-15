@@ -4,7 +4,7 @@
     title="学历认证"
     show-cancel-button
     width="75%"
-    @confirm="onConfirm"
+    @confirm="validateEducation"
   >
     <Form style="margin: 20px 0" ref="formRef">
       <CellGroup>
@@ -374,12 +374,6 @@ export default {
     // 移除事件监听
     document.removeEventListener("click", this.closeEmojiPicker);
   },
-  onConfirm() {
-    console.log("onConfirm");
-
-    const refs = this.$refs.formRef;
-    console.log(refs);
-  },
   methods: {
     async fetchUserInfo() {
       try {
@@ -472,12 +466,11 @@ export default {
       }
     },
 
-    async educationChange() {
-      this.saveUserInfo(false);
-      await axios.post(
+    async setEducationStatus(value) {
+      return await axios.post(
         "http://localhost:8080/api/users/setValidateDucation",
         {
-          value: 0,
+          value,
         },
         {
           headers: {
@@ -485,6 +478,11 @@ export default {
           },
         }
       );
+    },
+
+    async educationChange() {
+      await this.saveUserInfo(false);
+      await this.setEducationStatus(0);
       this.fetchUserInfo();
     },
 
@@ -636,10 +634,8 @@ export default {
     // 验证学历
     async validateEducation() {
       const key = "1EBvQMhTV0O5JGrG0xlATXoXvfEY18";
-      const vcode = "AB0LBJP66M626XVL";
-      // const vcode = "123";
       const resp = await axios.get(
-        `https://www.apimy.cn/api/xxw/bgcx?key=${key}&vcode=${vcode}&language=&base64=&html=`,
+        `https://www.apimy.cn/api/xxw/bgcx?key=${key}&vcode=${this.vcode}&language=&base64=&html=`,
         {
           headers: {
             "Content-Type": `application/x-www-form-urlencoded;charset:utf-8;`,
@@ -665,17 +661,7 @@ export default {
         type: apiSuccess && lavelSuccess ? "success" : "fail",
         duration: apiSuccess ? 1000 : 2000,
       });
-      await axios.post(
-        "http://localhost:8080/api/users/setValidateDucation",
-        {
-          value: apiSuccess && lavelSuccess ? 1 : 0,
-        },
-        {
-          headers: {
-            Username: this.username,
-          },
-        }
-      );
+      await this.setEducationStatus(apiSuccess && lavelSuccess ? 1 : 0);
       this.fetchUserInfo();
     },
     //验证身份证
@@ -684,8 +670,8 @@ export default {
     async goToCertified(type) {
       switch (type) {
         case "education":
-          // this.dialogVisable = true;
-          this.validateEducation();
+          this.dialogVisable = true;
+          // this.validateEducation();
           break;
         case "idcard":
           this.validateIdCard();
