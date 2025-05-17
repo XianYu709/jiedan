@@ -52,10 +52,31 @@ public class UserProfileService {
         if (profileOpt.isPresent()) {
             profile = profileOpt.get();
         } else {
-            profile = new UserProfile(user); // 创建新的 UserProfile
+            profile = new UserProfile(user);
         }
 
-        profile.setValidateDucation(value); // 假设你的实体类中有这个字段
+        profile.setValidateDucation(value);
+        userProfileRepository.save(profile);
+        return true;
+    }
+
+    public boolean setValidateId(String username, int value) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (!userOpt.isPresent()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+        Optional<UserProfile> profileOpt = userProfileRepository.findByUser(user);
+
+        UserProfile profile;
+        if (profileOpt.isPresent()) {
+            profile = profileOpt.get();
+        } else {
+            profile = new UserProfile(user);
+        }
+
+        profile.setValidateId(value);
         userProfileRepository.save(profile);
         return true;
     }

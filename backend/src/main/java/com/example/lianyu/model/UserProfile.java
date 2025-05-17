@@ -42,6 +42,12 @@ public class UserProfile {
         this.validate_ducation = validate_ducation;
     }
 
+    public Integer validate_id;
+
+    public void setValidateId(Integer validate_id) {
+        this.validate_id = validate_id;
+    }
+
     @Column
     private Integer height;
     

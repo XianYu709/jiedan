@@ -34,6 +34,16 @@
           placeholder="请输入身份证号"
           :rules="[{ required: true, message: '请输入身份证号' }]"
         />
+        <Field name="uploader" label="人脸照片：">
+          <template #input>
+            <Uploader
+              v-model="fileList"
+              max-count="1"
+              :afterRead="afterReadHandler"
+              :max-size="1024 * 500"
+            />
+          </template>
+        </Field>
       </CellGroup>
     </Form>
   </Dialog>
@@ -55,9 +65,13 @@
         <div class="avatar-actions">
           <label for="photo-upload" class="upload-btn">上传头像</label>
           <label class="album-btn" @click="goToAlbum">我的相册</label>
-          <label class="upload-btn" @click="goToCertified('idcard')"
+          <label
+            v-if="userInfo.education && userInfo.validate_id != 1"
+            class="upload-btn"
+            @click="goToCertified('idcard')"
             >实名认证</label
           >
+          <label v-else style="vertical-align: baseline; color: #1FBF63; font-size: 14px; padding-top: 18px;"> 实名认证通过 </label>
         </div>
         <input
           type="file"
@@ -299,7 +313,7 @@
 </template>
 <script>
 import axios from "axios";
-import { Dialog, Form, Field, CellGroup } from "vant";
+import { Dialog, Form, Field, CellGroup, Uploader } from "vant";
 import { showToast } from "vant";
 export default {
   name: "UserProfile",
@@ -309,14 +323,18 @@ export default {
     Form,
     Field,
     CellGroup,
+    Uploader,
   },
   data() {
     return {
       username: "",
       type: "",
       idcard: "",
+      photoBase64: "",
+      fileList: [],
       relName: "",
       vcode: "",
+      appCode: "e1927890228c43eab0c6751a280947b1",
       dialogVisable: false,
       userInfo: {
         name: "",
@@ -327,6 +345,7 @@ export default {
         photoUrl: "",
         introduction: "",
         validate_ducation: "",
+        validate_id: "",
       },
       imageFile: null,
       imagePreview: null,
@@ -489,11 +508,12 @@ export default {
       }
     },
 
-    async setEducationStatus(value) {
+    async setEducationStatus(value, field) {
       return await axios.post(
-        "http://localhost:8080/api/users/setValidateDucation",
+        "http://localhost:8080/api/users/setFieldValue",
         {
           value,
+          field,
         },
         {
           headers: {
@@ -502,10 +522,12 @@ export default {
         }
       );
     },
-
+    afterReadHandler(ee) {
+      this.photoBase64 = ee.content;
+    },
     async educationChange() {
       await this.saveUserInfo(false);
-      await this.setEducationStatus(0);
+      await this.setEducationStatus(0, "education");
       this.fetchUserInfo();
     },
 
@@ -658,7 +680,8 @@ export default {
     maps() {
       const apis = {
         education: this.validateEducation,
-        idcard: this.validateIdCard,
+        // idcard: this.validateIdCard,
+        idcard: this.validateIdCardFace,
       };
       return apis[this.type]();
     },
@@ -692,32 +715,50 @@ export default {
         type: apiSuccess && lavelSuccess ? "success" : "fail",
         duration: apiSuccess ? 1000 : 2000,
       });
-      await this.setEducationStatus(apiSuccess && lavelSuccess ? 1 : 0);
+      await this.setEducationStatus(
+        apiSuccess && lavelSuccess ? 1 : 0,
+        "education"
+      );
       this.fetchUserInfo();
     },
-    //验证身份证
-    async validateIdCard() {
-      const appCode = "e1927890228c43eab0c6751a280947b1";
-      const url = `https://idcert.market.alicloudapi.com/idcard?idCard=${encodeURIComponent(
-        this.idcard
-      )}&name=${encodeURIComponent(this.relName)}`;
 
+    async validateIdCardFace() {
+      document.cr;
+      const params = new URLSearchParams();
+      params.append("idcard", this.idcard);
+      params.append("name", this.relName);
+      params.append("image", this.photoBase64);
+      params.append("liveck", "0");
       try {
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `APPCODE ${appCode}`,
-          },
-        });
+        const response = await axios.post(
+          "https://vidface.market.alicloudapi.com/lundear/idface",
+          params,
+          {
+            headers: {
+              Authorization: `APPCODE ${this.appCode}`,
+              "Content-Type":
+                "application/x-www-form-urlencoded; charset=UTF-8",
+            },
+          }
+        );
+
         const data = response.data;
-        const success = data.status === "01";
-        showToast({
-          message: success ? "实名认证成功" :  data.msg || "未知错误",
-          type: success ? "success" : "fail",
-          duration: success ? 1000 : 2000,
-        });
+        if (data.code === 0) {
+          showToast({
+            message: "实名认证成功",
+            type: "success",
+          });
+        } else {
+          showToast({
+            message: data.desc || "实名认证失败",
+            type: "fail",
+            duration: 2000,
+          });
+        }
+        await this.setEducationStatus(data.code == 0 ? 1 : 0, "id");
+        this.fetchUserInfo();
       } catch (error) {
         console.error("请求出错:", error.message);
-        return false;
       }
     },
 
