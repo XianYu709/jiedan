@@ -23,6 +23,7 @@ export default {
     ThreeDDraw: () => import('./components/3dDraw'),
     ViewshedIndex: () => import('./components/viewshed'),
     GcoordIndex: () => import('./components/gcoord'),
+    VisibilityIndex: () => import('./components/visibility'),
     UdpIndex: () => import('./components/udp')
   },
   data() {
@@ -37,6 +38,7 @@ export default {
       threeDrawVisible: false,
       viewshedVisible: false,
       gcoordVisible: false,
+      visibilityVisible: false,
       udpVisible: false
     }
   },
@@ -107,6 +109,9 @@ export default {
         case 'gcoord':
           this.gcoordVisible = !this.gcoordVisible
           break
+        case 'visibility':
+          this.visibilityVisible = !this.visibilityVisible
+          break
         default:
           break
       }
@@ -117,21 +122,22 @@ export default {
 
 <template>
   <div class="map-container">
-    <Header :get-viewer="getViewer" @click="handleMenuClick" />
-    <BaseMap @complete="handleComplete" />
-    <Layers :get-viewer="getViewer" />
-    <basePlotting v-if="showbasePlotting" />
-    <jsPlotting v-if="showjsPlotting" />
-    <hjtx v-if="showhjtx" />
-    <dttx v-if="showdttx" />
-    <Buffer v-if="bufferVisible" />
-    <Measure v-if="measureVisible" />
-    <UdpIndex v-if="udpVisible" />
+    <Header :get-viewer="getViewer" @click="handleMenuClick"/>
+    <BaseMap @complete="handleComplete"/>
+    <Layers :get-viewer="getViewer"/>
+    <basePlotting v-if="showbasePlotting"/>
+    <jsPlotting v-if="showjsPlotting"/>
+    <hjtx v-if="showhjtx"/>
+    <dttx v-if="showdttx"/>
+    <Buffer v-if="bufferVisible"/>
+    <Measure v-if="measureVisible"/>
+    <UdpIndex v-if="udpVisible"/>
     <!-- <Slopedirection v-if="showdtwf" />
     <Cutfill v-if="showpdpx" /> -->
-    <ThreeDDraw :visible.sync="threeDrawVisible" />
-    <ViewshedIndex :visible.sync="viewshedVisible" />
-    <GcoordIndex :visible.sync="gcoordVisible" />
+    <ThreeDDraw :visible.sync="threeDrawVisible"/>
+    <ViewshedIndex :visible.sync="viewshedVisible"/>
+    <GcoordIndex :visible.sync="gcoordVisible"/>
+    <visibilityIndex :visible.sync="visibilityVisible"/>
   </div>
 </template>
 

@@ -19,7 +19,7 @@ export default {
   <nav class="navbar">
     <div class="nav-container">
       <a href="#" class="logo" onclick="">
-        <i class="fas fa-cube" />
+        <i class="fas fa-cube"/>
         <span>战场环境构建</span>
       </a>
 
@@ -47,7 +47,7 @@ export default {
             <a href="#" class="dropdown-item" @click="handleClick('index')">方位</a>
             <a href="#" class="dropdown-item" @click="handleClick('pdpx')">坡度坡向</a>
             <a href="#" class="dropdown-item" @click="handleClick('viewshed')">可视域</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">通视度</a>
+            <a href="#" class="dropdown-item" @click="handleClick('visibility')">通视度</a>
             <a href="#" class="dropdown-item" @click="handleClick('buffer')">缓冲区</a>
             <a href="#" class="dropdown-item" @click="handleClick('twf')">填挖方</a>
             <a href="#" class="dropdown-item" @click="handleClick('index')">剖面</a>
@@ -93,7 +93,7 @@ export default {
 
       <div class="search-container">
         <input type="text" class="search-input" placeholder="搜索...">
-        <button class="search-btn"><i class="fas fa-search" /></button>
+        <button class="search-btn"><i class="fas fa-search"/></button>
       </div>
     </div>
   </nav>
