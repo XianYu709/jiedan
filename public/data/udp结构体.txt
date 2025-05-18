@@ -1,0 +1,532 @@
+//风速
+enum E_WindSpeed :unsigned char {
+    NoWind = 0,         //无风
+    MildWind = 1,       //软风
+    GentlyWind = 2,     //轻风
+    TinyWind = 3,       //微风
+    GentleWind = 4,     //和风
+    PowerfulWind = 5,   //劲风
+    ForceWind = 6,      //强风
+    StrongWind = 7,     //疾风
+    MaxWind = 8,        //大风
+    ViolentWind = 9,    //烈风
+    FierceWind = 10,    //狂风
+    SquallWind = 11,    //暴风
+    TyphoonWind = 12    //飓风
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//风向
+enum E_WindDir :unsigned char
+{
+    Northward = 0,  //北
+    NorthwardEastNorthward = 1,//北东北
+    EastNorthward = 2,//东北
+    EastEastNorthward = 3,//东东北
+    East = 4,//东
+    EastEastSouth = 5,//东东南
+    EastSouth = 6,//东南
+    SouthEastSouth = 7,//南东南
+    South = 8,//南
+    SouthWesternSouth = 9,//南西南
+    WesternSouth = 10,//西南
+    WesternWesternSouth = 11,//西西南
+    Western = 12,//西
+    WesternWesternNorthward = 13,//西西北
+    WesternNorthward = 14,//西北
+    NorthwardWesternNorthward = 15//北西北
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//天气
+enum EWeather :unsigned char
+{
+    Serenity = 0,       //晴天
+    Cloudy = 1,         //多云
+    OvercastSky = 2,    //阴天
+    Rain = 3,           //雨天
+    ThunderShower = 4,  //雷阵雨
+    Snow = 5            //雪天
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//海况
+enum ESeaState :unsigned char
+{
+    NoSeaWave = 0,      //无浪
+    TinySeaWave = 1,    //微浪
+    MinSeaWave = 2,     //小浪
+    GentlySeaWave = 3,  //轻浪
+    MiddleSeaWave = 4,  //中浪
+    MaxSeaWave = 5,     //大浪
+    GiantSeaWave = 6,   //巨浪
+    InsaneSeaWave = 7,  //狂浪
+    WildSea = 8,        //狂涛
+    MountainousSea = 9  //怒涛
+};
+
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//空间类型
+enum ESpaceType :unsigned char
+{
+    Underwater = 0, //水下
+    Water = 1,//水面
+    Aerial = 2,//空中
+    OuterSpace = 3,//天基
+    Earth = 4 //陆基
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//阵营
+enum ECamp :unsigned char
+{
+    Red = 0,//红方
+    Blue = 1,//蓝方
+    White = 2, //白方
+    CampUnknown = 0xFF  //未知
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//相机类型枚举
+enum ECameraType :unsigned char
+{
+    Freedom = 0,    //自由相机
+    Follow = 1,//跟随
+    LookAt = 2,//注视
+    PathMove = 3,//路径
+    Orientation = 4 //定位
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//状态枚举
+enum EStatus :unsigned char
+{
+    Init = 0,//初始化
+    Start = 1,//开始
+    Pause = 2,//暂停
+    Continue = 3, //继续
+    End = 4 //结束
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//平台类型
+enum EUnitType :unsigned int {
+    UTNA = 0,
+    J6W = 1,        //
+    WZ10 = 2,       //
+    GJ11 = 3,       //攻11
+    YL2D = 4,         //翼龙2D
+    UAV_Swarm = 5,  //蜂群
+    J20 = 6,
+    CS350A = 7,
+    YL6A = 8,       //翼龙6A
+    WZ7 = 9,
+
+    AC = 10000,             //航空母舰 Aircraft Carrier
+    AC_Ford = 10002,        //福特级航空母舰，CVN-78
+    AC_Nimitz = 10003,      //尼米兹航空母舰，CVN-68
+    AC_Washington = 10004,	//华盛顿号航母
+
+    AAS = 10200,            //两栖攻击舰
+    AAS_America = 10201,    //美国级两栖攻击舰
+    AAS_Wasp = 10220,       //黄蜂级两栖攻击舰
+
+    AWACS = 20000,          //预警机
+    AWACS_E2K = 20001,      //E2-K预警机
+    EW = 21000,             //电子战
+    EW_C130H = 21001,       //C130H电子干扰机
+
+    LandingCraft = 30000,  //登陆舰
+    LC_Harmon = 30001,		//中和级登陆艇
+
+    Destroyer = 100000, //驱逐舰
+    Kidd_CD = 100001, //基隆驱逐舰
+
+    Frigate = 101000, //护卫舰
+    Frigate_CGC = 101001, //成功级护卫舰
+    Frigate_KangDing = 101002, //康定级护卫舰
+
+    MineSweeeper = 102000, //扫雷艇
+    MS_YongJing = 102001,   //永靖级扫雷艇
+    MS_YongFeng = 102002,   //永丰级扫雷艇
+    MS_YongYang = 102003,	//永阳级扫雷艇
+
+    Submarine = 103000, //潜艇
+    Submarine_Stegosaurus = 103001, //剑龙级潜艇
+
+    SS = 104000, //补给舰 Supply Ship
+    SS_WuYi = 104001,	//武夷号补给舰
+
+    Cruiser = 105000, //巡洋舰
+    Cruiser_Antietam = 105001, //安提坦号巡洋舰
+    Cruiser_Ticonderoga = 105002, //提康德罗加巡洋舰
+
+    Missle = 200000, //导弹
+    SSM = 210000, //地对地
+    SAM = 220000, //地对空
+    ASM = 230000, //空对地
+    AAM = 240000, //空对空
+    AshM = 250000, //反舰
+    SLBM = 260000, //潜射
+
+    MK_26 = 200100,     //导弹MK-26
+    MK_14 = 201001,     //导弹MK_141鱼叉反舰导弹
+    HsiungFeng2 = 201002,     //雄风2
+    HsiungFeng3 = 201003,     //雄风3
+
+    AEB500_3 = 302000, //500-3炸弹
+    AEB500_4 = 302001,
+    AEB250_3 = 302002,
+    AEB250_4 = 302003,
+    AEB200LRLS = 302004,
+    LB250 = 302005,
+    CFB250 = 302006,
+    AB250 = 302007,
+    PB250 = 302008,
+    PB500_3 = 302009,
+    FB250_3A = 302010,
+    FB250_4A = 302011,
+    FT_7A = 302012,
+    AG300M = 302013,	//导弹
+    TL2 = 302014,
+
+    Others = 999999
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//颜色信息
+typedef struct ST_Color {
+    UINT8 R;
+    UINT8 G;
+    UINT8 B;
+    UINT8 A;    //不透明度
+}ColorInfo;
+#pragma pack(pop)
+#pragma pack(push, 1)
+typedef struct ST_Scale {
+    INT8 bValid;        //启用缩放 0-不启用，1-启用
+    float Scale_X;      //X轴缩放
+    float Scale_Y;      //Y轴缩放
+    float Scale_Z;      //Z轴缩放
+}ScaleInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct ST_Position {
+    UINT8   nPosType = 1;   //位置类型(0表示UE相对位置，1表示UE世界位置，2表示地理经纬度和高度位置，3表示ECEF位置)
+    double  dLon;           //X轴，地理类型时表示经度
+    double  dLat;           //Y轴，地理类型时表示纬度
+    float   fAlt;       //Z轴，地理类型时表示海拔高度
+}PositionInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct ST_Rotation {
+
+    UINT8   RotateType;//旋转顺序(0表示RPY，1表示RYP，2表示PRY，3表示PYR，4表示YRP，5表示YPR)
+    float   fAz;    //航向角
+    float   fEl;    //俯仰角
+    float   fRoll;  //翻滚角
+}RotationInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//变换信息
+typedef struct ST_Transform
+{
+    PositionInfo Pos;   //位置信息
+    RotationInfo Rot;   //旋转信息
+    ScaleInfo Scale;    //缩放信息
+}TransformInfo;
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
+typedef struct ST_TrackPoint {
+    char pointInfo[30]; //关键点信息
+    PositionInfo pos;
+}TrackPointInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct ST_TDSMsgHeader {
+    INT32   nPrefix;        //0xFFEEDDCC
+    INT32   nMsgID;         //消息ID
+    INT32   nMsgLen;        //数据长度,当前包的“消息头长度+消息体长度”
+    INT32   nDataTotalPack; //数据总包数
+    INT32   nCurPackNo;     //当前包序号
+    INT8    nSpare[28];     //保留字节
+}TDSMsgHead;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct ST_TrackPacket_30011 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  id;         //航迹ID
+    ColorInfo color;    //航迹颜色
+    float Wide;         //航迹宽度
+    UINT8 lineShow;     //航迹线显隐
+    UINT8 keyPointShow; //关键点显隐
+    int nTackNum;       //航迹点数量
+    TrackPointInfo  trackPoint[200];
+}TrackPacket;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct ST_BJDateTime {
+    UINT16  nYear;
+    UINT8   nMonth;
+    UINT8   nDay;
+    UINT8   nHour;
+    UINT8   nMin;
+    UINT8   nSec;
+    UINT8   spare;  //保留
+}BJDateTime;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//实体数组
+typedef struct ST_EntInfo {
+    int nSimTime;
+    /// <summary>
+    /// 实体唯一id
+    /// </summary>
+    UINT32 nID;
+    UINT8   name[48];           //实体名称
+    UINT8   typeName[30];       //类型名称
+    ESpaceType eSpaceType;      //空间类型
+    ECamp   eCamp;              //阵营类型
+    UINT8   country[30];        //国家、地区名称
+    EUnitType eUnitType;        //实体
+    float DamagePercent;        //损毁比例0.0-1.0
+    UINT8    isDie;             //0-死亡，1-正常
+    UINT8   nStatus;            //状态（1: 正常；2：爆炸；3：起火）
+    TransformInfo transform;    //变化信息
+    UINT8   spare[8];
+}EntInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct ST_EntsPacket_30010 {
+    TDSMsgHead    stMsgHeader;
+    int             nEntNum;    //实体数量
+    ST_EntInfo      ent[350];   //实体数组
+}EntsPacket_30010;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//连接线
+typedef struct ST_ConnLine {
+    UINT32  nEntId;         //挂载连接线的实体ID
+    UINT32  nTgtId;         //目标实体ID
+    UINT32  nId;            //线ID
+    UINT8   nType;          //线类型：0-直线,1-抛物线
+    UINT8   nStyle;         //线样式：0-实线、1-虚线、2-箭头线
+    ColorInfo color;        //线颜色
+    float   fLineW;         //线宽
+    UINT8   nConnType;      //连接类型：0默认线、1通信线、2识别线、3指挥线、
+                            //4打击线、5引导线、6任务线、7探测线、8激光干扰线
+    UINT32  nOffsetDistance;//线相对于实体锚点的偏移距离(米)
+    UINT32  nShowTime;      //显示时间（秒）
+}ConnLineInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//连接线包数组
+typedef struct ST_ConnLinesPacket_30012 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  nConnLineNum;
+    ConnLineInfo    lines[1000];
+}ConnLinesPacket_30012;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//球形波束包
+typedef struct ST_SphereWave
+{
+    UINT32  nEntityID;          //挂载波束的实体ID
+    UINT32  nId;                //波束ID
+    TransformInfo Transform;   //波束相对于实体的变换信息
+    ColorInfo Color;            //波束颜色
+    UINT32  nRadius;            //波束范围半径（米）
+    UINT32  FlickerTime;        //闪烁间隔时间
+    float   ScanFrequency;      //扫描频率
+    UINT8   nStyleID;           //波束风格：0默认，1闪烁，2网格
+    UINT8   ScanType;           //扫描类型：0绕航向轴扫描、1绕翻滚轴扫描、2绕俯仰轴扫描、3无扫描效果
+    UINT8   WaveType;           //波束类型：0球形、1半球
+    UINT8   WavePurpose;        //波束用途：0默认球、1传感器、2干扰器、3作战半径、4攻击范围
+    char    spare[8];
+}SphereWaveInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//球型波束包数组
+struct ST_SphereWavesPacket_30013
+{
+    TDSMsgHead    stMsgHeader;
+    UINT32 SphereWaveNum;//球型波束包个数
+    SphereWaveInfo sphereWave[350];//球型波束包数组
+};
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
+//圆锥型波束包
+typedef struct ST_ConeWave
+{
+    UINT32  nEntId;             //挂载波束的实体ID
+    TransformInfo Transform;    //波束相对于实体的变换信息
+    UINT32  nRange;             //波束范围（米）
+
+    //范围信息
+    UINT32  nScopeId;			//扫描范围ID
+    float   fAzMin;				//方位范围最小
+    float	fAzMax;				//方位范围最大
+    float	fElMin;				//俯仰范围最小
+    float	fElMax;				//俯仰范围最大
+    ColorInfo scopeColor;		//范围的颜色
+
+    //波束信息
+    UINT32  nBeamId;			//波束ID,当等于0时，只是显示范围
+    UINT32  nTgtId;             //目标实体ID，为0时，表示不指向固定目标，非0时（火控）
+    ColorInfo beamColor;		//波束颜色
+    UINT32  nInnerTaperAngle;   //波束内锥角（角度）
+    UINT32  nStyleId;           //波束风格：0默认，1闪烁，2网格
+    UINT32  nFlickerTime;       //闪烁间隔时间
+    UINT8   nScanType;          //扫描类型：0绕翻滚轴扫描、1从起点向终点扫描、2从终点向起点扫描、3无扫描效果
+    UINT8   nWavePurpose;       //波束用途：0默认圆锥、1传感器、2干扰器
+    UINT8	bBeamInfoValid;		//波束信息是否有效，0-无效，1-有效
+    UINT8	bTgtPosValid;		//标识下面的tgtPos字段是否有效,0-无效，1-无效
+    PositionInfo tgtPos;        //目标区域经纬度，用于照射目标区域,当有值时(提示搜索)
+    float	fBeamAz;			//波束指向方位
+    float	fBeamEl;			//波束指向俯仰
+
+    UINT	spare[12];
+}ConeWaveInfo;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//圆锥型波束包数组
+struct ST_ConeWavesPacket_30014
+{
+    TDSMsgHead    stMsgHeader;
+    UINT32 ConeWaveCount;       //圆锥型波束包个数
+    ConeWaveInfo coneWave[350];      //圆锥型波束包数组
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//特效包
+struct ST_EffectPacket_30015
+{
+    TDSMsgHead    stMsgHeader;
+    UINT32	nSimTime;	//仿真时间
+    UINT32  nEntId;     //挂载该特效的实体ID（当特效目标为0时可不提供该值）
+    UINT32  nId;        //特效ID
+    UINT8   nEffectTgt;  //特效目标：0加载在场景中、1加载在实体上(nEntId需不为0)
+
+    //特性类型： 0-无特效、1-火焰、2-冒烟、3-爆炸、4-爆炸弹坑、
+    //5-风、6-雨、7-雪、8-云层、9-阴影、10-光照、11-海洋、12-星空、
+    //13-海况、14-风雨、15-风雪、16-风雨雪
+    UINT8 nEffectType;
+    E_WindSpeed eWindSpeed; //当nType=5时，有效
+    E_WindDir   eWindDir;   //当nType=5时，有效
+    ESeaState   eSeaState;  //当nType=13时，有效
+    UINT32      nDuration;  //持续时间，单位：秒
+
+    //0-自定义形状（nPosNum和stPos描述的形状）、1-正方形(nDis标识正方形对角线1/2)、
+    //2-圆形（nDis表示半径）、3-等边三角形（nDis表示三角形中心到各顶点的距离）
+    UINT8	nShapeType;
+
+    UINT8	nPosNum;	//>=3时，才有意义
+    PositionInfo	stPos[10];	//自定义多边形，最多十边形
+    UINT32	nDis;		//单位：米
+
+    //变换信息（当特效目标为0时，变换中的位置信息应提供经纬度高度，
+    //当特效目标为1时，变换中的位置应提供X\Y\Z相对于要挂载的实体锚点偏移数据）
+    TransformInfo Transform;
+
+    UINT8	spare[16];
+};
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
+//初始化包
+typedef struct ST_InitPacket_30001 {
+    TDSMsgHead      stMsgHeader;
+    BJDateTime      stBJDateTime;
+    E_WindSpeed     eWindSpeed;
+    E_WindDir       eWindDir;
+    EWeather        eWeather;
+    ESeaState       eSeaState;
+    UINT32          nEntNum;    //实体数量
+    TransformInfo   cameraPos;  //初始相机位置及朝向
+    PositionInfo    originPos;  //三维态势地理位置原点
+}InitPcket;
+#pragma pack(pop)
+
+
+#pragma pack(push, 1)
+//仿真过程控制包
+struct ST_ProcCtrlPacket_30002 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  nSimTime;   //仿真时间
+    BJDateTime  bjtime; //北京时间
+    UINT8   nProcState; //0-初始化,1-开始运行，2-暂停，3-继续运行，4-结束
+    UINT64  nSimFlag;   ///仿真标识，如果接收到的数据和上次的不同，就要刷新当前显示的数据，比如开始另一套数据，就要重新显示位置
+    char    spare[23];  //保留字段
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//网关心跳包
+struct ST_HeartBeatPacket_30003 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  nSimTime;   //仿真时间
+    BJDateTime  bjtime; //北京时间
+    UINT8   isSimConnected; //0-未连接，1-连接中
+    char    spare[23];  //保留字段
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//仿真时间
+struct ST_SimTimePacket_30004 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  nSimTime;   //仿真时间
+    char    spare[32];  //保留字段
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+//仿真事件信息包
+struct ST_EventInfoPacket_30005 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  nSimTime;       //仿真时间
+    BJDateTime  bjtime;     //北京时间
+    UINT8 nType;            //事件类型：0普通事件、1攻击事件、2死亡事件
+    char    content[1024];  //事件内容
+};
+#pragma pack(pop)
+#pragma pack(push, 1)
+//控制信息包
+struct ST_CtrlInfoPacket_30006 {
+    TDSMsgHead    stMsgHeader;
+    UINT32  nSimTime;   //仿真时间
+    UINT32  nId;        //要控制的id
+    UINT8   nAction;    //0-默认，1删除、2隐藏、3显示
+    UINT8   nType;      //要控制的类型：0实体、1连接线、2球形波束、3圆锥型波束、4四棱锥型波束、5球抛扇面型波束、6全向天线图、7圆柱型波束、8纺锤体波束、9自定义标签、10特效、11航迹
+    char    spare[30];
+};
+#pragma pack(pop)

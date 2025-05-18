@@ -1,51 +1,99 @@
-<h1>vue-pure-admin精简版（非国际化版本）</h1>
+# vue-admin-template
 
-[![license](https://img.shields.io/github/license/pure-admin/vue-pure-admin.svg)](LICENSE)
+English | [简体中文](./README-zh.md)
 
-**中文** | [English](./README.en-US.md)
+> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
 
-## 介绍
+**Live demo:** http://panjiachen.github.io/vue-admin-template
 
-精简版是基于 [vue-pure-admin](https://github.com/pure-admin/vue-pure-admin) 提炼出的架子，包含主体功能，更适合实际项目开发，打包后的大小在全局引入 [element-plus](https://element-plus.org) 的情况下仍然低于 `2.3MB`，并且会永久同步完整版的代码。开启 `brotli` 压缩和 `cdn` 替换本地库模式后，打包大小低于 `350kb`
 
-## 版本选择
+**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
 
-当前是非国际化版本，如果您需要国际化版本 [请点击](https://github.com/pure-admin/pure-admin-thin/tree/i18n)
+<p align="center">
+  <b>SPONSORED BY</b>
+</p>
+<p align="center">
+   <a href="https://finclip.com?from=vue_element" title="FinClip" target="_blank">
+      <img height="200px" src="https://gitee.com/panjiachen/gitee-cdn/raw/master/vue%E8%B5%9E%E5%8A%A9.png" title="FinClip">
+   </a>
+</p>
 
-## `js` 版本
+## Build Setup
 
-[点我查看 js 版本](https://pure-admin.cn/pages/js/)
+```bash
+# clone the project
+git clone https://github.com/PanJiaChen/vue-admin-template.git
 
-## `max` 版本
+# enter the project directory
+cd vue-admin-template
 
-[点我查看 max 版本](https://pure-admin.cn/pages/max/)
+# install dependency
+npm install
 
-## 配套视频
+# develop
+npm run dev
+```
 
-[点我查看 UI 设计](https://www.bilibili.com/video/BV17g411T7rq)  
-[点我查看快速开发教程](https://www.bilibili.com/video/BV1kg411v7QT)
+This will automatically open http://localhost:9528
 
-## 配套保姆级文档
+## Build
 
-[点我查看 vue-pure-admin 文档](https://pure-admin.cn/)  
-[点我查看 @pureadmin/utils 文档](https://pure-admin-utils.netlify.app)
+```bash
+# build for test environment
+npm run build:stage
 
-## 优质服务、软件外包、赞助支持
+# build for production environment
+npm run build:prod
+```
 
-[点我查看详情](https://pure-admin.cn/pages/service/)
+## Advanced
 
-## 预览
+```bash
+# preview the release environment effect
+npm run preview
 
-[查看预览](https://pure-admin-thin.netlify.app/#/login)
+# preview the release environment effect + static resource analysis
+npm run preview -- --report
 
-## 维护者
+# code format check
+npm run lint
 
-[xiaoxian521](https://github.com/xiaoxian521)
+# code format check and auto fix
+npm run lint -- --fix
+```
 
-## ⚠️ 注意
+Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
 
-精简版不接受任何 `issues` 和 `pr`，如果有问题请到完整版 [issues](https://github.com/pure-admin/vue-pure-admin/issues/new/choose) 去提，谢谢！
+## Demo
 
-## 许可证
+![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
 
-[MIT © 2020-present, pure-admin](./LICENSE)
+## Extra
+
+If you want router permission && generate menu by user roles , you can use this branch [permission-control](https://github.com/PanJiaChen/vue-admin-template/tree/permission-control)
+
+For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
+
+## Related Project
+
+- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+
+- [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
+
+- [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
+
+- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
+
+## Browsers support
+
+Modern browsers and Internet Explorer 10+.
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
+| --------- | --------- | --------- | --------- |
+| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+
+## License
+
+[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
+
+Copyright (c) 2017-present PanJiaChen

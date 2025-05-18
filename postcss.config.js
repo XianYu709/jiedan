@@ -1,8 +1,8 @@
-// @ts-check
+// https://github.com/michael-ciniawsky/postcss-load-config
 
-/** @type {import('postcss-load-config').Config} */
-export default {
-  plugins: {
-    ...(process.env.NODE_ENV === "production" ? { cssnano: {} } : {})
+module.exports = {
+  'plugins': {
+    // to edit target browsers: use "browserslist" field in package.json
+    'autoprefixer': {}
   }
-};
+}

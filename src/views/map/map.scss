@@ -1,0 +1,37 @@
+$background-color: rgba(38, 38, 38, 0.75);
+
+.cesium-viewer-toolbar {
+  top: 15px;
+  right: 15px;
+}
+.cesium-viewer-bottom {
+  visibility: hidden !important;
+}
+.vertical-slider {
+  position: absolute;
+  left: 50%;
+  top: 0px;
+  background-color: #D3D3D3;
+  width: 5px;
+  height: 100%;
+  z-index: 9999;
+  &:hover {
+    cursor: ew-resize;
+  }
+}
+.map-card {
+  position: absolute;
+  top: 80px;
+  left: 15px;
+  width: 350px;
+  max-height: 760px;
+  border: 1px solid #444;
+  background-color: $background-color;
+  color: white;
+  overflow: auto;
+  ::v-deep {
+    .el-card__body {
+      padding: 15px;
+    }
+  }
+}
