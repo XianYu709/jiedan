@@ -23,32 +23,32 @@ export default {
         sceneModePicker: true
       })
 
-      viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
-        url: this.url,
-        layer: '福建省影像透明', // 必需参数
-        style: 'default', // 必需参数，通常设为'default'
-        format: 'image/png',
-        tileMatrixSetID: 'EPSG:3857',
-        maximumLevel: 18
-      }))
+      // viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
+      //   url: this.url,
+      //   layer: '福建省影像透明', // 必需参数
+      //   style: 'default', // 必需参数，通常设为'default'
+      //   format: 'image/png',
+      //   tileMatrixSetID: 'EPSG:3857',
+      //   maximumLevel: 18
+      // }))
 
-      viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
-        url: this.url,
-        layer: '台湾省影像透明', // 必需参数
-        style: 'default', // 必需参数，通常设为'default'
-        format: 'image/png',
-        tileMatrixSetID: 'EPSG:3857',
-        maximumLevel: 18
-      }))
+      // viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
+      //   url: this.url,
+      //   layer: '台湾省影像透明', // 必需参数
+      //   style: 'default', // 必需参数，通常设为'default'
+      //   format: 'image/png',
+      //   tileMatrixSetID: 'EPSG:3857',
+      //   maximumLevel: 18
+      // }))
 
-      viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
-        url: this.url,
-        layer: '浙江省影像透明', // 必需参数
-        style: 'default', // 必需参数，通常设为'default'
-        format: 'image/png',
-        tileMatrixSetID: 'EPSG:3857',
-        maximumLevel: 18
-      }))
+      // viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
+      //   url: this.url,
+      //   layer: '浙江省影像透明', // 必需参数
+      //   style: 'default', // 必需参数，通常设为'default'
+      //   format: 'image/png',
+      //   tileMatrixSetID: 'EPSG:3857',
+      //   maximumLevel: 18
+      // }))
 
       // viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
       //     url: this.url,

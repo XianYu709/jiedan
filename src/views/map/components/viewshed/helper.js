@@ -1,141 +1,129 @@
-const {
-  ScreenSpaceEventHandler,
-  Cartographic,
-  Cartesian3,
-  DrawHandler,
-  DrawMode,
-  ScreenSpaceEventType
-} = window.Cesium
-
 /**
  * 可视域
  */
-export default class ViewshedHelper {
-  constructor(viewer) {
-    this._viewshed3D = new window.Cesium.ViewShed3D(viewer)
-    this._viewMode = {
-      direction: 1.0,
-      pitch: 1.0,
-      distance: 1.0,
-      verticalFov: 1.0,
-      horizontalFov: 1.0,
-      visibleAreaColor: '#ffffffff',
-      invisibleAreaColor: '#ffffffff'
-    }
-    this._viewPosition = null
-    this._handler = new ScreenSpaceEventHandler(viewer.scene.canvas)
-    const pointHandler = new DrawHandler(viewer, DrawMode.Point)
-    pointHandler.drawEvt.addEventListener((result) => this._handleDrawEvent(result))
-    this._pointHandler = pointHandler
-    this._viewer = viewer
-  }
 
-  active() {
-    if (this.pointHandler.active) {
-      return
+export default (viewModelProps) => {
+  let viewer = window.viewer;
+  let Cesium = window.Cesium;
+
+  let longitude;
+  let latitude;
+  let height;
+  let startPosition;
+  let endPosition;
+
+  let viewShed3D = {};
+  let pointHandler;
+
+  let viewModel = {
+    direction: 1.0,
+    pitch: 1.0,
+    distance: 1.0,
+    verticalFov: 1.0,
+    horizontalFov: 1.0,
+    visibleAreaColor: "#00ff00",
+    invisibleAreaColor: "#ff0000",
+  };
+  
+  const update = (params) => {
+    if (Object.keys(viewShed3D).length === 0) return;
+    viewShed3D.direction = parseFloat(params.direction);
+    viewShed3D.pitch = parseFloat(params.pitch);
+    viewShed3D.distance = parseFloat(params.distance);
+    viewShed3D.verticalFov = parseFloat(params.verticalFov);
+    viewShed3D.horizontalFov = parseFloat(params.horizontalFov);
+    var color1 = Cesium.Color.fromCssColorString(params.visibleAreaColor);
+    viewShed3D.visibleAreaColor = color1;
+    var color2 = Cesium.Color.fromCssColorString(params.invisibleAreaColor);
+    viewShed3D.hiddenAreaColor = color2;
+  };
+
+  viewModel = JSON.parse(JSON.stringify(viewModelProps));
+  viewer.scene.viewFlag = true;
+  viewShed3D = new Cesium.ViewShed3D(viewer.scene);
+  update(viewModel);
+  pointHandler = new Cesium.DrawHandler(viewer, Cesium.DrawMode.Point);
+  Cesium.knockout.track(viewModel);
+
+  const chooseView = () => {
+    if (pointHandler.active) {
+      return;
     }
     // 先清除之前的可视域分析
-    // viewer.entities.removeAll();
-    this.viewshed3D.distance = 0.1
-    this.viewer.scene.viewFlag = true
-    this.pointHandler.activate()
-    // 鼠标移动时间回调
-    this.handler.setInputAction((event) => this._handleMouseMove(event), ScreenSpaceEventType.MOUSE_MOVE)
-    this.handler.setInputAction((event) => this._handleRightClick(event), ScreenSpaceEventType.RIGHT_CLICK)
-  }
-
-  deactivate() {
-    this.handler.removeInputAction(ScreenSpaceEventType.MOUSE_MOVE)
-    this.handler.removeInputAction(ScreenSpaceEventType.RIGHT_CLICK)
-  }
-
-  clear() {
-    this.viewshed3D.removeAllClipRegion()
-
-    // 清除观察点
-    this.pointHandler.clear()
-
-    // $("#wrapper").hide()
-    this.viewshed3D.distance = 0.1
-    this.viewer.scene.viewFlag = true
-  }
-
-  _handleDrawEvent(result) {
-    // var point = result.object;
-    const scene = this.viewer.scene
-    const position = result.object.position
-    this._viewPosition = position
-
-    // 将获取的点的位置转化成经纬度
-    const cartographic = Cartographic.fromCartesian(position)
-    const longitude = Math.toDegrees(cartographic.longitude)
-    const latitude = Math.toDegrees(cartographic.latitude)
-    const height = cartographic.height + 1.8
-    // point.position = Cesium.Cartesian3.fromDegrees(longitude, latitude, height);
-
-    if (scene.viewFlag) {
-      // 设置视口位置
-      this.viewshed3D.viewPosition = [longitude, latitude, height]
-      this.viewshed3D.build()
-      // 将标记置为false以激活鼠标移动回调里面的设置可视域操作
-      scene.viewFlag = false
-    }
-  }
-
-  _handleMouseMove(event) {
-    const scene = this.viewer.scene
-    if (!scene.viewFlag) {
-      // 获取鼠标屏幕坐标,并将其转化成笛卡尔坐标
-      const position = event.endPosition
-      const last = scene.pickPosition(position)
-
-      // 计算该点与视口位置点坐标的距离
-      const distance = Cartesian3.distance(this.viewPosition, last)
-
-      if (distance > 0) {
-        // 将鼠标当前点坐标转化成经纬度
-        const cartographic = Cartographic.fromCartesian(last)
-        const longitude = Math.toDegrees(cartographic.longitude)
-        const latitude = Math.toDegrees(cartographic.latitude)
-        const height = cartographic.height
-        // 通过该点设置可视域分析对象的距离及方向
-        this.viewshed3D.setDistDirByPoint([longitude, latitude, height])
+    // viewer.entities.removeAll()
+    viewShed3D.distance = 0.1;
+    viewer.scene.viewFlag = true;
+    // 激活绘制点类
+    pointHandler.activate();
+    var viewPosition;
+    pointHandler.drawEvt.addEventListener(function (result) {
+      // var point = result.object
+      var position = result.object.position;
+      startPosition = position;
+      viewPosition = position;
+      // 将获取的点的位置转化成经纬度
+      var cartographic = Cesium.Cartographic.fromCartesian(position);
+      var longitude = Cesium.Math.toDegrees(cartographic.longitude);
+      var latitude = Cesium.Math.toDegrees(cartographic.latitude);
+      var height = cartographic.height;
+      if (viewer.scene.viewFlag) {
+        // 设置视口位置
+        viewShed3D.viewPosition = [longitude, latitude, height];
+        viewShed3D.build();
+        // 将标记置为false以激活鼠标移动回调里面的设置可视域操作
+        viewer.scene.viewFlag = false;
       }
+    });
+    var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+
+    handler.setInputAction(function (e) {
+      // 若此标记为false，则激活对可视域分析对象的操作
+      if (!viewer.scene.viewFlag) {
+        // 获取鼠标屏幕坐标,并将其转化成笛卡尔坐标
+        var position = e.endPosition;
+        var last = viewer.scene.pickPosition(position);
+        // 计算该点与视口位置点坐标的距离
+        var distance = Cesium.Cartesian3.distance(viewPosition, last);
+        if (distance > 0) {
+          // 将鼠标当前点坐标转化成经纬度
+          var cartographic = Cesium.Cartographic.fromCartesian(last);
+          longitude = Cesium.Math.toDegrees(cartographic.longitude);
+          latitude = Cesium.Math.toDegrees(cartographic.latitude);
+          height = cartographic.height;
+          // 通过该点设置可视域分析对象的距离及方向
+          viewShed3D.setDistDirByPoint([longitude, latitude, height]);
+        }
+      }
+    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    handler.setInputAction(function (e) {
+      endPosition = e.position;
+      // 鼠标右键事件回调，不再执行鼠标移动事件中对可视域的操作
+      viewer.scene.viewFlag = true;
+      viewModel.direction = viewShed3D.direction;
+      viewModel.pitch = viewShed3D.pitch;
+      viewModel.distance = viewShed3D.distance;
+      viewModel.horizontalFov = viewShed3D.horizontalFov;
+      viewModel.verticalFov = viewShed3D.verticalFov;
+      // animateShow = true;
+    }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+  };
+
+  const clear = () => {
+    longitude = 0;
+    latitude = 0;
+    height = 0;
+    startPosition = undefined;
+    endPosition = undefined;
+    if (viewShed3D) {
+      viewShed3D.removeAllClipRegion();
+      viewShed3D.distance = 0.001;
     }
-  }
+    if (pointHandler) {
+      pointHandler.clear();
+    }
+    // viewer.entities.removeAll();
+    viewer.scene.viewFlag = true;
+  };
 
-  _handleRightClick(event) {
-    // 鼠标右键事件回调，不再执行鼠标移动事件中对可视域的操作
-    this.viewer.scene.viewFlag = true
-    // $("#wrapper").show();
-    this.viewModel.direction = this.viewshed3D.direction
-    this.viewModel.pitch = this.viewshed3D.pitch
-    this.viewModel.distance = this.viewshed3D.distance
-    this.viewModel.horizontalFov = this.viewshed3D.horizontalFov
-    this.viewModel.verticalFov = this.viewshed3D.verticalFov
-  }
-
-  get viewer() {
-    return this._viewer
-  }
-
-  get viewshed3D() {
-    return this._viewshed3D
-  }
-
-  get handler() {
-    return this._handler
-  }
-
-  get viewModel() {
-    return this.viewModel
-  }
-
-  get viewPosition() {
-    return this._viewPosition
-  }
-
-  get pointHandler() {
-    return this._pointHandler
-  }
-}
+  return { clear, chooseView, update };
+};

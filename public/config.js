@@ -298,9 +298,10 @@ window.MAP_CONFIG = {
           id: 40001,
           label: '福建地形',
           name: 'fujiang',
-          url: iServerUrl + '/iserver/services/3D-dem/rest/realspace/datas/福建@jsys',
+          // url: iServerUrl + '/iserver/services/3D-dem/rest/realspace/datas/福建@jsys',
+          url: 'http://www.supermapol.com/realspace/services/3D-ZF_normal/rest/realspace/datas/srtm_54_07@zhufeng',
           type: 'terrain',
-          center: [118.75828728, 25.54842144, 700000],
+          center: [87.06619935304369, 27.917867546243677, 500000],
           orientation: {
             heading: 0,
             pitch: -90,
