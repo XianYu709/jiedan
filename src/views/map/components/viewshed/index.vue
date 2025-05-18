@@ -36,7 +36,8 @@ export default {
       },
     },
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     handleDraw() {
       this.intance = useViewShed(this.formInline);
@@ -59,38 +60,35 @@ export default {
     show-close
   >
     <div style="text-align: center">
-      <el-form label-position="right" label-width="130px" :model="formInline">
+      <el-form label-position="right" label-width="120px" :model="formInline">
         <el-form-item label="方向(度): ">
-          <el-slider v-model="formInline.direction" />
+          <el-slider v-model="formInline.direction" :min="0" :max="360" :step="1.0" style="width: 90%"/>
         </el-form-item>
         <el-form-item label="翻转(度): ">
-          <el-slider v-model="formInline.pitch" />
+          <el-slider v-model="formInline.pitch" :min="-90" :max="90" :step="1.0" style="width: 90%"/>
         </el-form-item>
         <el-form-item label="距离(米): ">
-          <el-slider v-model="formInline.distance" />
+          <el-slider :min="1" :max="500" :step="1.0" v-model="formInline.distance" style="width: 90%"/>
         </el-form-item>
         <el-form-item label="水平视场角(度): ">
-          <el-slider v-model="formInline.horizontalFov" />
+          <el-slider :min="1" :max="120" :step="1.0" v-model="formInline.horizontalFov" style="width: 90%"/>
         </el-form-item>
         <el-form-item label="垂直视场角(度): ">
-          <el-slider v-model="formInline.verticalFov" />
+          <el-slider :min="1" :max="90" :step="1.0" v-model="formInline.verticalFov" style="width: 90%"/>
         </el-form-item>
         <el-form-item label="可见区域颜色: ">
           <el-color-picker
             v-model="formInline.visibleAreaColor"
-            style="margin-left: -260px"
-          />
+            style="margin-left: -260px"/>
         </el-form-item>
         <el-form-item label="不可见区域颜色: ">
           <el-color-picker
             v-model="formInline.invisibleAreaColor"
-            style="margin-left: -260px"
-          />
+            style="margin-left: -260px"/>
         </el-form-item>
       </el-form>
-      <el-button type="primary" size="small" @click="handleDraw"
-        >绘制</el-button
-      >
+      <el-button type="primary" size="small" @click="handleDraw">绘制
+      </el-button>
       <el-button size="small" @click="handleClear">清空</el-button>
     </div>
   </BaseCard>
