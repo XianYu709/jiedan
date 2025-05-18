@@ -28,9 +28,7 @@ export const useAppStore = defineStore("pure-app", {
     viewportSize: {
       width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight
-    },
-    // 作用于 src/views/components/draggable/index.vue 页面，当离开页面并不会销毁 new Swap()，sortablejs 官网也没有提供任何销毁的 api
-    sortSwap: false
+    }
   }),
   getters: {
     getSidebarStatus(state) {
@@ -78,9 +76,6 @@ export const useAppStore = defineStore("pure-app", {
     },
     setViewportSize(size) {
       this.viewportSize = size;
-    },
-    setSortSwap(val) {
-      this.sortSwap = val;
     }
   }
 });

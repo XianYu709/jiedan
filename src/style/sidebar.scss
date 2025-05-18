@@ -460,8 +460,6 @@
 
       /* 搜索 */
       .search-container,
-      /* 国际化 */
-      .globalization,
       /* 全屏 */
       .fullscreen-icon,
       /* 消息通知 */
@@ -478,15 +476,6 @@
       .dropdown-badge {
         height: 48px;
         color: var(--pure-theme-sub-menu-active-text);
-      }
-
-      .globalization {
-        width: 40px;
-        height: 48px;
-        padding: 11px;
-        color: var(--pure-theme-sub-menu-active-text);
-        cursor: pointer;
-        outline: none;
       }
 
       .el-dropdown-link {
@@ -645,8 +634,6 @@ body[layout="vertical"] {
 
   /* 搜索 */
   .search-container,
-  /* 国际化 */
-  .globalization,
   /* 全屏 */
   .fullscreen-icon,
   /* 消息通知 */
