@@ -24,7 +24,8 @@ export default {
     ViewshedIndex: () => import('./components/viewshed'),
     GcoordIndex: () => import('./components/gcoord'),
     VisibilityIndex: () => import('./components/visibility'),
-    UdpIndex: () => import('./components/udp')
+    UdpIndex: () => import('./components/udp'),
+    ProfileIndex: () => import('./components/profile')
   },
   data() {
     return {
@@ -39,6 +40,7 @@ export default {
       viewshedVisible: false,
       gcoordVisible: false,
       visibilityVisible: false,
+      profileVisible: false,
       udpVisible: false
     }
   },
@@ -112,6 +114,9 @@ export default {
         case 'visibility':
           this.visibilityVisible = !this.visibilityVisible
           break
+        case 'profile':
+          this.profileVisible = !this.profileVisible
+          break
         default:
           break
       }
@@ -138,6 +143,7 @@ export default {
     <ViewshedIndex :visible.sync="viewshedVisible"/>
     <GcoordIndex :visible.sync="gcoordVisible"/>
     <visibilityIndex :visible.sync="visibilityVisible"/>
+    <ProfileIndex :visible.sync="profileVisible"/>
   </div>
 </template>
 

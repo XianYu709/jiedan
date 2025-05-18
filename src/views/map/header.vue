@@ -50,7 +50,7 @@ export default {
             <a href="#" class="dropdown-item" @click="handleClick('visibility')">通视度</a>
             <a href="#" class="dropdown-item" @click="handleClick('buffer')">缓冲区</a>
             <a href="#" class="dropdown-item" @click="handleClick('twf')">填挖方</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">剖面</a>
+            <a href="#" class="dropdown-item" @click="handleClick('profile')">剖面</a>
           </div>
         </li>
         <li class="nav-item">
