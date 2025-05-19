@@ -16,16 +16,17 @@ export default (viewModelProps) => {
   let pointHandler;
 
   let viewModel = {
-    direction: 1.0,
-    pitch: 1.0,
-    distance: 1.0,
-    verticalFov: 1.0,
-    horizontalFov: 1.0,
+    direction: 120,
+    pitch: 0,
+    distance: 100.0,
+    verticalFov: 50,
+    horizontalFov: 60,
     visibleAreaColor: "#00ff00",
     invisibleAreaColor: "#ff0000",
   };
-  
-  const update = (params) => {
+
+  const updateAll = (params) => {
+    viewModel = JSON.parse(JSON.stringify(params));
     if (Object.keys(viewShed3D).length === 0) return;
     viewShed3D.direction = parseFloat(params.direction);
     viewShed3D.pitch = parseFloat(params.pitch);
@@ -37,11 +38,28 @@ export default (viewModelProps) => {
     var color2 = Cesium.Color.fromCssColorString(params.invisibleAreaColor);
     viewShed3D.hiddenAreaColor = color2;
   };
+  const updateByType = (type, val) => {
+    switch (type) {
+      case "direction":
+      case "pitch":
+      case "distance":
+      case "verticalFov":
+      case "horizontalFov":
+        viewShed3D[type] = parseFloat(val);
+        break;
+      case "visibleAreaColor":
+        viewShed3D.visibleAreaColor = Cesium.Color.fromCssColorString(val);
+        break;
+      case "invisibleAreaColor":
+        viewShed3D.hiddenAreaColor = Cesium.Color.fromCssColorString(val);
+        break;
+    }
+  };
 
   viewModel = JSON.parse(JSON.stringify(viewModelProps));
   viewer.scene.viewFlag = true;
   viewShed3D = new Cesium.ViewShed3D(viewer.scene);
-  update(viewModel);
+  updateAll(viewModel);
   pointHandler = new Cesium.DrawHandler(viewer, Cesium.DrawMode.Point);
   Cesium.knockout.track(viewModel);
 
@@ -125,5 +143,5 @@ export default (viewModelProps) => {
     viewer.scene.viewFlag = true;
   };
 
-  return { clear, chooseView, update };
+  return { clear, chooseView, updateAll, updateByType };
 };

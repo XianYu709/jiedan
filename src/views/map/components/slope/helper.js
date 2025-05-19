@@ -24,7 +24,6 @@ export default () => {
     if (value === "calModeall_plane" && slope.CoverageArea.length === 0) {
       wide = Cesium.HypsometricSettingEnum.AnalysisRegionMode.ARM_NONE;
     }
-
     viewer.scene.globe.SlopeSetting = {
       slopeSetting: slope,
       analysisMode: wide,
@@ -43,13 +42,11 @@ export default () => {
     let clipMode = "calModeall_plane";
     // let colorTables = "1";
     let colorTable;
-
     parameter.wideMinR = params.wideMinR ?? parameter.wideMinR;
     parameter.wideMaxR = params.wideMaxR ?? parameter.wideMaxR;
     parameter.trans = params.trans ?? parameter.trans;
     parameter.style = params.style ?? parameter.style;
     clipMode = params.clipMode ?? clipMode;
-    if (clipMode) selectClass(clipMode);
 
     if (handlerPolygon) {
       handlerPolygon.polygon.show = false;
@@ -57,6 +54,7 @@ export default () => {
       handlerPolygon.clear();
     }
     slope = new Cesium.SlopeSetting();
+
     slope.DisplayMode = Cesium.SlopeSettingEnum.DisplayMode.FACE_AND_ARROW;
     slope.MaxVisibleValue = parameter.wideMaxR;
     slope.MinVisibleValue = parameter.wideMinR;
@@ -125,7 +123,36 @@ export default () => {
     } catch (error) {}
   };
 
+  const setPrams = (val) => {
+    if (!slope) {
+      return;
+    }
+    slope.MinVisibleValue = Number(val.wideMinR);
+    slope.MaxVisibleValue = Number(val.wideMaxR);
+    slope.Opacity = Number(val.trans);
+    switch (val.style) {
+      case "showColor":
+        slope.DisplayMode = Cesium.SlopeSettingEnum.DisplayMode.FACE;
+        break;
+      case "showArrow":
+        slope.DisplayMode = Cesium.SlopeSettingEnum.DisplayMode.ARROW;
+        break;
+      case "showAll":
+        slope.DisplayMode = Cesium.SlopeSettingEnum.DisplayMode.FACE_AND_ARROW;
+        break;
+      default:
+        break;
+    }
+    viewer.scene.globe.SlopeSetting = {
+      slopeSetting: slope,
+      analysisMode: wide,
+    };
+  };
+
   return {
     start,
+    clear,
+    selectClass,
+    setPrams,
   };
 };

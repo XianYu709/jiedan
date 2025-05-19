@@ -7,13 +7,13 @@
       <el-button type="primary" @click="opents(4)">海洋</el-button>
       <el-button type="primary" @click="opents(5)">星空</el-button>
     </div>
-    <div style="margin-top: 10px; display: flex; justify-content: space-evenly; flex-direction: column;">
-      <div class="block">
-        <span class="demonstration" style="margin-top: 5px;">阴影</span>
-        <el-slider :max="24" v-model="sunvalue" style="width: 200px; margin: 0 10px; "  @change="change" />
-        <span class="demonstration" style="margin-top: 5px;">光照</span>
+    <div style="margin-top: 10px; display: flex; justify-content: space-evenly; align-items: center; flex-direction: column;">
+      <div v-if="gzblshow" class="block">
+        <span class="demonstration" style="margin-top: 5px;">光照比率：</span>
+        <el-slider v-model="sunvalue" :max="24" style=" margin: 0 10px; " @change="change" />
+        <!-- <span class="demonstration" style="margin-top: 5px;">光照</span> -->
       </div>
-      <el-button @click="opents(6)">关闭所有特效</el-button>
+      <el-button style="width: 150px;" @click="opents(6)">关闭所有特效</el-button>
     </div>
   </div>
 </template>
@@ -26,7 +26,8 @@ let oceanHelper
 export default {
   data() {
     return {
-      sunvalue: 1
+      sunvalue: 1,
+      gzblshow: false
     }
   },
   beforeDestroy() {
@@ -53,10 +54,13 @@ export default {
       if (window.viewer.scene.globe.enableLighting) {
         window.viewer.scene.globe.enableLighting = false// 启用全局光照
         window.viewer.scene.sun.show = false
+        this.gzblshow = false
+        this.sunvalue = 0
       } else {
         window.viewer.scene.globe.enableLighting = true// 启用全局光照
         window.viewer.scene.sun.show = true
         window.viewer.scene.shadowMap.enabled = true
+        this.gzblshow = true
       }
 
       // var scene = window.viewer.scene
@@ -101,6 +105,8 @@ export default {
       window.viewer.scene.globe.enableLighting = false// 启用全局光照
       window.viewer.scene.sun.show = false
       window.viewer.scene.cloudBox = null
+      this.gzblshow = false
+      this.sunvalue = 0
     },
     opents(name) {
       switch (name) {
@@ -160,7 +166,7 @@ export default {
 
 <style scoped lang="scss">
 .kzk{
-  position: absolute;
+  // position: absolute;
   top: 80px;
   left: 10px;
   min-height: 150px;
@@ -172,6 +178,7 @@ export default {
   z-index: 999;
   display: flex;
   flex-wrap: wrap;
+  padding: 20px;
 
   >div{
     width: 100%;
@@ -183,10 +190,11 @@ export default {
 }
 
 .block{
-  width: 300px;
-  display: flex;
-  align-content: center;
-  justify-content: space-evenly;
-  flex-direction: row;
+  width: 100%;
+  // display: flex;
+  // align-content: center;
+  // justify-content: space-evenly;
+  // flex-direction: row;
+  margin: 10px 0;
 }
 </style>

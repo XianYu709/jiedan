@@ -23,16 +23,6 @@ export default {
       handlerLine: null,
     };
   },
-  computed: {
-    computedVisible: {
-      get() {
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
-  },
   mounted() {
     // 获取DOM引用
     this.canvasRef = this.$refs.canvasRef;
@@ -115,28 +105,17 @@ export default {
 </script>
 
 <template>
-  <BaseCard
-    v-if="computedVisible"
-    :visible.sync="visible"
-    title="剖面分析"
-    class-name="interVisibility-container"
-    top="100px"
-    left="2vw"
-    width="500px"
-    show-close
-  >
-    <div class="contents">
-      <el-button @click="chooseView" type="primary">分析</el-button>
-      <el-button @click="clear" class="ml-3">清除</el-button>
-      <slot name="result">
-        <br />
-        <br />
-        <div style="width: 100%; height: 400px" ref="canvasRef" class="mb-2">
-          <canvas ref="proRef" style="width: 100%"></canvas>
-        </div>
-      </slot>
-    </div>
-  </BaseCard>
+  <div class="contents">
+    <el-button @click="chooseView" type="primary">分析</el-button>
+    <el-button @click="clear" class="ml-3">清除</el-button>
+    <slot name="result">
+      <br />
+      <br />
+      <div style="width: 100%; height: 400px" ref="canvasRef" class="mb-2">
+        <canvas ref="proRef" style="width: 100%"></canvas>
+      </div>
+    </slot>
+  </div>
 </template>
 
 <style scoped lang="scss"></style>

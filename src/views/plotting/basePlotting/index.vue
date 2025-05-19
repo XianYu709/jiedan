@@ -4,15 +4,22 @@
     <!-- <div id="cesiumContainer" ref="cesiumContainer"></div> -->
     <div id="controlPanel">
       <div class="control-group">
-        <button @click="startDrawing('point')">点</button>
+        <!-- <button @click="startDrawing('point')">点</button>
         <button @click="startDrawing('polyline')">线</button>
         <button @click="startDrawing('polygon')">面</button>
-        <button @click="startDrawing('box')">立方体</button>
+        <button @click="startDrawing('box')">立方体</button> -->
+
+        <el-button type="primary" @click="startDrawing('point')">点</el-button>
+        <el-button type="primary" @click="startDrawing('polyline')">线</el-button>
+        <el-button type="primary" @click="startDrawing('polygon')">面</el-button>
+        <el-button type="primary" @click="startDrawing('box')">立方体</el-button>
+
       </div>
       <div class="control-group">
         <!-- <button @click="toggleEditMode">编辑模式</button> -->
         <!-- <button @click="undoLast">撤销</button> -->
-        <button @click="clearAll">清除所有</button>
+        <!-- <button @click="clearAll">清除所有</button> -->
+        <el-button  @click="clearAll">清除所有</el-button>
       </div>
       <!-- <div class="control-group" v-if="showMode">
         <label>立方体长度: </label>
@@ -48,7 +55,7 @@
           step="10"
           @input="updateHeight"
         >
-        <span>高度: {{ height }} 米</span>
+        <span>{{ height }} 米</span>
       </div>
       <!-- <div id="status">{{ status }}</div> -->
     </div>
@@ -75,6 +82,9 @@ export default {
       boxid: ''
     }
   },
+  watch: {
+
+  },
   mounted() {
     this.open()
   },
@@ -83,12 +93,20 @@ export default {
   },
   methods: {
     open() {
+      var _this = this
       window.viewer.selectedEntityChanged.addEventListener(function(entity) {
-        console.log(666, entity, entity._id)
-        if (entity._id) {
-          this.showMode = true
-          this.boxid = entity._id
-          console.log(777, this.boxid)
+        console.log('entity', entity)
+        if (entity) {
+          if (entity._id) {
+            if (entity._box) {
+              var dim = entity._box.dimensions.getValue()
+              console.log('dim', dim)
+              _this.height = dim.z
+            }
+
+            _this.showMode = true
+            _this.boxid = entity._id
+          }
         }
       })
     },
@@ -128,11 +146,13 @@ export default {
 
       this.drawHandler.setInputAction((click) => {
         const cartesian = this.getPosition(click.position)
+
         if (cartesian) {
           this.addPointToShape(cartesian)
         }
       }, window.Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
+      // 右键完成绘制
       this.drawHandler.setInputAction((click) => {
         if (this.activeShapePoints.length >= this.getMinPoints()) {
           this.finishDrawing()
@@ -275,7 +295,7 @@ export default {
                 dimensions: new window.Cesium.Cartesian3(
                   maxX - minX,
                   maxY - minY,
-                  maxZ - minZ
+                  this.height
                 ),
                 material: window.Cesium.Color.RED.withAlpha(0.5),
                 outline: true,
@@ -312,12 +332,6 @@ export default {
               width: 6,
               material: window.Cesium.Color.BLUE.withAlpha(0.7),
               clampToGround: true
-              // width: 3,
-              // material: new window.Cesium.PolylineGlowMaterialProperty({
-              //   glowPower: 0.2,
-              //   color: window.Cesium.Color.BLUE
-              // }),
-              // clampToGround: true
             }
           })
           break
@@ -349,13 +363,14 @@ export default {
           var maxY = Math.max(minPoint.y, maxPoint.y)
           var maxZ = Math.max(minPoint.z, maxPoint.z) + 1000
 
-          console.log(11111)
+          console.log('this.height', this.height, Number(this.height))
+
           finalEntity = window.viewer.entities.add({
             box: {
               dimensions: new window.Cesium.Cartesian3(
                 maxX - minX,
                 maxY - minY,
-                maxZ - minZ + this.height
+                500
               ),
               material: window.Cesium.Color.RED.withAlpha(0.5),
               outline: true,
@@ -365,12 +380,11 @@ export default {
             position: new window.Cesium.Cartesian3(
               (minX + maxX) / 2,
               (minY + maxY) / 2,
-              (minZ + maxZ) / 2 - this.height
+              (minZ + maxZ) / 2 - 500
             )
           })
 
           this.showMode = true
-          console.log(22222)
           break
       }
 
@@ -403,45 +417,46 @@ export default {
       }
     },
 
-    toggleEditMode() {
-      this.isEditing = !this.isEditing
+    // 编辑模型
+    // toggleEditMode() {
+    //   this.isEditing = !this.isEditing
 
-      if (this.isEditing) {
-        this.stopDrawing()
-        this.updateStatus('编辑模式: 点击选择图形，拖动移动位置')
+    //   if (this.isEditing) {
+    //     this.stopDrawing()
+    //     this.updateStatus('编辑模式: 点击选择图形，拖动移动位置')
 
-        this.drawHandler = new window.Cesium.ScreenSpaceEventHandler(window.viewer.scene.canvas)
+    //     this.drawHandler = new window.Cesium.ScreenSpaceEventHandler(window.viewer.scene.canvas)
 
-        this.drawHandler.setInputAction((click) => {
-          const pickedObject = window.viewer.scene.pick(click.position)
-          if (pickedObject && pickedObject.id) {
-            this.selectEntity(pickedObject.id)
-          } else {
-            this.deselectEntity()
-          }
-        }, window.Cesium.ScreenSpaceEventType.LEFT_CLICK)
+    //     this.drawHandler.setInputAction((click) => {
+    //       const pickedObject = window.viewer.scene.pick(click.position)
+    //       if (pickedObject && pickedObject.id) {
+    //         this.selectEntity(pickedObject.id)
+    //       } else {
+    //         this.deselectEntity()
+    //       }
+    //     }, window.Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
-        this.drawHandler.setInputAction((movement) => {
-          if (this.selectedEntity && !this.selectedEntity.isMoving) {
-            const cartesian = this.getPosition(movement.endPosition)
-            if (cartesian) {
-              if (this.selectedEntity.position) {
-                this.selectedEntity.position = cartesian
-              } else if (this.selectedEntity.polygon) {
-                // 处理面的移动
-              }
-            }
-          }
-        }, window.Cesium.ScreenSpaceEventType.MOUSE_MOVE)
-      } else {
-        if (this.drawHandler) {
-          this.drawHandler.destroy()
-          this.drawHandler = null
-        }
-        this.deselectEntity()
-        this.updateStatus('已退出编辑模式')
-      }
-    },
+    //     this.drawHandler.setInputAction((movement) => {
+    //       if (this.selectedEntity && !this.selectedEntity.isMoving) {
+    //         const cartesian = this.getPosition(movement.endPosition)
+    //         if (cartesian) {
+    //           if (this.selectedEntity.position) {
+    //             this.selectedEntity.position = cartesian
+    //           } else if (this.selectedEntity.polygon) {
+    //             // 处理面的移动
+    //           }
+    //         }
+    //       }
+    //     }, window.Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+    //   } else {
+    //     if (this.drawHandler) {
+    //       this.drawHandler.destroy()
+    //       this.drawHandler = null
+    //     }
+    //     this.deselectEntity()
+    //     this.updateStatus('已退出编辑模式')
+    //   }
+    // },
 
     selectEntity(entity) {
       this.deselectEntity()
@@ -495,30 +510,24 @@ export default {
     },
 
     updateHeight() {
-      console.log(555, window.viewer.entities._entities._array)
       // forEach
       window.viewer.entities._entities._array.forEach(e => {
-        console.log(66677888,e,this.boxid , e._id);
-        
         if (e.box && this.boxid === e._id) {
           var dim = e.box.dimensions.getValue()
-
           console.log('dim', dim)
-
+          // this.height = dim.z
           // e.box.dimensions = new window.Cesium.Cartesian3(dim.x, dim.y, this.height * 1000)
           e.box.dimensions = new window.Cesium.Cartesian3(dim.x, dim.y, parseFloat(this.height))
         }
       })
 
       // 如果正在绘制立方体，实时更新预览
-      if (this.drawingMode === 'box' && this.activeShapePoints.length === 2) {
-        this.updateShape()
-      }
+      // if (this.drawingMode === 'box' && this.activeShapePoints.length === 2) {
+      //   this.updateShape()
+      // }
 
       // 如果选中了立方体实体，更新其高度
-      if (this.selectedEntity && this.selectedEntity.box) {
-        this.updateBoxHeight(this.selectedEntity, this.height)
-      }
+      // if (this.s/
     },
 
     updateBoxHeight(entity, newHeight) {
@@ -553,7 +562,8 @@ export default {
   position: absolute;
   top: 80px;
   left: 10px;
-  background: rgba(42, 42, 42, 0.8);
+  width: 320px;
+  background: rgba(94, 94, 94, 0.781);
   padding: 10px;
   border-radius: 5px;
   color: white;
@@ -561,6 +571,10 @@ export default {
 }
 
 .control-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
   margin-bottom: 10px;
 }
 

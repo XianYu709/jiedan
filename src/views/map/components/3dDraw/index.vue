@@ -64,52 +64,43 @@ export default {
 </script>
 
 <template>
-  <BaseCard
-    v-if="computedVisible"
-    :visible.sync="computedVisible"
-    width="460px"
-    title="三维标绘"
-    class-name="threed-container"
-    show-close
-  >
-    <div>
-      <el-form size="small" label-width="50px" class="map-card-form">
-        <el-form-item label="类型">
-          <el-radio-group v-model="drawType" style="width:100%;" @input="handleTypeClick">
-            <el-radio-button label="text">文字</el-radio-button>
-            <el-radio-button label="model">模型</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item v-show="drawType === 'text'" label="文本">
-          <el-input v-model="drawText" clearable placeholder="请输入文字" style="width:250px;" />
-        </el-form-item>
-        <el-form-item v-show="drawType === 'model'" label="模型">
-          <div class="model-content">
-            <div
-              v-for="item in drawModes"
-              :key="item.name"
-              :title="item.name"
-              :class="['model-card', item === drawModel ? 'selected' : '']"
-              @click="() => handleModelSelected(item)"
-            >
-              <el-image
-                style="width:120px;height:80px;"
-                fit="cover"
-                :src="item.imagePath"
-              />
-              <div class="model-card__bottom">
-                {{ item.name }}
-              </div>
+  <div class="threed-container">
+    <el-form size="small" label-width="50px" class="map-card-form">
+      <el-form-item label="类型">
+        <el-radio-group v-model="drawType" style="width:100%;">
+          <el-radio-button label="text">文字</el-radio-button>
+          <el-radio-button label="model">模型</el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item v-show="drawType === 'text'" label="文本">
+        <el-input v-model="drawText" clearable placeholder="请输入文字" style="width:250px;" />
+      </el-form-item>
+      <el-form-item v-show="drawType === 'model'" label="模型">
+        <div class="model-content">
+          <div
+            v-for="item in drawModes"
+            :key="item.name"
+            :title="item.name"
+            :class="['model-card', item === drawModel ? 'selected' : '']"
+            @click="() => handleModelSelected(item)"
+          >
+            <el-image
+              style="width:120px;height:80px;"
+              fit="cover"
+              :src="item.imagePath"
+            />
+            <div class="model-card__bottom">
+              {{ item.name }}
             </div>
           </div>
-        </el-form-item>
-      </el-form>
-      <div style="text-align: center;">
-        <el-button type="primary" size="small" @click="handleDraw">标绘</el-button>
-        <el-button size="small" @click="handleClear">清空</el-button>
-      </div>
+        </div>
+      </el-form-item>
+    </el-form>
+    <div style="text-align: center;">
+      <el-button type="primary" size="small" @click="handleDraw">标绘</el-button>
+      <el-button size="small" @click="handleClear">清空</el-button>
     </div>
-  </BaseCard>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -119,9 +110,9 @@ export default {
   }
 }
 .model-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   .model-card {
     position: relative;
     width: 120px;

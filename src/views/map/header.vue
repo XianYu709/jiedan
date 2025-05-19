@@ -5,11 +5,104 @@ export default {
     getViewer: {
       type: Function,
       default: null
+    },
+    activeCode: {
+      type: String,
+      default: null
+    }
+  },
+  data() {
+    return {
+      menus: [
+        { code: 'index', label: '首页' },
+        {
+          code: 'plot',
+          label: '标绘',
+          children: [
+            { label: '基础标绘', componentName: 'basePlotting', cardOptions: { width: '350px', height: '230px' }},
+            { label: '目标数据', componentName: 'jsPlotting'},
+            { label: '军事标绘', componentName: 'military', cardOptions: { top:"100px", width: "510px",left: "75px" } },
+            { label: '场景收藏', componentName: 'collect', cardOptions: { top:"100px", width: "510px",left: "75px" } },
+            { label: '雷达波束标绘' },
+            { code: '3dDraw', label: '三维标绘', componentName: 'ThreeDDraw', cardOptions: { width: '460px' } }
+          ]
+        },
+        {
+          code: 'analyse',
+          label: '空间分析',
+          children: [
+            { code: 'distanceAnalyse', label: '距离' },
+            { code: 'areaAnalyse', label: '面积' },
+            { code: 'directionAnalyse', label: '方位' },
+            { code: 'slopeAnalyse', label: '坡度坡向', componentName: 'Slope', cardOptions: { top: "350px", width: "510px",left: "65%" }},
+            { code: 'viewshedAnalyse', label: '可视域', componentName: 'ViewshedIndex', cardOptions: { top:"350px", width: "510px",left: "75px" } },
+            { code: 'VisibilityAnalyse', label: '通视度', componentName: 'InterVisibility', cardOptions: { top:"350px", width: "510px"} },
+            { code: 'buffer', label: '缓冲区', componentName: 'Buffer', cardOptions: { width: '350px',top:"350 px", }},
+            { code: 'cutFillAnalyse', label: '填挖方', componentName: 'Excavation', cardOptions: { width: "400px", top:"350px", left:"75%" } },
+            { code: 'sectionAnalyse', label: '剖面', componentName: 'Profile', cardOptions: { width: '350px',top:"350px", } }
+          ]
+        },
+        {
+          code: 'specialEffects',
+          label: '特效',
+          children: [
+            { code: 'burst', label: '爆炸' },
+            { code: 'fireworks', label: '烟火' },
+            { code: 'hjtx', label: '环境特效', componentName: 'hjtx', cardOptions: { width: '425px' }},
+            { code: 'ddtx', label: '地图特效', componentName: 'dttx', cardOptions: { width: '425px' }},
+            { label: '方案3' }
+          ]
+        },
+        {
+          label: '天气时序',
+          children: [
+            { label: '案例1' },
+            { label: '案例2' },
+            { label: '案例3' }
+          ]
+        },
+        {
+          code: 'history',
+          label: '历史影像',
+          children: [
+            { code: 'history1', label: '公司简介' },
+            { code: 'history2', label: '团队介绍' },
+            { code: 'history3', label: '联系我们' }
+          ]
+        },
+        {
+          code: 'tools',
+          label: '工具',
+          children: [
+            { code: 'rollerShutter', label: '卷帘对比' },
+            { code: 'measure', label: '空间量算', componentName: 'Measure', cardOptions: { width: '400px' }},
+            { code: 'pyramid', label: '雷达波束模型', componentName: 'UdpIndex' },
+            { code: 'gcoord', label: '坐标投影转换', componentName: 'GcoordIndex', cardOptions: { width: '460px' }},
+            { code: 'udpTest', label: 'UDP测试', componentName: 'UdpIndex' }
+          ]
+        }
+      ]
+    }
+  },
+  computed: {
+    computedActiveCode: {
+      get() {
+        return this.activeCode
+      },
+      set(code) {
+        this.$emit('update:activeCode', code)
+      }
     }
   },
   methods: {
-    handleClick(name) {
-      this.$emit('click', name)
+    handleClick(menu) {
+      // 如果不是组件且又点击了一次，则表示关闭该菜单
+      if (!menu.componentName && this.computedActiveCode === menu.code) {
+        this.computedActiveCode = 'index'
+      } else {
+        this.computedActiveCode = menu.code
+      }
+      this.$emit('click', menu)
     }
   }
 }
@@ -24,7 +117,24 @@ export default {
       </a>
 
       <ul class="nav-menu">
-        <li class="nav-item">
+        <li
+          v-for="(menu, index) in menus"
+          :key="index"
+          :class="['nav-item', menu.code === computedActiveCode ? 'active' : '']"
+        >
+          <a href="#" class="nav-link" @click.stop="handleClick(menu)">{{ menu.label }}</a>
+          <div v-if="menu.children" class="dropdown">
+            <a
+              v-for="(child, index2) in menu.children"
+              :key="`${index}-${index2}`"
+              :class="['dropdown-item', child.code === computedActiveCode ? 'active' : '']"
+              @click.stop="handleClick(child)"
+            >
+              {{ child.label }}
+            </a>
+          </div>
+        </li>
+<!--        <li class="nav-item">
           <a href="#" class="nav-link" @click="handleClick('index')">首页</a>
 
         </li>
@@ -88,7 +198,7 @@ export default {
             <a href="#" class="dropdown-item" @click="handleClick('gcoord')">坐标投影转换</a>
             <a href="#" class="dropdown-item" @click="handleClick('test')">UDP测试</a>
           </div>
-        </li>
+        </li>-->
       </ul>
 
       <div class="search-container">
@@ -149,6 +259,13 @@ export default {
 .nav-item:hover .dropdown {
   display: block;
 }
+.nav-item.active,
+.nav-item:has(.dropdown-item.active) {
+  .nav-link {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #4cc9f0;
+  }
+}
 
 .nav-link {
   color: white;
@@ -208,6 +325,10 @@ export default {
   background-color: rgba(76, 201, 240, 0.1);
   color: #4cc9f0;
   padding-left: 25px;
+}
+
+.dropdown-item.active {
+  background-color: rgba(76, 201, 240, 0.3);
 }
 
 .search-container {
