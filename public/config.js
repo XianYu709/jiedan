@@ -16,23 +16,9 @@ window.MAP_CONFIG = {
    *   flyTo: 加载时是否居中，可选，默认是
    * }
    */
-  /**
-   * {
-   *   id: id，必填，唯一
-   *   label: 必填，显示名称
-   *   name: 必填，编码，唯一
-   *   url: 必填，地址
-   *   type: 必填，类型
-   *   center: 可选中心点
-   *   orientation: 可选，视角
-   *   checked: 是否默认选中加载，可选，默认否
-   *   flyTo: 加载时是否居中，可选，默认是
-   * }
-   */
   layers: [
-/*     {
+    {
       id: 1,
-      label: "场站列表",
       label: "场站列表",
       children: [
         {
@@ -47,17 +33,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 10002,
-          label: "武夷山机场",
-          name: "wuyishan",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/wuyishan@jsys/config",
-          type: "scp",
           label: "武夷山机场",
           name: "wuyishan",
           url:
@@ -70,18 +48,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 10003,
-          label: "连城机场",
-          name: "lianchengjichang",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/lianchengjichang@jsys/config",
-          type: "scp",
-          center: [116.74658475, 25.6772925, 2000],
           label: "连城机场",
           name: "lianchengjichang",
           url:
@@ -94,17 +63,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 10004,
-          label: "惠安机场",
-          name: "HAJC_Lambert",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/HAJC_Lambert@jsys/config",
-          type: "scp",
           label: "惠安机场",
           name: "HAJC_Lambert",
           url:
@@ -117,17 +78,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 10005,
-          label: "龙田机场",
-          name: "LTJC_Lambert",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/LTJC_Lambert@jsys/config",
-          type: "scp",
           label: "龙田机场",
           name: "LTJC_Lambert",
           url:
@@ -140,17 +93,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 10006,
-          label: "漳州机场",
-          name: "ZZJC_Lambert",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/ZZJC_Lambert@jsys/config",
-          type: "scp",
           label: "漳州机场",
           name: "ZZJC_Lambert",
           url:
@@ -163,18 +108,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 10007,
-          label: "清泉岗机场",
-          name: "LTJC_Lambert",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/qingquangang@jsys/config",
-          type: "scp",
-          center: [120.6266214, 24.26311381, 2000],
           label: "清泉岗机场",
           name: "LTJC_Lambert",
           url:
@@ -187,24 +123,15 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
-      ],
       ],
     },
     {
       id: 2,
       label: "数据服务",
-      label: "数据服务",
       children: [
         {
           id: 20001,
-          label: "电磁数据",
-          name: "dianci",
-          url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/电磁数据",
-          type: "webp",
-          flyTo: true,
           label: "电磁数据",
           name: "dianci",
           url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/电磁数据",
@@ -218,19 +145,9 @@ window.MAP_CONFIG = {
           url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/温度",
           type: "webp",
           flyTo: true,
-          label: "温度",
-          name: "wendu",
-          url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/温度",
-          type: "webp",
-          flyTo: true,
         },
         {
           id: 20003,
-          label: "降水",
-          name: "jiangshui",
-          url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/降水",
-          type: "webp",
-          flyTo: true,
           label: "降水",
           name: "jiangshui",
           url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/降水",
@@ -244,19 +161,9 @@ window.MAP_CONFIG = {
           url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/可见光",
           type: "webp",
           flyTo: true,
-          label: "可见光",
-          name: "kejianguang",
-          url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/可见光",
-          type: "webp",
-          flyTo: true,
         },
         {
           id: 20005,
-          label: "文字",
-          name: "wenzi",
-          url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/文字",
-          type: "webp",
-          flyTo: true,
           label: "文字",
           name: "wenzi",
           url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/文字",
@@ -270,28 +177,15 @@ window.MAP_CONFIG = {
           url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/航路航线",
           type: "webp",
           flyTo: true,
-          label: "航路航线",
-          name: "hangluhangxian",
-          url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/航路航线",
-          type: "webp",
-          flyTo: true,
         },
-      ],
       ],
     },
     {
       id: 3,
       label: "作战目标",
-      label: "作战目标",
       children: [
         {
           id: 30001,
-          label: "虎井屿防御工事",
-          name: "hujing",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/HJY_FYGH@jsys/config",
-          type: "scp",
           label: "虎井屿防御工事",
           name: "hujing",
           url:
@@ -304,17 +198,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30002,
-          label: "烟墩山_导弹阵地",
-          name: "yandunshan",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/YDS_DDZD@jsys/config",
-          type: "scp",
           label: "烟墩山_导弹阵地",
           name: "yandunshan",
           url:
@@ -327,18 +213,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30003,
-          label: "清泉岗_导弹阵地",
-          name: "qingquangang",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/QQG_DDZD@jsys/config",
-          type: "scp",
-          center: [120.642901306632, 24.25730049397, 2000],
           label: "清泉岗_导弹阵地",
           name: "qingquangang",
           url:
@@ -351,17 +228,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30004,
-          label: "乐山_雷达阵地",
-          name: "leshanld",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/LS_LDZD@jsys/config",
-          type: "scp",
           label: "乐山_雷达阵地",
           name: "leshanld",
           url:
@@ -374,8 +243,6 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30005,
@@ -386,18 +253,9 @@ window.MAP_CONFIG = {
             "/iserver/services/3D-model3D/rest/realspace/datas/PD_HQJD@jsys/config",
           type: "scp",
           center: [120.4664684, 22.68141384, 2000],
-          label: "屏东空军指挥部",
-          name: "pingdong",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/PD_HQJD@jsys/config",
-          type: "scp",
-          center: [120.4664684, 22.68141384, 2000],
           orientation: {
             heading: 0,
             pitch: -90,
-            roll: 0,
-          },
             roll: 0,
           },
         },
@@ -410,29 +268,14 @@ window.MAP_CONFIG = {
             "/iserver/services/3D-model3D/rest/realspace/datas/YDS_DDZD@jsys/config",
           type: "scp",
           center: [119.5817867, 23.67358371, 2000],
-          label: "烟墩山激动雷达预备阵地",
-          name: "yandunshanld",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/YDS_DDZD@jsys/config",
-          type: "scp",
-          center: [119.5817867, 23.67358371, 2000],
           orientation: {
             heading: 0,
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30007,
-          label: "乐山综合通讯站",
-          name: "leshanzonghe",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/LS_LDZD@jsys/config",
-          type: "scp",
           label: "乐山综合通讯站",
           name: "leshanzonghe",
           url:
@@ -445,17 +288,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30008,
-          label: "三芝雷达",
-          name: "sanzhi",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/SZ_LDZD@jsys/config",
-          type: "scp",
           label: "三芝雷达",
           name: "sanzhi",
           url:
@@ -468,17 +303,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30009,
-          label: "台湾总统府",
-          name: "zongtongfu",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/TW_ZTF@jsys/config",
-          type: "scp",
           label: "台湾总统府",
           name: "zongtongfu",
           url:
@@ -491,18 +318,9 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
         {
           id: 30010,
-          label: "金门",
-          name: "jinmen",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/JM_DDZD@jsys/config",
-          type: "scp",
-          center: [118.34380648, 24.4234142, 2000],
           label: "金门",
           name: "jinmen",
           url:
@@ -515,16 +333,12 @@ window.MAP_CONFIG = {
             pitch: -90,
             roll: 0,
           },
-            roll: 0,
-          },
         },
       ],
     },
     {
       id: 4,
-      id: 4,
       label: "地形",
-      children: [
       children: [
         {
           id: 40001,
@@ -656,16 +470,9 @@ window.MAP_CONFIG = {
   /**
    * 卷帘对比的图层，只能配置两个，第一个在左边
    */
-  /**
-   * 卷帘对比的图层，只能配置两个，第一个在左边
-   */
   rollerShutterLayers: [
     {
       id: 10002,
-      label: "温度",
-      name: "roller-shutter-wendu",
-      url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/温度",
-      type: "webp",
       label: "温度",
       name: "roller-shutter-wendu",
       url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/温度",
@@ -678,15 +485,7 @@ window.MAP_CONFIG = {
       url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/电磁数据",
       type: "webp",
     },
-      label: "电磁数据",
-      name: "roller-shutter-dianci",
-      url: iServerUrl + "/iserver/services/map-tifMap/rest/maps/电磁数据",
-      type: "webp",
-    },
   ],
-  /**
-   * 缓冲区分析中可选图层，name唯一
-   */
   /**
    * 缓冲区分析中可选图层，name唯一
    */
@@ -694,20 +493,12 @@ window.MAP_CONFIG = {
     {
       name: "泉州",
       path: "/data/泉州.json",
-      name: "泉州",
-      path: "/data/泉州.json",
     },
     {
       name: "台湾海岸线",
       path: "/data/台湾海岸线.json",
     },
-      name: "台湾海岸线",
-      path: "/data/台湾海岸线.json",
-    },
   ],
-  /**
-   * 三维绘制中可绘制模型
-   */
   /**
    * 三维绘制中可绘制模型
    */
@@ -716,27 +507,13 @@ window.MAP_CONFIG = {
       name: "E2预警机",
       path: "/data/GLTF整理/E2预警机_GLTF/E2_GLTF/e2.gltf",
       imagePath: "/image/map/model/e2.png",
-      name: "E2预警机",
-      path: "/data/GLTF整理/E2预警机_GLTF/E2_GLTF/e2.gltf",
-      imagePath: "/image/map/model/e2.png",
     },
     {
       name: "F5E战斗机",
       path: "/data/GLTF整理/F5E战斗机_GLTF/F5E_GLTF/f5e.gltf",
       imagePath: "/image/map/model/f5e.png",
-      name: "F5E战斗机",
-      path: "/data/GLTF整理/F5E战斗机_GLTF/F5E_GLTF/f5e.gltf",
-      imagePath: "/image/map/model/f5e.png",
     },
     {
-      name: "F16战斗机",
-      path: "/data/GLTF整理/F16战斗机_GLTF/F16_GLTF/f16.gltf",
-      imagePath: "/image/map/model/f16.png",
-    },
-  ],
-  airDefenceServerUrl:
-    "http://192.168.0.100:8088/freexserver/datamanager/target/queryTargetPage",
-};
       name: "F16战斗机",
       path: "/data/GLTF整理/F16战斗机_GLTF/F16_GLTF/f16.gltf",
       imagePath: "/image/map/model/f16.png",
