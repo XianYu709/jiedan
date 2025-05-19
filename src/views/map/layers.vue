@@ -105,7 +105,11 @@ export default {
           } else if (['webp'].includes(type)) {
             layer.show = true
           } else if (['terrain'].includes(type)) {
+<<<<<<< HEAD
             viewer.terrainProvider.visible = true
+=======
+            viewer.terrainProvider = layer
+>>>>>>> a5b38bad97f0a881d5862753fe42332e71e4bc6c
           } else if (['wmts'].includes(type)) {
             layer.show = true
           }
@@ -116,8 +120,13 @@ export default {
           layer.visible = false
         } else if (['webp'].includes(type)) {
           layer.show = false
+<<<<<<< HEAD
         } else if (['terrain'].includes(type)) {
           viewer.terrainProvider.visible = false
+=======
+        } else if (['terrin'].includes(type)) {
+          viewer.terrainProvider = ''
+>>>>>>> a5b38bad97f0a881d5862753fe42332e71e4bc6c
         } else if (['wmts'].includes(type)) {
           layer.show = false
         }
