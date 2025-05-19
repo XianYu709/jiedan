@@ -17,22 +17,12 @@ export default {
       intance: {},
     };
   },
-  computed: {
-    computedVisible: {
-      get() {
-        if (this.visible) {
-          this.intance = useInterVisibility();
-        } else {
-          this?.intance?.clear?.();
-        }
-        return this.visible;
-      },
-      set(val) {
-        this.$emit("update:visible", val);
-      },
-    },
+  mounted() {
+    this.intance = useInterVisibility();
   },
-  mounted() {},
+  unmounted() {
+    this?.intance?.clear?.();
+  },
   methods: {
     addViewPoint() {
       this.intance.addViewPoint();
@@ -48,24 +38,15 @@ export default {
 </script>
 
 <template>
-  <BaseCard
-    v-if="computedVisible"
-    :visible.sync="computedVisible"
-    title="通视分析"
-    class-name="interVisibility-container"
-    top="350px"
-    show-close
-  >
-    <div style="text-align: center">
-      <el-button plain type="primary" size="small" @click="addViewPoint"
-        >添加观察点</el-button
-      >
-      <el-button type="primary" size="small" @click="addTargetPoint"
-        >添加目标点</el-button
-      >
-      <el-button size="small" @click="handleClear">清空</el-button>
-    </div>
-  </BaseCard>
+  <div style="text-align: center">
+    <el-button plain type="primary" size="small" @click="addViewPoint"
+      >添加观察点</el-button
+    >
+    <el-button type="primary" size="small" @click="addTargetPoint"
+      >添加目标点</el-button
+    >
+    <el-button size="small" @click="handleClear">清空</el-button>
+  </div>
 </template>
 
 <style scoped lang="scss"></style>

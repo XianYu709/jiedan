@@ -2,10 +2,10 @@
 export default {
   name: 'MapCard',
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
+    // visible: {
+    //   type: Boolean,
+    //   default: false
+    // },
     className: {
       type: String,
       default: null
@@ -26,6 +26,14 @@ export default {
       type: String,
       default: 'auto'
     },
+    minHeight: {
+      type: String,
+      default: 'auto'
+    },
+    maxHeight: {
+      type: String,
+      default: 'auto'
+    },
     title: {
       type: String,
       default: null
@@ -36,21 +44,21 @@ export default {
     }
   },
   computed: {
-    computedVisible: {
-      get() {
-        return this.visible
-      },
-      set(val) {
-        this.$emit('update:visible', val)
-      }
-    },
+    // computedVisible: {
+    //   get() {
+    //     return this.visible
+    //   },
+    //   set(val) {
+    //     this.$emit('update:visible', val)
+    //   }
+    // },
     computedStyle() {
-      return `top: ${this.top};left:${this.left};width:${this.width};height:${this.height};`
+      return `top: ${this.top};left:${this.left};width:${this.width};height:${this.height};min-height:${this.minHeight};max-height:${this.maxHeight};`
     }
   },
   methods: {
     handleClose() {
-      this.computedVisible = false
+      // this.computedVisible = false
       this.$emit('close')
     }
   }

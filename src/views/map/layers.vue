@@ -1,5 +1,5 @@
 <script>
-import { isFunction, isEmpty } from 'lodash'
+import { isFunction, isEmpty, debounce } from 'lodash'
 
 const layerMap = {}
 export default {
@@ -17,8 +17,26 @@ export default {
         children: 'children',
         label: 'label'
       },
-      layers: [...window.MAP_CONFIG.layers]
+      layers: [...window.MAP_CONFIG.layers],
+      searchText: null,
+      searchMatchIds: []
     }
+  },
+  mounted() {
+    const treeRef = this.$refs['treeRef']
+    const checkedNodes = []
+    const findCheckedNodes = (layers) => {
+      if (!isEmpty(layers)) {
+        layers.forEach(layer => {
+          findCheckedNodes(layer.children)
+          if (layer.checked === true) {
+            checkedNodes.push(layer)
+          }
+        })
+      }
+    }
+    findCheckedNodes(this.layers)
+    treeRef.setCheckedNodes(checkedNodes)
   },
   methods: {
     /**
@@ -37,59 +55,70 @@ export default {
       if (!url) {
         return false
       }
+      let layer = layerMap[name]
       if (checked) {
-        if (!layerMap[name]) {
+        if (!layer) {
           // 添加scp图层
           if (type === 'scp') {
-            viewer.scene.addS3MTilesLayerByScp(url, { name }).then((layer) => {
-              layerMap[name] = layer
-              flyTo && this.flyTo({ layer, center, orientation })
+            viewer.scene.addS3MTilesLayerByScp(url, { name }).then((layer2) => {
+              layerMap[name] = layer2
+              flyTo && this.flyTo({ layer: layer2, center, orientation })
             })
           } else if (type === 'webp') { // 添加ImageryProvider
-            let layer = layerMap[name]
-            if (!layer) {
-              layer = new window.Cesium.ImageryLayer(
-                new window.Cesium.SuperMapImageryProvider({
-                  url,
-                  name,
-                  tileFormat: 'webp'
-                })
-              )
-              layerMap[name] = layer
-            }
+            layer = new window.Cesium.ImageryLayer(
+              new window.Cesium.SuperMapImageryProvider({
+                url,
+                name,
+                tileFormat: 'webp'
+              })
+            )
+            layerMap[name] = layer
             viewer.imageryLayers.add(layer)
             flyTo && this.flyTo({ layer, center, orientation })
           } else if (type === 'terrain') { // 添加ImageryProvider
-            var layer = layerMap[name]
-
-            var terrainProvider = new window.Cesium.CesiumTerrainProvider({
+            layer = new window.Cesium.CesiumTerrainProvider({
               url: url,
               requestWaterMask: true,
               requestVertexNormals: true,
               isSct: true
             })
-
-            viewer.terrainProvider = terrainProvider
+            layerMap[name] = layer
+            viewer.terrainProvider = layer
+            flyTo && this.flyTo({ layer, center, orientation })
+          } else if (type === 'wmts') {
+            // 添加ImageryProvider
+            layer = viewer.imageryLayers.addImageryProvider(new window.Cesium.WebMapTileServiceImageryProvider({
+              url: url,
+              layer: name, // 必需参数
+              style: 'default', // 必需参数，通常设为'default'
+              format: 'image/png',
+              tileMatrixSetID: 'EPSG:3857',
+              maximumLevel: 18
+            }))
+            layerMap[name] = layer
             flyTo && this.flyTo({ layer, center, orientation })
           }
         } else {
           if (['scp'].includes(type)) {
-            layerMap[name].visible = true
+            layer.visible = true
           } else if (['webp'].includes(type)) {
-            layerMap[name].show = true
+            layer.show = true
           } else if (['terrain'].includes(type)) {
-            // viewer.terrainProvider = ''
+            viewer.terrainProvider = layer
+          } else if (['wmts'].includes(type)) {
+            layer.show = true
           }
-          flyTo && this.flyTo({ layer: layerMap[name], center, orientation })
+          flyTo && this.flyTo({ layer, center, orientation })
         }
-      } else if (layerMap[name]) {
+      } else if (layer) {
         if (['scp'].includes(type)) {
-          layerMap[name].visible = false
+          layer.visible = false
         } else if (['webp'].includes(type)) {
-          layerMap[name].show = false
+          layer.show = false
         } else if (['terrin'].includes(type)) {
-          // layerMap[name].show = false
           viewer.terrainProvider = ''
+        } else if (['wmts'].includes(type)) {
+          layer.show = false
         }
       }
     },
@@ -107,6 +136,23 @@ export default {
       const { name, center = [], orientation = {}} = data
       this.flyTo({ layer: layerMap[name], center, orientation })
     },
+    handleSearchTextInput: debounce(function() {
+      const searchMatchIds = []
+      if (this.searchText) {
+        const findMatchIds = (layers) => {
+          if (!isEmpty(layers)) {
+            layers.forEach(layer => {
+              if (layer.label.includes(this.searchText)) {
+                searchMatchIds.push(layer.id)
+              }
+              findMatchIds(layer.children)
+            })
+          }
+        }
+        findMatchIds(this.layers)
+      }
+      this.searchMatchIds = searchMatchIds
+    }, 800),
     /**
      * 居中
      * @param layer 要居中的图层
@@ -160,28 +206,40 @@ export default {
     class="layer-popover"
   >
     <el-card class="layer-container">
-      <el-tree
-        :data="layers"
-        show-checkbox
-        default-expand-all
-        node-key="id"
-        highlight-current
-        :props="treeProps"
-        @check-change="handleCheckChange"
-      >
-        <span slot-scope="{ node, data }" class="custom-tree-node">
-          <span>{{ node.label }}</span>
-          <span v-if="node.isLeaf && node.checked">
-            <el-button
-              type="text"
-              size="mini"
-              @click.stop="() => handleFlyTo(node, data)"
-            >
-              居中
-            </el-button>
+      <div>
+        <el-input
+          v-model="searchText"
+          clearable
+          size="mini"
+          placeholder="输入关键字搜索"
+          prefix-icon="el-icon-search"
+          style="margin-bottom:10px;"
+          @input="handleSearchTextInput"
+        />
+        <el-tree
+          ref="treeRef"
+          :data="layers"
+          show-checkbox
+          default-expand-all
+          node-key="id"
+          highlight-current
+          :props="treeProps"
+          @check-change="handleCheckChange"
+        >
+          <span slot-scope="{ node, data }" :class="['custom-tree-node', searchMatchIds.includes(data.id) ? 'matched' : '']">
+            <span>{{ node.label }}</span>
+            <span v-if="node.isLeaf && node.checked">
+              <el-button
+                type="text"
+                size="mini"
+                @click.stop="() => handleFlyTo(node, data)"
+              >
+                居中
+              </el-button>
+            </span>
           </span>
-        </span>
-      </el-tree>
+        </el-tree>
+      </div>
     </el-card>
     <el-button
       slot="reference"
@@ -228,6 +286,8 @@ export default {
 }
 </style>
 <style scoped lang="scss">
+$highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
+
 .layer-container {
   max-height: 760px;
   width: 300px;
@@ -244,8 +304,12 @@ export default {
     background: none;
     color: #cfcfcf;
     ::v-deep {
-      .el-tree-node__content:hover {
-        background-color: rgba(95, 95, 95, 0.75);
+      .el-tree-node__content {
+        &:hover,
+        &:has(.custom-tree-node.matched){
+          //background-color: rgba(95, 95, 95, 0.75);
+          background-color: $highTreeNodeBackgroundColor;
+        }
       }
       .custom-tree-node {
         flex: 1;
@@ -262,7 +326,8 @@ export default {
       .el-tree-node {
         &.is-current {
           .el-tree-node__content {
-            background-color: rgba(95, 95, 95, 0.75);
+            //background-color: rgba(95, 95, 95, 0.75);
+            background-color: $highTreeNodeBackgroundColor;
           }
         }
       }

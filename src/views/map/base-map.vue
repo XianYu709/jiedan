@@ -12,12 +12,11 @@ export default {
   },
   methods: {
     initMap() {
-      const BING_MAP_KEY = 'AkNh5OpOWgi_CnmMMlh1pCEv7OGqHKnsK4XU1mxPbUSVq21ncmnZm4kf-lBh2hxw'
       const viewer = new window.Cesium.Viewer(this.$refs.cesiumContainer, {
         // imageryProvider: new window.Cesium.BingMapsImageryProvider({
         //   url: 'https://dev.virtualearth.net',
         //   mapStyle: window.Cesium.BingMapsStyle.AERIAL,
-        //   key: BING_MAP_KEY
+        //   key: 'AkNh5OpOWgi_CnmMMlh1pCEv7OGqHKnsK4XU1mxPbUSVq21ncmnZm4kf-lBh2hxw'
         // }),
         navigation: false,
         sceneModePicker: true

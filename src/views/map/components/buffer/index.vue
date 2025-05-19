@@ -129,63 +129,59 @@ export default {
 </script>
 
 <template>
-  <el-card
-    class="map-buffer-container"
+  <el-form
+    size="small"
+    label-width="50px"
+    class="map-buffer-form"
   >
-    <el-form
-      size="small"
-      label-width="50px"
-      class="buffer-form"
-    >
-      <el-form-item label="图层">
-        <el-select
-          v-model="fileNames"
-          multiple
-          collapse-tags
-          :multiple-limit="2"
-          placeholder="请选择图层"
-          size="small"
-          clearable
-          popper-class="buffer-select-popper"
-          @change="handleChange"
+    <el-form-item label="图层">
+      <el-select
+        v-model="fileNames"
+        multiple
+        collapse-tags
+        :multiple-limit="2"
+        placeholder="请选择图层"
+        size="small"
+        clearable
+        popper-class="buffer-select-popper"
+        @change="handleChange"
+      >
+        <el-option
+          v-for="item in bufferFiles"
+          :key="item.name"
+          :label="item.name"
+          :value="item.name"
         >
-          <el-option
-            v-for="item in bufferFiles"
-            :key="item.name"
-            :label="item.name"
-            :value="item.name"
+          {{ item.name }}
+        </el-option>
+      </el-select>
+    </el-form-item>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="半径">
+          <el-input-number
+            v-model="radius"
+            controls-position="right"
+            :min="1"
+            :max="9999"
+            @change="handleRadiusChange2"
+          />
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="单位">
+          <el-select
+            v-model="radiusUnit"
+            popper-class="buffer-select-popper"
+            @change="handleRadiusChange2"
           >
-            {{ item.name }}
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="半径">
-            <el-input-number
-              v-model="radius"
-              controls-position="right"
-              :min="1"
-              :max="9999"
-              @change="handleRadiusChange2"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="单位">
-            <el-select
-              v-model="radiusUnit"
-              popper-class="buffer-select-popper"
-              @change="handleRadiusChange2"
-            >
-              <el-option label="米" value="meters">米</el-option>
-              <el-option label="千米" value="kilometers">千米</el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-  </el-card>
+            <el-option label="米" value="meters">米</el-option>
+            <el-option label="千米" value="kilometers">千米</el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
 </template>
 
 <style lang="scss">
@@ -219,23 +215,7 @@ $background-color: rgba(38, 38, 38, 0.75);
 $border-color: rgba(157, 157, 157, 0.75);
 $color: #a5a5a5;
 
-.map-buffer-container {
-  position: absolute;
-  top: 80px;
-  left: 15px;
-  width: 350px;
-  max-height: 760px;
-  border: 1px solid #444;
-  background-color: $background-color;
-  color: white;
-  overflow: auto;
-  ::v-deep {
-    .el-card__body {
-      padding: 15px;
-    }
-  }
-}
-.buffer-form {
+.map-buffer-form {
   margin-bottom: -18px;
   ::v-deep {
     .el-form-item__label {
