@@ -1,10 +1,13 @@
 <script>
-import RollerShutter from './plugins/RollerShutter'
-import FireworksHandler from './components/specialEffects/FireworksHandler'
-import BurstHandler from './components/specialEffects/BurstHandler'
-import MilitaryPlottingHelper from '@/views/plotting/militaryPlotting/helper'
+import RollerShutter from "./plugins/RollerShutter";
+import FireworksHandler from "./components/specialEffects/FireworksHandler";
+import BurstHandler from "./components/specialEffects/BurstHandler";
+import MilitaryPlottingHelper from "@/views/plotting/militaryPlotting/helper";
 
-let rollerShutterHandler, fireworksHandler, burstHandler, militaryPlottingHelper
+let rollerShutterHandler,
+  fireworksHandler,
+  burstHandler,
+  militaryPlottingHelper;
 
 export default {
   name: "MapIndex",
@@ -31,9 +34,9 @@ export default {
     Slope: () => import("./components/slope"),
     ViewshedIndex: () => import("./components/viewshed"),
     Profile: () => import("./components/profile"),
+    SituationAnalyse: () => import("./components/situationAnalyse"),
     BurstIndex: () => import("./components/specialEffects/burst.vue"),
     FireworksIndex: () => import("./components/specialEffects/fireworks.vue"),
-    SituationAnalyse: () => import("./components/situationAnalyse"),
   },
   data() {
     return {
@@ -52,12 +55,14 @@ export default {
       if (!viewer) return false;
       switch (menu.code) {
         // 标绘
-        case 'jsPlotting':
+        case "jsPlotting":
           if (!militaryPlottingHelper) {
-            militaryPlottingHelper = new MilitaryPlottingHelper(viewer)
+            militaryPlottingHelper = new MilitaryPlottingHelper(viewer);
           }
-          militaryPlottingHelper.isActived ? militaryPlottingHelper.deactivate() : militaryPlottingHelper.active()
-          break
+          militaryPlottingHelper.isActived
+            ? militaryPlottingHelper.deactivate()
+            : militaryPlottingHelper.active();
+          break;
         // 卷帘
         case "rollerShutter":
           if (!rollerShutterHandler) {
@@ -72,7 +77,7 @@ export default {
           fireworksHandler?.clear();
           burstHandler?.clear();
       }
-      this.activeMenu = menu
+      this.activeMenu = menu;
     },
     handleCardClose() {
       this.activeMenu = null;
@@ -89,8 +94,8 @@ export default {
       :get-viewer="getViewer"
       @click="handleMenuClick"
     />
-    <BaseMap @complete="handleComplete"/>
-    <Layers :get-viewer="getViewer"/>
+    <BaseMap @complete="handleComplete" />
+    <Layers :get-viewer="getViewer" />
     <BaseCard
       v-if="activeMenu && activeMenu.componentName"
       :title="activeMenu.label"
@@ -98,7 +103,7 @@ export default {
       show-close
       @close="handleCardClose"
     >
-      <component :is="activeMenu.componentName" :get-viewer="getViewer"/>
+      <component :is="activeMenu.componentName" :get-viewer="getViewer" />
     </BaseCard>
   </div>
 </template>

@@ -1,45 +1,121 @@
 <template>
   <div class="container">
+    <el-form label-width="90px" label-position="right">
+      <el-form-item label="另存为" class="mb-0">
+        <el-input v-model="allParmas.smlFile" placeholder="另存为" size="mini">
+          <el-button slot="append" type="primary" @click="saveAsSmlFile"
+            >保存</el-button
+          >
+        </el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" size="mini" @click="saveHandler"
+          >保存修改</el-button
+        >
+        <el-button type="primary" size="mini" @click="uploadSmlFile"
+          >选择本地文件并上传</el-button
+        >
+      </el-form-item>
+      <el-form-item label="文件URL" class="mb-0">
+        <el-input
+          v-model="allParmas.downloadUrl"
+          placeholder="文件URL"
+          size="mini"
+        >
+          <el-button slot="append" type="primary" @click="down">下载</el-button>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="文件名称" class="mb-0">
+        <el-input
+          v-model="allParmas.smlFileName"
+          placeholder="文件名"
+          size="mini"
+        >
+          <el-button slot="append" type="primary" @click="deleteHandler"
+            >删除</el-button
+          >
+        </el-input>
+      </el-form-item>
+    </el-form>
     <el-tree
       :data="treeData"
-      node-key="SMLFileName"
+      node-key="label"
       class="el-tree"
       highlight-current
-      :props="{
-        label: 'SMLFileName',
-        children: 'childNodes',
-      }"
+      :props="props"
     >
-      <div
-        slot-scope="{ node, data }"
-        @click="nodeClick(node, data)"
-
-      >
-        {{ data.symbolName }}
+      <div slot-scope="{ node, data }" @click="nodeClick(node, data)">
+        {{ data.label }}
       </div>
     </el-tree>
   </div>
 </template>
 <script>
+import useHellper from "./helper";
+
 export default {
   name: "CesiumDrawer",
   data() {
     return {
+      props: {
+        label: "label",
+        children: "children",
+      },
+      allParmas: {
+        smlFile: "",
+        smlFileName: "",
+        downloadUrl: "",
+      },
+      helper: null,
       treeData: [],
-      defaultCheckedKeys: [5],
-      plotEditControl: null,
-      plotDrawControl: null,
-      plotting: null,
+      sitDataManager: null,
     };
   },
   created() {
     this.loadTreeData();
   },
   mounted() {
-    // this.initPlot();
+    this.initPlot();
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.helper.clearAll();
+  },
   methods: {
+    down() {
+      if (this.allParmas.downloadUrl) {
+        window.open(this.allParmas.downloadUrl);
+      }
+    },
+    saveHandler() {
+      this.sitDataManager.saveSmlFile();
+    },
+    saveAsSmlFile() {
+      const smlName = this.allParmas.smlFile;
+      if (smlName.length !== 0) {
+        this.sitDataManager.saveAsSmlFile(smlName);
+      } else {
+        this.$message({
+          message: "请输入文件名",
+          type: "info",
+        });
+      }
+    },
+    uploadSmlFile() {
+      this.sitDataManager.uploadSmlFile(function (evt) {
+        if (evt.success) {
+          this.loadTreeData();
+        }
+        this.$message({
+          message: evt.success ? "上传成功" : "上传失败",
+          type: evt.success ? "success" : "error",
+        });
+      });
+    },
+    deleteHandler() {
+      if (this.sitDataManager && this.allParmas.smlFileName) {
+        this.sitDataManager.deleteSmlFileOnServer(this.allParmas.smlFileName);
+      }
+    },
     getImg(node, data) {
       let names = [];
       const getLable = (parent) => {
@@ -59,43 +135,49 @@ export default {
       );
     },
     async loadTreeData() {
-      const resp = await fetch('https://www.supermapol.com/realspace/services/plot-TY/rest/plot/smlInfos.rjson?start=0&count=10');
-      const data= await resp.json();
-      console.log(data);
-      this.treeData = data;
+      this.allParmas = JSON.parse(
+        JSON.stringify({
+          smlFile: "",
+          smlFileName: "",
+          downloadUrl: "",
+        })
+      );
+      this.treeData = JSON.parse(JSON.stringify([]));
+      const resp = await fetch(
+        "https://www.supermapol.com/realspace/services/plot-TY/rest/plot/smlInfos.rjson?start=0&count=10"
+      );
+      const data = await resp.json();
+      let temp = data.map((it) => {
+        const { SMLFileName, ...other } = it;
+        const keys = Object.keys(other);
+        return {
+          label: SMLFileName,
+          value: SMLFileName,
+          children: keys.map((i) => {
+            return { label: i, value: i };
+          }),
+        };
+      });
+      this.treeData = temp;
     },
     initPlot() {
-      const serverUrl = "https://iserver.supermap.io/iserver/services/map-china400/rest/maps/China_4326";
-      // const serverUrl =
-      //   "http://www.supermapol.com/realspace/services/plot-TY/rest/plot";
+      const serverUrl =
+        "http://www.supermapol.com/realspace/services/plot-TY/rest/plot";
       const viewer = window.viewer;
-      const scene = viewer.scene;
-      if (!viewer) {
-        return;
-      }
-      this.plottingLayer = new SuperMap3D.PlottingLayer(scene, "plottingLayer");
-      scene.plotLayers.add(plottingLayer);
-
-      this.plotting = SuperMap3D.Plotting.getInstance(serverUrl, scene);
-
-      this.plotEditControl = new SuperMap3D.PlotEditControl(
-        scene,
-        plottingLayer
-      ); //编辑控件
-      this.plotEditControl.activate();
-      this.plotDrawControl = new SuperMap3D.PlotDrawControl(
-        scene,
-        plottingLayer
-      ); //绘制控件
-      this.plotDrawControl.drawControlEndEvent.addEventListener(function () {
-        //标绘结束，激活编辑控件
-        this.plotEditControl.activate();
-      });
+      const helper = useHellper(
+        viewer,
+        viewer.scene,
+        serverUrl,
+        this.loadTreeData
+      );
+      this.helper = helper;
+      this.sitDataManager = helper.getDataManager();
     },
     nodeClick(node, data) {
-      console.log(node, data);
-
-    
+      const url = this.sitDataManager.downloadSmlFileUrl(data.label);
+      this.allParmas.downloadUrl = url;
+      this.allParmas.smlFileName = data.label;
+      this.sitDataManager.openSmlFileOnServer(data.label);
     },
   },
 };
