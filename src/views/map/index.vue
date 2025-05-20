@@ -33,6 +33,7 @@ export default {
     Profile: () => import("./components/profile"),
     BurstIndex: () => import("./components/specialEffects/burst.vue"),
     FireworksIndex: () => import("./components/specialEffects/fireworks.vue"),
+    SituationAnalyse: () => import("./components/situationAnalyse"),
   },
   data() {
     return {
@@ -88,8 +89,8 @@ export default {
       :get-viewer="getViewer"
       @click="handleMenuClick"
     />
-    <BaseMap @complete="handleComplete" />
-    <Layers :get-viewer="getViewer" />
+    <BaseMap @complete="handleComplete"/>
+    <Layers :get-viewer="getViewer"/>
     <BaseCard
       v-if="activeMenu && activeMenu.componentName"
       :title="activeMenu.label"
@@ -97,7 +98,7 @@ export default {
       show-close
       @close="handleCardClose"
     >
-      <component :is="activeMenu.componentName" :get-viewer="getViewer" />
+      <component :is="activeMenu.componentName" :get-viewer="getViewer"/>
     </BaseCard>
   </div>
 </template>

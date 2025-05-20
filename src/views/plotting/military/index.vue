@@ -34,6 +34,7 @@
 </template>
 <script>
 import useHellper from "./helper";
+
 export default {
   name: "CesiumDrawer",
   data() {
@@ -49,9 +50,12 @@ export default {
     this.loadTreeData();
   },
   mounted() {
-    this.initPlot();
+    setTimeout(() => {
+      this.initPlot();
+    }, 3000)
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+  },
   methods: {
     getImg(node, data) {
       let names = [];
@@ -109,18 +113,22 @@ $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
 .container {
   color: white;
   overflow: auto;
+
   ::v-deep {
     .el-card__body {
       padding: 15px;
     }
   }
+
   .el-tree {
     background: none;
     color: #cfcfcf;
+
     ::v-deep {
       .el-tree-node__content {
         height: 65px;
       }
+
       .custom-tree-node {
         flex: 1;
         display: flex;
@@ -130,6 +138,7 @@ $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
         padding-right: 8px;
       }
     }
+
     ::v-deep {
       .el-tree-node__content {
         &:hover,
@@ -139,6 +148,7 @@ $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
           background-color: $highTreeNodeBackgroundColor;
         }
       }
+
       .custom-tree-node {
         flex: 1;
         display: flex;
@@ -149,6 +159,7 @@ $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
       }
     }
   }
+
   .el-tree--highlight-current {
     ::v-deep {
       .el-tree-node {
