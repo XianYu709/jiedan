@@ -6,17 +6,11 @@ export default (viewer, scene, serverUrl) => {
   let plottingLayer, plotting, plotEditControl, plotDrawControl;
   const cesium = window.Cesium;
   try {
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(
-      scene,
-      "military"
-    );
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "military");
   } catch (error) {
     plottingLayer = null;
     // 重试
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(
-      scene,
-      "military"
-    );
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "military");
   }
   if (!viewer) {
     return;
@@ -37,7 +31,6 @@ export default (viewer, scene, serverUrl) => {
     }
   });
 
-
   return {
     drawSymbol(libID, symbolCode) {
       console.log("drawSymbol called with:", libID, symbolCode);
@@ -46,6 +39,9 @@ export default (viewer, scene, serverUrl) => {
       plotEditControl.deactivate(); //绘制结束后再激活
     },
     clearAll() {
+      plotEditControl?.deactivate();
+      plotDrawControl?.deactivate();
+      scene.plotLayers.remove('military');
       plottingLayer.removeAll();
     },
     deleteSelected() {

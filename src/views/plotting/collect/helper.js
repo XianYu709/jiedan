@@ -6,17 +6,11 @@ export default (viewer, scene, serverUrl, fetchData) => {
   let plotting, plotEditControl, plotDrawControl, sitDataManager, plottingLayer;
   const cesium = window.Cesium;
   try {
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(
-      scene,
-      "collect"
-    );
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "collect");
   } catch (error) {
     plottingLayer = null;
     // 重试
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(
-      scene,
-      "collect"
-    );
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "collect");
   }
   if (!viewer) {
     return;
@@ -69,20 +63,12 @@ export default (viewer, scene, serverUrl, fetchData) => {
   });
 
   return {
-    drawSymbol(libID, symbolCode) {
-      console.log("drawSymbol called with:", libID, symbolCode);
-      plotDrawControl.setAction(libID, symbolCode);
-      plotDrawControl.activate();
-      plotEditControl.deactivate(); //绘制结束后再激活
-    },
     clearAll() {
+      plotEditControl?.deactivate();
+      plotDrawControl?.deactivate();
+      scene.plotLayers.remove("collect");
       plottingLayer.removeAll();
     },
-    deleteSelected() {
-      plottingLayer.removeGeoGraphicObject(plottingLayer.selectedFeature);
-    },
-    plotEditControl,
-    plotDrawControl,
     getDataManager: () => sitDataManager,
   };
 };
