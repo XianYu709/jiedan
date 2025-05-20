@@ -1,4 +1,4 @@
-const iServerUrl = "http://192.168.100.104:8090";
+const iServerUrl = "http://192.168.0.103:8090";
 const wmtsUrl =
   "http://192.168.0.100:8088/freexserver/dataserver/htc/service/wmts";
 window.MAP_CONFIG = {
@@ -17,7 +17,7 @@ window.MAP_CONFIG = {
    * }
    */
   layers: [
-/*     {
+    {
       id: 1,
       label: "场站列表",
       children: [
@@ -25,11 +25,9 @@ window.MAP_CONFIG = {
           id: 10001,
           label: "兴宁机场",
           name: "xingning",
-          url:
-            iServerUrl +
-            "/iserver/services/3D-model3D/rest/realspace/datas/xingning@jsys/config",
-          type: "scp",
-          center: [115.75828728, 24.14842144, 2000],
+        url:  "http://www.supermapol.com/realspace/services/3D-suofeiya_church/rest/realspace/datas/Config/config",
+          type: 'scp',
+          center: [126.62130634014461, 45.76867932023662, 2000],
           orientation: {
             heading: 0,
             pitch: -90,
@@ -337,7 +335,7 @@ window.MAP_CONFIG = {
           },
         },
       ],
-    }, */
+    },
     {
       id: 4,
       label: "地形",
@@ -346,11 +344,9 @@ window.MAP_CONFIG = {
           id: 40001,
           label: "四省地形",
           name: "fourterrain",
-          // url: iServerUrl + '/iserver/services/3D-dem/rest/realspace/datas/福建@jsys',
-          // url: "http://www.startyoung.top:4090/iserver/services/3D-local3DCache-dem/rest/realspace/datas/dem",
+          url: "http://www.supermapol.com/realspace/services/3D-ZF_normal/rest/realspace/datas/srtm_54_07@zhufeng",
           type: "terrain",
-          // center: [118.75828728, 25.54842144, 700000],
-          checked: true,
+          center: [87.06619935304369, 27.917867546243677, 700000],
           orientation: {
             heading: 0,
             pitch: -90,
@@ -415,58 +411,60 @@ window.MAP_CONFIG = {
     {
       id: 5,
       label: "影像",
-      /*  children:[
+      children: [
         {
           id: 50001,
-          label: '福建省影像透明',
-          name: '福建省影像透明',
-          url: wmtsUrl ,
-          type: 'wmts',
-          center: [118.75828728, 25.54842144, 700000],
-          checked: true,
-          orientation: {
-            heading: 0,
-            pitch: -90,
-            roll: 0
-          }
-        },{
-          id: 50002,
-          label: '台湾省影像透明',
-          name: '台湾省影像透明',
-          url: wmtsUrl ,
-          type: 'wmts',
+          label: "福建省影像透明",
+          name: "福建省影像透明",
+          url: wmtsUrl,
+          type: "wmts",
           center: [118.75828728, 25.54842144, 700000],
           orientation: {
             heading: 0,
             pitch: -90,
-            roll: 0
-          }
-        },{
-          id: 50003,
-          label: '浙江省影像透明',
-          name: '浙江省影像透明',
-          url: wmtsUrl ,
-          type: 'wmts',
-          center: [118.75828728, 25.54842144, 700000],
-          orientation: {
-            heading: 0,
-            pitch: -90,
-            roll: 0
-          }
-        },{
-          id: 50004,
-          label: '广东省_影像',
-          name: '广东省_影像',
-          url: wmtsUrl ,
-          type: 'wmts',
-          center: [118.75828728, 25.54842144, 700000],
-          orientation: {
-            heading: 0,
-            pitch: -90,
-            roll: 0
-          }
+            roll: 0,
+          },
         },
-      ] */
+        {
+          id: 50002,
+          label: "台湾省影像透明",
+          name: "台湾省影像透明",
+          url: wmtsUrl,
+          type: "wmts",
+          center: [118.75828728, 25.54842144, 700000],
+          orientation: {
+            heading: 0,
+            pitch: -90,
+            roll: 0,
+          },
+        },
+        {
+          id: 50003,
+          label: "浙江省影像透明",
+          name: "浙江省影像透明",
+          url: wmtsUrl,
+          type: "wmts",
+          center: [118.75828728, 25.54842144, 700000],
+          orientation: {
+            heading: 0,
+            pitch: -90,
+            roll: 0,
+          },
+        },
+        {
+          id: 50004,
+          label: "广东省_影像",
+          name: "广东省_影像",
+          url: wmtsUrl,
+          type: "wmts",
+          center: [118.75828728, 25.54842144, 700000],
+          orientation: {
+            heading: 0,
+            pitch: -90,
+            roll: 0,
+          },
+        },
+      ],
     },
   ],
   /**

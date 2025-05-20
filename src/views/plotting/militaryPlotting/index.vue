@@ -1,30 +1,11 @@
 <template>
-  <div>
-    <el-tree
-      :data="treeData"
-      show-checkbox
-      node-key="id"
-      :default-checked-keys="defaultCheckedKeys"
-      :props="{
-        children: 'childNodes',
-        label: 'symbolName',
-      }"
-    >
-      <template slot-scope="{ node, data }">
-        <div  >
-          {{ data.symbolName }}
-        </div>
-      </template>
-    </el-tree>
-  </div>
+  <div class="container"></div>
 </template>
 <script>
 export default {
   name: "CesiumDrawer",
   data() {
     return {
-      treeData: [],
-      defaultCheckedKeys: [5],
       drawHandler: null,
       activeShapePoints: [],
       activeShape: null,
@@ -38,9 +19,6 @@ export default {
       showMode: false,
       pointEntity: [],
     };
-  },
-  created() {
-    this.loadTreeData();
   },
   mounted() {
     this.addpoint();
@@ -64,24 +42,6 @@ export default {
     });
   },
   methods: {
-    async loadTreeData() {
-      const [one, two] = await Promise.all([
-        fetch("data/22.json", {
-          headers: {
-            Accept: "application/json",
-          },
-        }).then((resp) => resp.json()),
-        fetch("data/421.json", {
-          headers: {
-            Accept: "application/json",
-          },
-        }).then((resp) => resp.json()),
-      ]);
-      const data = [one.rootSymbolLibNode, two.rootSymbolLibNode];
-      this.treeData = data;
-      console.log(data);
-    },
-
     addpoint(params) {
       // 模拟点数据
       var pointsData = [
@@ -167,4 +127,63 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped lang="scss">
+$highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
+
+.container {
+  color: white;
+  overflow: auto;
+  ::v-deep {
+    .el-card__body {
+      padding: 15px;
+    }
+  }
+  .el-tree {
+    background: none;
+    color: #cfcfcf;
+    ::v-deep {
+      .el-tree-node__content {
+        height: 65px;
+      }
+      .custom-tree-node {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        padding-right: 8px;
+      }
+    }
+    ::v-deep {
+      .el-tree-node__content {
+        &:hover,
+        &:has(.custom-tree-node.matched) {
+          height: 65px;
+          //background-color: rgba(95, 95, 95, 0.75);
+          background-color: $highTreeNodeBackgroundColor;
+        }
+      }
+      .custom-tree-node {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        padding-right: 8px;
+      }
+    }
+  }
+  .el-tree--highlight-current {
+    ::v-deep {
+      .el-tree-node {
+        &.is-current {
+          .el-tree-node__content {
+            //background-color: rgba(95, 95, 95, 0.75);
+            background-color: $highTreeNodeBackgroundColor;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

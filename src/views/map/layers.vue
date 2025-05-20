@@ -80,6 +80,7 @@ export default {
               url: url,
               requestWaterMask: true,
               requestVertexNormals: true,
+              invisibility: true,
               isSct: true
             })
             layerMap[name] = layer
@@ -104,7 +105,7 @@ export default {
           } else if (['webp'].includes(type)) {
             layer.show = true
           } else if (['terrain'].includes(type)) {
-            viewer.terrainProvider = layer
+            viewer.terrainProvider.visible = true
           } else if (['wmts'].includes(type)) {
             layer.show = true
           }
@@ -115,8 +116,8 @@ export default {
           layer.visible = false
         } else if (['webp'].includes(type)) {
           layer.show = false
-        } else if (['terrin'].includes(type)) {
-          viewer.terrainProvider = ''
+        } else if (['terrain'].includes(type)) {
+          viewer.terrainProvider.visible = false
         } else if (['wmts'].includes(type)) {
           layer.show = false
         }
@@ -216,29 +217,31 @@ export default {
           style="margin-bottom:10px;"
           @input="handleSearchTextInput"
         />
-        <el-tree
-          ref="treeRef"
-          :data="layers"
-          show-checkbox
-          default-expand-all
-          node-key="id"
-          highlight-current
-          :props="treeProps"
-          @check-change="handleCheckChange"
-        >
-          <span slot-scope="{ node, data }" :class="['custom-tree-node', searchMatchIds.includes(data.id) ? 'matched' : '']">
-            <span>{{ node.label }}</span>
-            <span v-if="node.isLeaf && node.checked">
-              <el-button
-                type="text"
-                size="mini"
-                @click.stop="() => handleFlyTo(node, data)"
-              >
-                居中
-              </el-button>
+        <div class="tree-container">
+          <el-tree
+            ref="treeRef"
+            :data="layers"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            highlight-current
+            :props="treeProps"
+            @check-change="handleCheckChange"
+          >
+            <span slot-scope="{ node, data }" :class="['custom-tree-node', searchMatchIds.includes(data.id) ? 'matched' : '']">
+              <span>{{ node.label }}</span>
+              <span v-if="node.isLeaf && node.checked">
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click.stop="() => handleFlyTo(node, data)"
+                >
+                  居中
+                </el-button>
+              </span>
             </span>
-          </span>
-        </el-tree>
+          </el-tree>
+        </div>
       </div>
     </el-card>
     <el-button
@@ -289,7 +292,7 @@ export default {
 $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
 
 .layer-container {
-  max-height: 760px;
+  //max-height: 760px;
   width: 300px;
   border: 1px solid #444;
   background-color: rgba(38, 38, 38, 0.75);
@@ -299,6 +302,10 @@ $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
     .el-card__body {
       padding: 15px;
     }
+  }
+  .tree-container {
+    max-height: 700px;
+    overflow: auto;
   }
   .el-tree {
     background: none;

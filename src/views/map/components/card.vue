@@ -101,7 +101,7 @@ export default {
     .map-card-form {
       margin-bottom: -18px;
       .el-form-item__label {
-        color: #a5a5a5;
+        color: #818489;
       }
     }
   }

@@ -14,6 +14,8 @@ export default {
     Layers: () => import("./layers.vue"),
     basePlotting: () => import("../plotting/basePlotting"),
     jsPlotting: () => import("../plotting/militaryPlotting"),
+    military: () => import("../plotting/military"),
+    collect: () => import("../plotting/collect"),
     hjtx: () => import("../Specialeffects/enviroment"),
     dttx: () => import("../Specialeffects/map"),
     Buffer: () => import("./components/buffer"),
@@ -29,6 +31,8 @@ export default {
     Slope: () => import("./components/slope"),
     ViewshedIndex: () => import("./components/viewshed"),
     Profile: () => import("./components/profile"),
+    BurstIndex: () => import("./components/specialEffects/burst.vue"),
+    FireworksIndex: () => import("./components/specialEffects/fireworks.vue"),
   },
   data() {
     return {
@@ -61,22 +65,6 @@ export default {
           rollerShutterHandler.isOpened
             ? rollerShutterHandler.close()
             : rollerShutterHandler.open();
-          break;
-        // 烟火
-        case "fireworks":
-          if (!fireworksHandler) {
-            fireworksHandler = new FireworksHandler(viewer);
-          }
-          fireworksHandler.isActived
-            ? fireworksHandler.clear()
-            : fireworksHandler.active();
-          break;
-        // 爆炸
-        case "burst":
-          if (!burstHandler) {
-            burstHandler = new BurstHandler(viewer);
-          }
-          burstHandler.isActived ? burstHandler.clear() : burstHandler.active();
           break;
         default:
           rollerShutterHandler?.close();

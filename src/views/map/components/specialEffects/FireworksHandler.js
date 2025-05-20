@@ -46,50 +46,6 @@ export default class FireworksHandler {
     this._rotation = new Quaternion()
     this._hpr = new HeadingPitchRoll()
     this._trs = new TranslationRotationScale()
-
-    // this._modelMatrix = Transforms.eastNorthUpToFixedFrame(Cartesian3.fromDegrees(116.3818454, 39.99270708))
-    // this._emitterInitialLocation = new Cartesian3(0.0, 0.0, 300.0)
-    //
-    // this._minimumExplosionSize = 20.0
-    // this._maximumExplosionSize = 50.0
-    // this._particlePixelSize = 10.0
-    // this._burstSize = 600.0
-    // this._lifetime = 10.0
-    // this._numberOfFireworks = 20.0
-    //
-    // this._emitterModelMatrixScratch = new Matrix4()
-    //
-    // this._xMin = -800.0
-    // this._xMax = 800.0
-    // this._yMin = -800.0
-    // this._yMax = 800.0
-    // this._zMin = -150.0
-    // this._zMax = 150.0
-    //
-    // this._colorOptions = [
-    //   {
-    //     red: 0.95,
-    //     green: 0.0,
-    //     blue: 0.8,
-    //     alpha: 1.0
-    //   }, {
-    //     red: 0.0,
-    //     green: 0.75,
-    //     blue: 0.8,
-    //     alpha: 1.0
-    //   }, {
-    //     red: 1.0,
-    //     green: 0.8,
-    //     blue: 0.2,
-    //     alpha: 1.0
-    //   }, {
-    //     red: 0.9,
-    //     green: 0.9,
-    //     blue: 0.0,
-    //     alpha: 1.0
-    //   }
-    // ]
-
     this._particleSystems = []
     this._isActived = false
   }
@@ -98,31 +54,6 @@ export default class FireworksHandler {
    * 启动
    */
   active() {
-    // if (!this.particleSystem) {
-    //   this._init()
-    // }
-    // for (let i = 0; i < this._numberOfFireworks; ++i) {
-    //   const x = CesiumMath.randomBetween(this._xMin, this._xMax)
-    //   const y = CesiumMath.randomBetween(this._yMin, this._yMax)
-    //   const z = CesiumMath.randomBetween(this._zMin, this._zMax)
-    //   const offset = new Cartesian3(x, y, z)
-    //   const color = Color.fromRandom(this._colorOptions[i % this._colorOptions.length])
-    //
-    //   const bursts = []
-    //   for (let j = 0; j < 3; ++j) {
-    //     bursts.push(new ParticleBurst({
-    //       time: CesiumMath.nextRandomNumber() * this._lifetime,
-    //       minimum: this._burstSize,
-    //       maximum: this._burstSize
-    //     }))
-    //   }
-    //
-    //   this._createFirework(offset, color, bursts)
-    // }
-    // this.viewer.flyTo(this.entity)
-    // this.viewer.scene.camera.flyTo({
-    //   destination: this._position
-    // })
     this._addEvent()
     this._isActived = true
   }
