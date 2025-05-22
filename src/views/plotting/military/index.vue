@@ -1,35 +1,161 @@
 <template>
   <div class="container" @keydown.delete="handleDelete">
-    <el-tree
-      :data="treeData"
-      node-key="id"
-      class="el-tree"
-      highlight-current
-      :props="{
-        children: 'childNodes',
-        label: 'symbolName',
-      }"
-    >
-      <div
-        slot-scope="{ node, data }"
-        v-if="data.symbolNodeType == 'SYMBOL_GROUP'"
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="标号库" name="标号库">
+        <el-tree
+          :data="treeData"
+          node-key="id"
+          class="el-tree"
+          highlight-current
+          :props="{
+            children: 'childNodes',
+            label: 'symbolName',
+          }"
+        >
+          <div
+            slot-scope="{ node, data }"
+            v-if="data.symbolNodeType == 'SYMBOL_GROUP'"
+          >
+            {{ data.symbolName }}
+          </div>
+          <div
+            slot-scope="{ node, data }"
+            @click="nodeClick(node, data)"
+            v-else
+            style="padding: 5px 0; width: 60px; height: 70px"
+          >
+            <img
+              :src="getImg(node, data)"
+              alt=""
+              style="width: 60px; height: 60px"
+            />
+            {{ data.symbolName }}
+          </div>
+        </el-tree></el-tab-pane
       >
-        {{ data.symbolName }}
-      </div>
-      <div
-        slot-scope="{ node, data }"
-        @click="nodeClick(node, data)"
-        v-else
-        style="padding: 5px 0; width: 60px; height: 70px"
+      <el-tab-pane
+        :label="`动画效果 -${feature ? feature.symbolName : ''}`"
+        name="动画效果"
       >
-        <img
-          :src="getImg(node, data)"
-          alt=""
-          style="width: 60px; height: 60px"
-        />
-        {{ data.symbolName }}
-      </div>
-    </el-tree>
+        <el-form ref="form" :model="form" label-width="100px" size="small">
+          <el-form-item label="动画类型">
+            <el-select
+              v-model="form.type"
+              placeholder="请选择动画效果"
+              :disabled="!feature"
+            >
+              <el-option label="生长动画" value="ANIMATION_GROW"></el-option>
+              <el-option label="比例动画" value="ANIMATION_SCALE"></el-option>
+              <el-option label="闪烁动画" value="ANIMATION_BLINK"></el-option>
+              <el-option label="显隐动画" value="ANIMATION_SHOW"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="动画持续时间">
+            <el-input
+              :disabled="!feature"
+              v-model="form.duration"
+              placeholder="请输入持续时间"
+              type="number"
+              size="small"
+            ></el-input>
+          </el-form-item>
+          <template
+            v-if="
+              form.type == 'ANIMATION_GROW' || form.type == 'ANIMATION_SCALE'
+            "
+          >
+            <el-form-item label="开始比例">
+              <el-input
+                :disabled="!feature"
+                v-model="form.startScale"
+                type="number"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="结束比例">
+              <el-input
+                :disabled="!feature"
+                v-model="form.endScale"
+                type="number"
+                size="small"
+              ></el-input>
+            </el-form-item>
+          </template>
+          <template v-if="form.type == 'ANIMATION_BLINK'">
+            <el-form-item label="闪烁间隔">
+              <el-input
+                :disabled="!feature"
+                v-model="form.interval"
+                type="number"
+                size="small"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="交替颜色">
+              <el-color-picker v-model="form.color" :disabled="!feature" />
+            </el-form-item>
+            <el-form-item label="交替起始颜色">
+              <el-color-picker v-model="form.colorStart" :disabled="!feature" />
+            </el-form-item>
+          </template>
+          <template v-if="form.type == 'ANIMATION_SHOW'">
+            <el-form-item label="开始动画效果: ">
+              <el-select
+                size="small"
+                v-model="form.startVisibility"
+                placeholder="请选择开始动画效果"
+              >
+                <el-option label="显示" value="show"></el-option>
+                <el-option label="隐藏" value="hide"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="开始动画效果: ">
+              <el-select
+                v-model="form.endVisibility"
+                size="small"
+                placeholder="请选择动画效果"
+              >
+                <el-option label="显示" value="show"></el-option>
+                <el-option label="隐藏" value="hide"></el-option>
+              </el-select>
+            </el-form-item>
+          </template>
+          <div>
+            <el-button
+              type="primary"
+              size="small"
+              plain
+              :disabled="!feature"
+              @click="add"
+              >添加</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              plain
+              :disabled="!feature"
+              @click="play"
+              >播放</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              plain
+              :disabled="!feature"
+              @click="delte"
+              >清除动画</el-button
+            >
+            <el-button
+              type="primary"
+              size="small"
+              plain
+              :disabled="!feature"
+              @click="save"
+              >保存</el-button
+            >
+          </div>
+        </el-form>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 <script>
@@ -40,9 +166,24 @@ export default {
     return {
       treeData: [],
       defaultCheckedKeys: [5],
+      rootSymbolIconUrl: "",
       plottingHelper: null,
       plotEditControl: null,
       plotDrawControl: null,
+      aniMationManager: null,
+      activeName: "标号库",
+      feature: null,
+      form: {
+        type: "",
+        duration: 5,
+        startScale: 0,
+        endScale: 1,
+        interval: 500,
+        color: "#FF0000",
+        colorStart: "#0000FF",
+        startVisibility: "show",
+        endVisibility: "hide",
+      },
     };
   },
   created() {
@@ -55,6 +196,65 @@ export default {
     this.plottingHelper.clearAll();
   },
   methods: {
+    add() {
+      if (!this.feature || !this.form.type) {
+        this.$message.warning("请先选择 feature 和动画类型！");
+        return;
+      }
+
+      const type = SuperMap3D.GOAnimationType[this.form.type];
+      const animationName = `Animation_${Date.now()}`;
+
+      const animation = this.aniMationManager.createGOAnimation(
+        type,
+        animationName,
+        this.feature
+      );
+
+      animation.startTime = 0;
+      animation.duration = Number(this.form.duration) || 5;
+
+      switch (this.form.type) {
+        case "ANIMATION_GROW":
+        case "ANIMATION_SCALE":
+          animation.startScale = Number(this.form.startScale);
+          animation.endScale = Number(this.form.endScale);
+          break;
+        case "ANIMATION_BLINK":
+          animation.interval = Number(this.form.interval) || 1;
+          animation.blinkStyle =
+            SuperMap3D.BlinkAnimationBlinkStyle.Blink_Frequency;
+          animation.replaceStyle =
+            SuperMap3D.BlinkAnimationReplaceStyle.Replace_Color;
+          animation.startColor = this.parseColor(
+            this.form.colorStart || "#ffff00"
+          );
+          animation.endColor = this.parseColor(this.form.color || "#ff0000");
+          break;
+        case "ANIMATION_SHOW":
+          animation.showEffect = false;
+          animation.finalDisplay = this.form.endVisibility === "show";
+          break;
+        default:
+          this.$message.error("暂不支持的动画类型！");
+      }
+
+      this.$message.success("动画已添加！");
+    },
+    parseColor(hex) {
+      const bigint = parseInt(hex.slice(1), 16);
+      const r = ((bigint >> 16) & 255) / 255;
+      const g = ((bigint >> 8) & 255) / 255;
+      const b = (bigint & 255) / 255;
+      return new SuperMap3D.Color(r, g, b, 1.0);
+    },
+    play() {
+      this.aniMationManager.play();
+    },
+    delte() {
+      this.aniMationManager.removeGOAnimationByFeature(this.feature);
+    },
+    save() {},
     getImg(node, data) {
       let names = [];
       const getLable = (parent) => {
@@ -66,7 +266,7 @@ export default {
       getLable(node.parent);
       names = names.reverse();
       return (
-        "http://www.supermapol.com/realspace/output/SymbolIcon/" +
+        this.rootSymbolIconUrl +
         names.join("/") +
         "/" +
         data.symbolCode +
@@ -74,26 +274,35 @@ export default {
       );
     },
     async loadTreeData() {
-      const [one, two] = await Promise.all([
-        fetch("data/22.json", {
-          headers: {
-            Accept: "application/json",
-          },
-        }).then((resp) => resp.json()),
-        fetch("data/421.json", {
-          headers: {
-            Accept: "application/json",
-          },
-        }).then((resp) => resp.json()),
-      ]);
-      const data = [one.rootSymbolLibNode, two.rootSymbolLibNode];
-      this.treeData = data;
+      const url = window.plotHost + window.plotSymbolLibPath;
+      const symbolLibCode = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+        },
+      }).then((resp) => resp.json());
+
+      const symbols = await Promise.all(
+        symbolLibCode.map(async (code) => {
+          return fetch(
+            plotHost + plotSymbolLibPath.replace(".json", "/") + code + ".json",
+            {
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          ).then((res) => res.json());
+        })
+      );
+      this.rootSymbolIconUrl = symbols[0].rootSymbolIconUrl;
+      this.treeData = symbols.map((item) => item.rootSymbolLibNode);
     },
     initPlot() {
-      const serverUrl =
-        "http://www.supermapol.com/realspace/services/plot-TY/rest/plot";
+      const serverUrl = window.plotHost + window.plotSuffix;
       const viewer = window.viewer;
-      this.plottingHelper = useHellper(viewer, viewer.scene, serverUrl);
+      this.plottingHelper = useHellper(viewer, viewer.scene, serverUrl, (e) => {
+        this.feature = e;
+      });
+      this.aniMationManager = this.plottingHelper.getAniMationManager();
     },
     nodeClick(node, data) {
       this.plottingHelper.drawSymbol(data.libID, data.symbolCode);
@@ -106,6 +315,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+::v-deep .el-tabs__item {
+  color: white;
+  opacity: 0.5;
+}
 $highTreeNodeBackgroundColor: rgba(95, 95, 95, 0.75);
 
 .container {

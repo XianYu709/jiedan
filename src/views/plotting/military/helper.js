@@ -1,9 +1,13 @@
-export default (viewer, scene, serverUrl) => {
+export default (viewer, scene, serverUrl, select) => {
   if (!viewer || !scene || !serverUrl) {
     console.error("Invalid parameters passed to createPlottingHelper.");
     return null;
   }
-  let plottingLayer, plotting, plotEditControl, plotDrawControl;
+  let plottingLayer,
+    plotting,
+    plotEditControl,
+    plotDrawControl,
+    animationManager;
   const cesium = window.Cesium;
   try {
     plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "military");
@@ -19,21 +23,29 @@ export default (viewer, scene, serverUrl) => {
   scene.plotLayers.add(plottingLayer);
 
   plotting = cesium.Plotting.getInstance(serverUrl, scene);
+  animationManager = plotting.getGOAnimationManager();
+  function animate() {
+    animationManager.execute();
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
 
   plotEditControl = new cesium.PlotEditControl(scene, plottingLayer); //编辑控件
   plotEditControl.activate();
   plotDrawControl = new cesium.PlotDrawControl(scene, plottingLayer); //绘制控件
   plotDrawControl.drawControlEndEvent.addEventListener(function (e) {
-    const feature = e.feature || (e.features && e.features[0]);
-    if (feature) {
-      plottingLayer.selectedFeature = feature;
-      plotEditControl.activate();
-    }
+    plotEditControl.activate();
+  });
+
+  plotEditControl.FeatureSelectedEvent.addEventListener(function (feature) {
+    select(feature);
+  });
+  plotEditControl.UnSelectedEvent.addEventListener(function (feature) {
+    select(null);
   });
 
   return {
     drawSymbol(libID, symbolCode) {
-      console.log("drawSymbol called with:", libID, symbolCode);
       plotDrawControl.setAction(libID, symbolCode);
       plotDrawControl.activate();
       plotEditControl.deactivate(); //绘制结束后再激活
@@ -41,7 +53,7 @@ export default (viewer, scene, serverUrl) => {
     clearAll() {
       plotEditControl?.deactivate();
       plotDrawControl?.deactivate();
-      scene.plotLayers.remove('military');
+      scene.plotLayers.remove("military");
       plottingLayer.removeAll();
     },
     deleteSelected() {
@@ -49,5 +61,11 @@ export default (viewer, scene, serverUrl) => {
     },
     plotEditControl,
     plotDrawControl,
+    getPlottingLayer() {
+      return plottingLayer;
+    },
+    getAniMationManager() {
+      return animationManager;
+    },
   };
 };

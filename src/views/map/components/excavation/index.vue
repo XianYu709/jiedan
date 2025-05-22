@@ -22,7 +22,7 @@ export default {
     };
   },
   mounted() {},
-  beforeMount() {
+  beforeDestroy() {
     this?.intanceCC?.clear?.();
     this?.intanceKW?.clear?.();
   },

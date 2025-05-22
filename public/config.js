@@ -1,6 +1,15 @@
 const iServerUrl = "http://192.168.0.103:8090";
-const wmtsUrl =
-  "http://192.168.0.100:8088/freexserver/dataserver/htc/service/wmts";
+const freexServerUrl = "http://192.168.0.100:8088/freexserver";
+const wmtsUrl = `${freexServerUrl}/dataserver/htc/service/wmts`;
+
+// window.plotHost = "http://www.startyoung.top:4091";
+// window.plotSymbolLibPath = "/iserver/services/plot-JY/rest/plot/symbolLibs.json";
+// window.plotSuffix = "/iserver/services/plot-JY/rest/plot";
+
+window.plotHost = "http://www.supermapol.com";
+window.plotSymbolLibPath = "/realspace/services/plot-TY/rest/plot/symbolLibs.json";
+window.plotSuffix = '/realspace/services/plot-TY/rest/plot';
+ 
 window.MAP_CONFIG = {
   iServerUrl,
   /**
@@ -25,9 +34,11 @@ window.MAP_CONFIG = {
           id: 10001,
           label: "兴宁机场",
           name: "xingning",
-        url:  "http://www.supermapol.com/realspace/services/3D-suofeiya_church/rest/realspace/datas/Config/config",
-          type: 'scp',
-          center: [126.62130634014461, 45.76867932023662, 2000],
+          url:
+            iServerUrl +
+            "/iserver/services/3D-model3D/rest/realspace/datas/xingning@jsys/config",
+          type: "scp",
+          center: [115.75828728, 24.14842144, 2000],
           orientation: {
             heading: 0,
             pitch: -90,
@@ -344,9 +355,9 @@ window.MAP_CONFIG = {
           id: 40001,
           label: "四省地形",
           name: "fourterrain",
-          url: "http://www.supermapol.com/realspace/services/3D-ZF_normal/rest/realspace/datas/srtm_54_07@zhufeng",
+          url: iServerUrl + "/iserver/services/3D-dem/rest/realspace/datas/dem",
           type: "terrain",
-          center: [87.06619935304369, 27.917867546243677, 700000],
+          center: [118.75828728, 25.54842144, 700000],
           orientation: {
             heading: 0,
             pitch: -90,
@@ -505,20 +516,23 @@ window.MAP_CONFIG = {
   drawModels: [
     {
       name: "E2预警机",
-      path: "/data/GLTF整理/E2预警机_GLTF/E2_GLTF/e2.gltf",
+      path: "/data/gltf/E2_GLTF/awacse2k.gltf",
       imagePath: "/image/map/model/e2.png",
     },
     {
       name: "F5E战斗机",
-      path: "/data/GLTF整理/F5E战斗机_GLTF/F5E_GLTF/f5e.gltf",
+      path: "/data/gltf/F5E_GLTF/f5e.gltf",
       imagePath: "/image/map/model/f5e.png",
     },
     {
       name: "F16战斗机",
-      path: "/data/GLTF整理/F16战斗机_GLTF/F16_GLTF/f16.gltf",
+      path: "/data/gltf/F16_GLTF/f16.gltf",
       imagePath: "/image/map/model/f16.png",
     },
   ],
-  airDefenceServerUrl:
-    "http://192.168.0.100:8088/freexserver/datamanager/target/queryTargetPage",
+  airDefenceServerUrl: `${freexServerUrl}/datamanager/target/queryTargetPage`,
+  targetPlottingServerUrl: `${freexServerUrl}/datamanager/target/queryTargetPage`,
+  targetModelDownloadServerUrl: `${freexServerUrl}/datamanager/target/download`,
+  targetModelImageServerUrl: `${freexServerUrl}/datamanager/target/img`,
+  udpSocketServerUrl: "ws://192.168.100.103:8886",
 };

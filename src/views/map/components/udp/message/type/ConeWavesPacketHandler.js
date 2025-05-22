@@ -1,8 +1,14 @@
 import { isEmpty } from 'lodash'
+import { getEntityModelUri } from '../util'
 
 const {
   Color
 } = window.Cesium
+
+// 圆锥波束外壳gltf路径
+const coneGltfUri = '/data/gltf/pyramid.gltf'
+// 圆锥波束gltf路径
+const coneWavesGltfUri = '/data/gltf/n-mid.gltf'
 
 /**
  * 圆锥波束包
@@ -58,16 +64,57 @@ export default class ConeWavesPacketHandler {
           fBeamAz,
           fBeamEl
         } = item
-        if (nBeamId !== 0 && udpServer.nIdMap[nEntId]) {
-          let model = udpServer.nIdMap[nBeamId]
-          if (!model) {
-            model = udpServer.createConeWaveModelPrimitive()
+        // 实体模型
+        let entityModel = udpServer.nIdMap[nEntId]
+        if (!entityModel) {
+          return
+        }
+        // 定义圆锥形外壳模型id
+        const coneModelId = nTgtId || `${nBeamId}-cone`
+        const options = {
+          longitude: Transform.Pos.dLon,
+          latitude: Transform.Pos.dLat,
+          height: 200 // Transform.Pos.fAlt
+        }
+        // 外壳模型
+        let coneModel = udpServer.nIdMap[coneModelId]
+        // 波束模型
+        let coneWaveModel = udpServer.nIdMap[nBeamId]
+        if (nBeamId !== 0) {
+          // 加载实体
+          if (!entityModel) {
+            const uri = getEntityModelUri(nEntId)
+            if (!uri) {
+              return
+            }
+            entityModel = udpServer.createModelPrimitive(uri, {
+              ...options
+            })
+            udpServer[nEntId] = entityModel
+            // udpServer.flyTo(entityModel, { tx: Transform.Pos.dLon, ty: Transform.Pos.dLat })
           }
-          if (model) {
-            model.color = new Color(R, G, B, A)
-            model.activeAnimations.removeAll()
-            model.activeAnimations.add({ speedup: nFlickerTime })
-            udpServer.updateModelMatrixByTransform(model, Transform)
+          // 加载波束外壳
+          if (!coneModel) {
+            coneModel = udpServer.createModelPrimitive(coneGltfUri, {
+              ...options,
+              heading: 180,
+              scale: 10,
+              translateX: -8,
+              color: Color.GREEN.withAlpha(0.3)
+            })
+            udpServer[coneModelId] = coneModel
+          }
+          // 加载波束
+          if (!coneWaveModel) {
+            coneWaveModel = udpServer.createModelEntity(coneWavesGltfUri, {
+              ...options,
+              heading: 180,
+              scale: 10,
+              translateX: 8
+            })
+            udpServer[nBeamId] = coneWaveModel
+          } else {
+            udpServer.updateEntityPosition(coneWaveModel, options)
           }
         }
       })

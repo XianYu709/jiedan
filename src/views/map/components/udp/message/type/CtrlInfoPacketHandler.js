@@ -16,8 +16,14 @@ export default class CtrlInfoPacketHandler {
     }
     // TODO
     if (nAction === 1) {
-      if ([0, 2, 3, 4, 5, 7, 8].includes(nType)) {
+      if ([0, 4, 5, 7, 8].includes(nType)) {
         udpServer.viewer.scene.primitives.remove(obj)
+      } else if ([2, 3].includes(nType)) {
+        // 删除波束
+        udpServer.dataSource.entities.remove(obj)
+        // 删除波束外壳
+        const id2 = `${nId}-${nType === 2 ? 'sphere' : 'cone'}`
+        udpServer.viewer.scene.primitives.remove(udpServer.nIdMap[id2])
       }
     } else if (nAction === 2) {
       if ([0, 2, 3, 4, 5, 7, 8].includes(nType)) {

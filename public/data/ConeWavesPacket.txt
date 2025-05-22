@@ -1,0 +1,149 @@
+{
+    "type": "ConeWavesPacket",
+    "header": {
+        "nPrefix": -1122868,
+        "nMsgID": 30013,
+        "nMsgLen": 29102,
+        "nDataTotalPack": 1,
+        "nCurPackNo": 0,
+        "nSpare": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    "SphereWaveNum": 3,
+    "coneWave": [
+        {
+            "nEntId": 0,
+            "nBeamId": 0,
+            "Transform": {
+                "Pos": {
+                    "nPosType": 0,
+                    "dLon": 113.86431456808181,
+                    "dLat": 39.81092848446074,
+                    "fAlt": 3
+                },
+                "Rot": {
+                    "RotateType": 0,
+                    "fAz": 0,
+                    "fEl": 0,
+                    "fRoll": 0
+                },
+                "Scale": {
+                    "bValid": 0,
+                    "Scale_X": 0,
+                    "Scale_Y": 0,
+                    "Scale_Z": 0
+                }
+            },
+            "beamColor": {
+                "R": 0,
+                "G": 255,
+                "B": 0,
+                "A": 128
+            },
+            "nFlickerTime": 3,
+            "ScanFrequency": 50,
+            "spare": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "nEntId": 1,
+            "nBeamId": 1,
+            "Transform": {
+                "Pos": {
+                    "nPosType": 0,
+                    "dLon": 118.0688587125719,
+                    "dLat": 40.3814035274906,
+                    "fAlt": 3
+                },
+                "Rot": {
+                    "RotateType": 0,
+                    "fAz": 0,
+                    "fEl": 0,
+                    "fRoll": 0
+                },
+                "Scale": {
+                    "bValid": 0,
+                    "Scale_X": 0,
+                    "Scale_Y": 0,
+                    "Scale_Z": 0
+                }
+            },
+            "beamColor": {
+                "R": 0,
+                "G": 255,
+                "B": 0,
+                "A": 128
+            },
+            "nFlickerTime": 4,
+            "ScanFrequency": 50,
+        },
+        {
+            "nEntId": 2,
+            "nBeamId": 2,
+            "Transform": {
+                "Pos": {
+                    "nPosType": 0,
+                    "dLon": 117.96546819921531,
+                    "dLat": 35.263401299821105,
+                    "fAlt": 3
+                },
+                "Rot": {
+                    "RotateType": 0,
+                    "fAz": 0,
+                    "fEl": 0,
+                    "fRoll": 0
+                },
+                "Scale": {
+                    "bValid": 0,
+                    "Scale_X": 0,
+                    "Scale_Y": 0,
+                    "Scale_Z": 0
+                }
+            },
+            "beamColor": {
+                "R": 0,
+                "G": 255,
+                "B": 0,
+                "A": 128
+            },
+            "nFlickerTime": 5,
+            "ScanFrequency": 50
+        }
+    ]
+}

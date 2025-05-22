@@ -19,13 +19,17 @@ export default {
         clipMode: "calModeall_plane",
         colorTables: "1",
         wideMinR: 0,
-        wideMaxR: 78,
+        wideMaxR: 90,
         style: "showAll",
         trans: 0.5,
       },
     };
   },
   mounted() {},
+  // unmounted() {
+  //   this.intance?.clear?.();
+  //   this.intance = null;
+  // },
   watch: {
     allParmas: {
       deep: true,
@@ -52,7 +56,7 @@ export default {
 
 <template>
   <div style="text-align: center">
-    <div style=" display: flex;align-items: center;">
+    <div style="display: flex; align-items: center">
       <el-button type="primary" @click="start">开始分析</el-button>
       <el-button type="primary" @click="clear">清除</el-button>
     </div>
@@ -77,8 +81,8 @@ export default {
         <el-slider
           size="small"
           v-model="allParmas.wideMinR"
-          :min="-9999"
-          :max="9999"
+          :min="0"
+          :max="90"
         ></el-slider>
       </el-form-item>
 
@@ -86,8 +90,8 @@ export default {
         <el-slider
           size="small"
           v-model="allParmas.wideMaxR"
-          :min="-9999"
-          :max="9999"
+          :min="0"
+          :max="90"
         ></el-slider>
       </el-form-item>
 

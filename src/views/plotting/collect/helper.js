@@ -24,11 +24,7 @@ export default (viewer, scene, serverUrl, fetchData) => {
   plotEditControl.activate();
   plotDrawControl = new cesium.PlotDrawControl(scene, plottingLayer); //绘制控件
   plotDrawControl.drawControlEndEvent.addEventListener(function (e) {
-    const feature = e.feature || (e.features && e.features[0]);
-    if (feature) {
-      plottingLayer.selectedFeature = feature;
-      plotEditControl.activate();
-    }
+    plotEditControl.activate();
   });
   console.log(plotting);
 

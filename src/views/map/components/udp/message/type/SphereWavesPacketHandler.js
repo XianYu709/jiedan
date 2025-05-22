@@ -1,3 +1,5 @@
+import { getEntityModelUri } from '../util'
+
 import { isEmpty } from 'lodash'
 const {
   Cartographic,
@@ -6,6 +8,17 @@ const {
   Cartesian3,
   Math: CesiumMath
 } = window.Cesium
+
+// 球形波束外壳gltf路径
+const sphereGltfUri = '/data/gltf/pyramidqiu.gltf'
+// 球形波束gltf路径
+const sphereWavesGltfUri = '/data/gltf/qiuboshu.gltf'
+
+// // 圆锥波束外壳gltf路径
+// const sphereGltfUri = '/data/gltf/pyramid.gltf'
+// // 圆锥波束gltf路径
+// const sphereWavesGltfUri = '/data/gltf/n-mid.gltf'
+
 /**
  * 球形波束包
  * TDSMsgHead       stMsgHeader
@@ -42,28 +55,69 @@ export default class SphereWavesPacketHandler {
           WavePurpose,
           spare
         } = item
-        // if (udpServer.nIdMap[nEntityID]) {
-        // }
-        let model = udpServer.nIdMap[nID]
-        if (!model) {
-          model = udpServer.createSphereWaveModelPrimitive()
-          // model = udpServer.createSphereWaveModelEntity(Transform.Pos.dLon, Transform.Pos.dLat)
-          const model2 = udpServer.createModelPrimitive(nID, null)
-          udpServer.updateModelMatrixByTransform(model2, Transform)
-          // udpServer.viewer.flyTo(model2)
-          udpServer.flyTo(model2, { tx: Transform.Pos.dLon, ty: Transform.Pos.dLat })
+        // 实体模型
+        let entityModel = udpServer.nIdMap[nEntityID]
+        if (!entityModel) {
+          return
         }
-        if (model) {
-          // model.color = new Color(R, G, B, A)
-          // model.readyPromise.then(() => {
-          //   model.activeAnimations.removeAll()
-          //   model.activeAnimations.add({ speedup: ScanFrequency })
-          // })
-          // udpServer.updateModelMatrixByTransform(model, Transform)
-          // const { longitude, latitude, height } = Cartographic.fromCartesian(Matrix4.getTranslation(model.modelMatrix, new Cartesian3()))
-          // udpServer.flyTo(model, { tx: Transform.Pos.dLon, ty: Transform.Pos.dLat })
-          // console.log('model =', model, Transform.Pos.dLon, Transform.Pos.dLat, CesiumMath.toDegrees(longitude), CesiumMath.toDegrees(latitude), height)
-          // udpServer.flyTo(model, { tx: CesiumMath.toDegrees(longitude), ty: CesiumMath.toDegrees(latitude) })
+        // 定义球形外壳模型id
+        const sphereModelId = `${nID}-sphere`
+        const options = {
+          longitude: Transform.Pos.dLon,
+          latitude: Transform.Pos.dLat,
+          height: 200, // Transform.Pos.fAlt
+          heading: Transform.Rot.fAz,
+          pitch: Transform.Rot.fEl,
+          roll: Transform.Rot.fRoll
+        }
+        // 外壳模型
+        let sphereModel = udpServer.nIdMap[sphereModelId]
+        let sphereWaveModel = udpServer.nIdMap[nID]
+        // 加载实体
+        // if (!entityModel) {
+        //   const uri = getEntityModelUri(nEntityID)
+        //   if (!uri) {
+        //     return
+        //   }
+        //   entityModel = udpServer.createModelPrimitive(uri, {
+        //     ...options,
+        //     scale: 1,
+        //   })
+        //   udpServer[nEntityID] = entityModel
+        //   // udpServer.flyTo(entityModel, { tx: Transform.Pos.dLon, ty: Transform.Pos.dLat })
+        //   // udpServer.viewer.clock.multiplier = 10
+        // }
+        // 加载波束外壳
+        if (!sphereModel) {
+          sphereModel = udpServer.createModelPrimitive(sphereGltfUri, {
+            ...options,
+            // heading: 180,
+            // scale: 10,
+            translateX: 5,
+            color: Color.RED.withAlpha(1)
+          })
+          udpServer[sphereModelId] = sphereModel
+        } else {
+          udpServer.updateModelMatrix(sphereModel, {
+            tx: options.longitude,
+            ty: options.latitude,
+            tz: options.heading,
+            rx: options.heading,
+            ry: options.pitch,
+            rz: options.roll
+          })
+        }
+        // 加载波束
+        if (!sphereWaveModel) {
+          sphereWaveModel = udpServer.createModelEntity(sphereWavesGltfUri, {
+            ...options,
+            // heading: 180,
+            // scale: 5,
+            translateX: 5
+          })
+          udpServer[nID] = sphereWaveModel
+        } else {
+          udpServer.updateEntityPosition(sphereWaveModel, options)
         }
       })
     }

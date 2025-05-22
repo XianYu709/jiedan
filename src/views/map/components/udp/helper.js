@@ -6,11 +6,16 @@ import MessageHandler from './message'
 const {
   Cartesian3,
   Model,
-  JulianDate,
   Transforms,
   Matrix3,
   Matrix4,
-  Cartographic,
+  HeadingPitchRoll,
+  ModelAnimationLoop,
+  ShadowMode,
+  CustomDataSource,
+  Entity,
+  Primitive,
+  JulianDate,
   Math: CesiumMath
 } = window.Cesium
 /**
@@ -21,9 +26,10 @@ export default class UdpHelper {
     viewer.clock.shouldAnimate = true
     this._options = options || {}
     this._socket = null
-    this._entityModels = {}
-    this._entityBeamModels = {}
     this._nIdMap = {}
+    const dataSource = new CustomDataSource('udp-dataSource')
+    viewer.dataSources.add(dataSource)
+    this._dataSource = dataSource
     this._viewer = viewer
   }
 
@@ -38,16 +44,29 @@ export default class UdpHelper {
     //   })
     // }
     // this.socket?.connect()
-    request.get('/data/0516Test.txt', { baseURL: '/', responseType: 'blob' }).then(response => {
-      response.text().then(text => {
-        const geoJson = JSON.parse(text)
-        console.log('geojson =', geoJson)
-        this._onMessage(geoJson)
+    ;['/data/EntsPacket01.txt'].forEach(url => {
+      request.get(url, { baseURL: '/', responseType: 'blob' }).then((response) => {
+        response.text().then(text => {
+          const geoJson = JSON.parse(text)
+          console.log('geojson =', geoJson)
+          this._onMessage(geoJson)
+        })
       })
     })
   }
 
+  clear() {
+    Object.values(this.nIdMap).forEach(item => {
+      if (item instanceof Entity) {
+        this.dataSource.entities.remove(item)
+      } else if (item instanceof Primitive) {
+        this.viewer.scene.primitives.remove(item)
+      }
+    })
+  }
+
   close() {
+    this.clear()
     this.socket?.close()
   }
 
@@ -68,60 +87,101 @@ export default class UdpHelper {
     isFunction(this._options?.onError) && this._options.onError(error)
   }
 
-  createModelPrimitive(nId, name) {
-    const url = this.getModelUrl(nId, name)
+  /**
+   * 模型primitive
+   * @param url
+   * @param longitude
+   * @param latitude
+   * @param height
+   * @param heading
+   * @param pitch
+   * @param roll
+   * @param scale
+   * @param color
+   * @param translateX
+   * @param translateY
+   * @param translateZ
+   * @param onReady
+   * @returns {any|null}
+   */
+  createModelPrimitive(url, { longitude, latitude, height = 200, heading = 0, pitch = 0, roll = 0, scale = 1, color, translateX = 0, translateY = 0, translateZ = 0, onReady }) {
     if (!url) {
       return null
     }
-    return this.viewer.scene.primitives.add(Model.fromGltf({
-      // id: `udp-model-${entityId}`,
-      // url: '/data/GLTF整理/C350A_GLTF/C350A_GLTF/c350a.gltf',
+    const position = Cartesian3.fromDegrees(longitude, latitude, height)
+    const hpr = new HeadingPitchRoll(CesiumMath.toRadians(heading), CesiumMath.toRadians(pitch), CesiumMath.toRadians(roll))
+    let modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr)
+    if (translateX !== 0 || translateY !== 0 || translateZ !== 0) {
+      const m = Matrix4.setTranslation(Matrix4.IDENTITY, new Cartesian3(translateX, translateY, translateZ), new Matrix4())
+      modelMatrix = Matrix4.multiply(modelMatrix, m, modelMatrix)
+    }
+    const primitive = this.viewer.scene.primitives.add(Model.fromGltf({
       url,
-      show: true
-    }))
-  }
-
-  /**
-   * 球形波束模型
-   */
-  createSphereWaveModelPrimitive() {
-    return this.viewer.scene.primitives.add(Model.fromGltf({
-      url: '/data/gltf/n-mid.gltf',
-      scale: 100,
+      modelMatrix,
+      scale,
+      show: true,
       runAnimations: true,
-      minimumPixelSize: 512,
-      maximumScale: 200000,
-      show: true
+      shadows: ShadowMode.DISABLED,
+      // minimumPixelSize: 512,
+      // maximumScale: 100
     }))
+    primitive.readyPromise.then((model) => {
+      if (color) {
+        // primitive.colorBlendMode = ColorBlendMode.MIX
+        primitive.color = color
+      }
+      // Play and loop all animations at half-speed
+      primitive.activeAnimations.addAll({
+        speedup: 1,
+        loop: ModelAnimationLoop.REPEAT
+      })
+      isFunction(onReady) && onReady(primitive)
+    })
+    return primitive
   }
 
   /**
-   * 球形波束模型
+   * 模型entity
+   * @param uri
+   * @param longitude
+   * @param latitude
+   * @param height
+   * @param scale
+   * @param heading
+   * @param pitch
+   * @param roll
+   * @param translateX
+   * @param translateY
+   * @param translateZ
+   * @returns {*}
    */
-  createSphereWaveModelEntity(longitude, latitude) {
-    return this.viewer.entities.add({
-      position: Cartesian3.fromDegrees(longitude, latitude, 200),
+  createModelEntity(uri, { longitude, latitude, height = 200, scale = 1, heading = 0, pitch = 0, roll = 0, translateX = 0, translateY = 0, translateZ = 0 }) {
+    let position = Cartesian3.fromDegrees(longitude, latitude, height)
+    const hpr = new HeadingPitchRoll(CesiumMath.toRadians(heading), CesiumMath.toRadians(pitch), CesiumMath.toRadians(roll))
+    const orientation = Transforms.headingPitchRollQuaternion(position, hpr)
+    if (translateX !== 0 || translateY !== 0 || translateZ !== 0) {
+      // 东-北-上参考系构造出4*4的矩阵
+      let transform = Transforms.eastNorthUpToFixedFrame(position)
+      // 构造平移矩阵
+      const m = Matrix4.setTranslation(Matrix4.IDENTITY, new Cartesian3(translateX, translateY, translateZ), new Matrix4())
+      // 将当前位置矩阵乘以平移矩阵得到平移之后的位置矩阵
+      transform = Matrix4.multiply(transform, m, transform)
+      // 从位置矩阵中取出坐标信息
+      position = Matrix4.getTranslation(transform, position)
+    }
+    const modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr)
+
+    return this.dataSource.entities.add({
+      position,
+      orientation,
       model: {
-        uri: '/data/gltf/n-mid.gltf',
-        scale: 100,
+        uri,
+        modelMatrix,
+        scale,
         runAnimations: true,
         show: true
       }
     })
-  }
-
-  /**
-   * 圆锥形波束模型
-   */
-  createConeWaveModelPrimitive() {
-    return this.viewer.scene.primitives.add(Model.fromGltf({
-      url: '/data/gltf/n-mid.gltf',
-      show: true
-    }))
-  }
-
-  _createBeamModelPrimitive() {
-
   }
 
   updateModelMatrixByTransform(model, transform) {
@@ -132,7 +192,8 @@ export default class UdpHelper {
     this.updateModelMatrix(model, {
       tx: Number(dLon),
       ty: Number(dLat),
-      tz: Number(fAlt),
+      // tz: Number(fAlt),
+      tz: 200,
       rx: Number(fAz),
       ry: Number(fEl),
       rz: Number(fRoll)
@@ -151,7 +212,6 @@ export default class UdpHelper {
    * @private
    */
   updateModelMatrix(model, { tx, ty, tz, rx, ry, rz }) {
-    debugger
     // 旋转
     const mx = Matrix3.fromRotationX(CesiumMath.toRadians(rx))
     const my = Matrix3.fromRotationY(CesiumMath.toRadians(ry))
@@ -160,7 +220,7 @@ export default class UdpHelper {
     const rotationY = Matrix4.fromRotationTranslation(my)
     const rotationZ = Matrix4.fromRotationTranslation(mz)
     // 平移
-    const position = Cartesian3.fromDegrees(tx, ty, 200)
+    const position = Cartesian3.fromDegrees(tx, ty, tz)
     const m = Transforms.eastNorthUpToFixedFrame(position)
     // 旋转、平移矩阵相乘
     Matrix4.multiply(m, rotationX, m)
@@ -170,49 +230,32 @@ export default class UdpHelper {
     if (model.primitive) {
       model.primitive.modelMatrix = m
     }
-    // const { longitude, latitude } = Cartographic.fromCartesian(Matrix4.getTranslation(m.clone(), new Cartesian3()))
-    // console.log('updateModelMatrix =', model.modelMatrix.clone(), m.clone(), CesiumMath.toDegrees(longitude), CesiumMath.toDegrees(latitude))
     model.modelMatrix = m
   }
 
-  flyTo(model, { tx, ty }) {
-    model.readyPromise.then((model) => {
+  updateEntityPosition(entity, { longitude = 0, latitude = 0, height, heading = 0, pitch = 0, roll = 0 }) {
+    let position = entity.position.getValue(JulianDate.now())
+    if (longitude !== 0 || latitude !== 0 || height !== undefined) {
+      position = Cartesian3.fromDegrees(longitude, latitude, height)
+      entity.position = position
+    }
+    if (heading !== 0 || pitch !== 0 || roll !== 0) {
+      const hpr = new HeadingPitchRoll(CesiumMath.toRadians(heading), CesiumMath.toRadians(pitch), CesiumMath.toRadians(roll))
+      entity.orientation = Transforms.headingPitchRollQuaternion(position, hpr)
+    }
+  }
+
+  flyTo(model, { tx, ty, tz }) {
+    model?.readyPromise?.then((model) => {
       // 定位到模型的位置，此处使用viewer.zoomTo(model)报错
       this.viewer.camera.setView({
-        destination: Cartesian3.fromDegrees(tx, ty, 150.0),
+        destination: Cartesian3.fromDegrees(tx, ty, tz),
         orientation: {
           heading: CesiumMath.toRadians(0),
           pitch: CesiumMath.toRadians(-90),
           roll: CesiumMath.toRadians(0)
         }
       })
-    })
-  }
-
-  getModelUrl(nId, name) {
-    return '/data/GLTF整理/C350A_GLTF/C350A_GLTF/c350a.gltf'
-  }
-
-  _createModelEntity(entityId, { position, orientation }) {
-    return this.viewer.entities.add({
-      name: `entityModel-${entityId}`,
-      position,
-      orientation,
-      model: {
-        // uri: '/data/gltf/cube.gltf'
-        uri: '/data/GLTF整理/C350A_GLTF/C350A_GLTF/c350a.gltf'
-      }
-    })
-  }
-
-  _createBeamModelEntity(entityId, { position, orientation }) {
-    return this.viewer.entities.add({
-      name: `beamModel-${entityId}`,
-      position,
-      model: {
-        // uri: '/data/gltf/cube.gltf'
-        uri: '/data/gltf/n-mid.gltf'
-      }
     })
   }
 
@@ -224,15 +267,11 @@ export default class UdpHelper {
     return this._socket
   }
 
-  get entityModels() {
-    return this._entityModels
-  }
-
-  get entityBeamModels() {
-    return this._entityBeamModels
-  }
-
   get nIdMap() {
     return this._nIdMap
+  }
+
+  get dataSource() {
+    return this._dataSource
   }
 }

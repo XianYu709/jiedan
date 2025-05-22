@@ -35,7 +35,7 @@ export default () => {
     //  default  params
     let parameter = {
       wideMinR: 0,
-      wideMaxR: 78,
+      wideMaxR: 90,
       trans: 0.5,
       style: "showAll",
     };

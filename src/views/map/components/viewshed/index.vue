@@ -29,7 +29,7 @@ export default {
   mounted() {
     this.intance = useViewShed(this.formInline);
   },
-  unmounted() {
+  beforeDestroy() {
     this.intance?.clear?.();
   },
   methods: {
@@ -74,7 +74,7 @@ export default {
         <el-slider
           v-model="formInline.distance"
           :min="1"
-          :max="100000"
+          :max="1500"
           :step="1.0"
           @change="(val) => changeHandler(val, 'distance')"
           style="width: 90%"

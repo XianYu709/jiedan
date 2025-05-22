@@ -1,6 +1,10 @@
 <script>
+import  coll  from "../HI/coll.vue";
+import  wind  from "../HI/wind.vue";
+import  temoTif  from "../HI/tempTif.vue";
 export default {
   name: 'MapHeader',
+  components: {coll,wind,temoTif},
   props: {
     getViewer: {
       type: Function,
@@ -13,14 +17,16 @@ export default {
   },
   data() {
     return {
+      HIStatus: 0,
+      popUpStatus: false,
       menus: [
         { code: 'index', label: '首页' },
         {
           code: 'plot',
           label: '标绘',
           children: [
-            { code: 'basePlotting', label: '基础标绘', componentName: 'basePlotting', cardOptions: { width: '350px', height: '230px' }},
-            { code: 'jsPlotting', label: '目标数据', componentName: 'jsPlotting'},
+            { code: 'basePlotting', label: '基础标绘', componentName: 'basePlotting', cardOptions: { width: '450px', height: '230px' }},
+            { code: 'jsPlotting', label: '目标数据', componentName: 'jsPlotting', cardOptions: { width: '450px', maxHeight: '470px' }},
             { code: 'militaryPlotting', label: '军事标绘', componentName: 'military', cardOptions: { top:"100px", width: "510px",left: "75px" } },
             { code: 'collect', label: '场景收藏', componentName: 'collect', cardOptions: { top:"100px", width: "470px",left: "75px" } },
             { label: '雷达波束标绘' },
@@ -51,12 +57,18 @@ export default {
           ]
         },
         {
+          code: 'dangerDefence',
+          label: '危险预警',
+          componentName: 'DangerDefenceIndex',
+          cardOptions: { width: '300px' }
+        },
+        {
           code: 'history',
           label: '历史影像',
           children: [
-            { code: 'history1', label: '公司简介' },
-            { code: 'history2', label: '团队介绍' },
-            { code: 'history3', label: '联系我们' }
+            { code: 'history1', label: '时空影像' },
+            { code: 'history2', label: '水文影像' },
+            { code: 'history3', label: '气象影像' }
           ]
         },
         {
@@ -85,11 +97,26 @@ export default {
   },
   methods: {
     handleClick(menu) {
+      console.log(menu)
       // 如果不是组件且又点击了一次，则表示关闭该菜单
       if (!menu.componentName && this.computedActiveCode === menu.code) {
         this.computedActiveCode = 'index'
+        this.popUpStatus = false; // 关闭弹窗
+        this.HIStatus = 0;
       } else {
         this.computedActiveCode = menu.code
+        if(menu.code == 'history1') {
+          this.popUpStatus = true; // 打开弹窗
+          this.HIStatus = 1; // 时空影像
+        } else if (menu.code == 'history2') {
+          this.popUpStatus = true; // 打开弹窗
+          this.HIStatus = 2; // 水文影像
+        } else if (menu.code == 'history3') {
+          this.popUpStatus = true; // 打开弹窗
+          this.HIStatus = 3; //  气象影像
+        } else {
+          this.popUpStatus = false; // 打开弹窗
+        }
       }
       this.$emit('click', menu)
     }
@@ -99,6 +126,15 @@ export default {
 
 <template>
   <nav class="navbar">
+    <!-- 历史影像页面弹出框 -->
+    <div class="popUp" v-if="popUpStatus">
+      <!-- 时空影像  -->
+      <coll style="width: 100%;height: 100%;" v-if="HIStatus == 1" />
+      <!-- 水文影响 -->
+      <wind style="width: 100%;height: 100%;" v-if="HIStatus == 2" />
+      <!-- 气象影像 -->
+      <temoTif style="width: 100%;height: 100%;" v-if="HIStatus == 3" />
+    </div>
     <div class="nav-container">
       <a href="#" class="logo" onclick="">
         <i class="fas fa-cube" />
@@ -123,77 +159,7 @@ export default {
             </a>
           </div>
         </li>
-<!--        <li class="nav-item">
-          <a href="#" class="nav-link" @click="handleClick('index')">首页</a>
-
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">标绘</a>
-          <div class="dropdown">
-            <a class="dropdown-item" @click.stop="handleClick('jcbh')">基础标绘</a>
-            <a href="#" class="dropdown-item" @click="handleClick('jsbh')">军事标绘</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">标绘动画</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">雷达波束标绘</a>
-            <a href="#" class="dropdown-item" @click="handleClick('3dDraw')">三维标绘</a>
-
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">空间分析</a>
-          <div class="dropdown">
-            <a href="#" class="dropdown-item" @click="handleClick('index')">距离</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">面积</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">方位</a>
-            <a href="#" class="dropdown-item" @click="handleClick('pdpx')">坡度坡向</a>
-            <a href="#" class="dropdown-item" @click="handleClick('viewshed')">可视域</a>
-            <a href="#" class="dropdown-item" @click="handleClick('interVisibility')">通视度</a>
-            <a href="#" class="dropdown-item" @click="handleClick('buffer')">缓冲区</a>
-            <a href="#" class="dropdown-item" @click="handleClick('twf')">填挖方</a>
-            <a href="#" class="dropdown-item" @click="handleClick('profile')">剖面</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">特效</a>
-          <div class="dropdown">
-            <a href="#" class="dropdown-item" @click="handleClick('burst')">爆炸</a>
-            <a href="#" class="dropdown-item" @click="handleClick('fireworks')">烟火</a>
-            <a href="#" class="dropdown-item" @click="handleClick('hjtx')">环境特效</a>
-            <a href="#" class="dropdown-item" @click="handleClick('ddtx')">地图特效</a>
-            <a href="#" class="dropdown-item" @click="handleClick('index')">方案3</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">天气时序</a>
-          <div class="dropdown">
-            <a href="#" class="dropdown-item">案例1</a>
-            <a href="#" class="dropdown-item">案例2</a>
-            <a href="#" class="dropdown-item">案例3</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">历史影像</a>
-          <div class="dropdown">
-            <a href="#" class="dropdown-item">公司简介</a>
-            <a href="#" class="dropdown-item">团队介绍</a>
-            <a href="#" class="dropdown-item">联系我们</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">工具</a>
-          <div class="dropdown">
-            <a href="#" class="dropdown-item" @click="handleClick('rollerShutter')">卷帘对比</a>
-            <a href="#" class="dropdown-item" @click="handleClick('measure')">空间量算</a>
-            <a href="#" class="dropdown-item" @click="handleClick('pyramid')">雷达波束模型</a>
-            <a href="#" class="dropdown-item" @click="handleClick('gcoord')">坐标投影转换</a>
-            <a href="#" class="dropdown-item" @click="handleClick('test')">UDP测试</a>
-          </div>
-        </li>-->
       </ul>
-
-      <div class="search-container">
-        <input type="text" class="search-input" placeholder="搜索...">
-        <button class="search-btn"><i class="fas fa-search" /></button>
-      </div>
     </div>
   </nav>
 </template>
@@ -353,5 +319,15 @@ export default {
 
 .search-btn:hover {
   color: #4cc9f0;
+}
+
+
+.popUp {
+  width: 100vw;
+  height: calc(100vh - 60px);
+  background-color: #FFF;
+  position: absolute;
+  top: 60px;
+  left: 0;
 }
 </style>
