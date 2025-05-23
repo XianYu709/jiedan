@@ -111,7 +111,7 @@
                 "A": 128
             },
             "nFlickerTime": 4,
-            "ScanFrequency": 50,
+            "ScanFrequency": 50
         },
         {
             "nEntId": 2,

@@ -43,12 +43,14 @@ export default {
       return fileNameMap
     }
   },
-  unmounted() {
-    const viewer = window.viewer
-    Object.keys(dataSourceMap).forEach(fileName => {
+  beforeDestroy() {
+    const dataSources = window.viewer.dataSources
+    const fileNames = Object.keys(dataSourceMap)
+    fileNames.forEach(fileName => {
       const { dataSource, bufferedDataSource } = dataSourceMap[fileName]
-      viewer.dataSources.remove(dataSource)
-      viewer.dataSources.remove(bufferedDataSource)
+      dataSources.remove(dataSource)
+      dataSources.remove(bufferedDataSource)
+      delete dataSourceMap[fileName]
     })
   },
   methods: {

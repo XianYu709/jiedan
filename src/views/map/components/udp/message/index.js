@@ -29,7 +29,9 @@ const MESSAGE_HANDLERS = {
  */
 export default class MessageHandler {
   static handler(udpServer, data) {
-    console.log(`${data.type} =`, data)
+    if (data.type !== 'HeartBeatPacket') {
+      console.log(`${data.type} =`, JSON.stringify(data))
+    }
     return MESSAGE_HANDLERS[data.type]?.handler(udpServer, data)
   }
 }

@@ -1,11 +1,6 @@
 import { isEmpty } from 'lodash'
 import { getEntityModelUri } from '../util'
 
-const {
-  Color
-} = window.Cesium
-
-let fly = false
 /**
  * 实体包
  * TDSMsgHead        stMsgHeader
@@ -29,7 +24,7 @@ export default class EntsPacketHandler {
   static handler(udpServer, data) {
     const { ents } = data
     if (!isEmpty(ents)) {
-      ents.forEach(entInfo => {
+      ents.forEach((entInfo, index) => {
         const {
           nID,
           name,
@@ -46,51 +41,36 @@ export default class EntsPacketHandler {
           pitch: transform.Rot.fEl,
           roll: transform.Rot.fRoll
         }
-        let model = udpServer.nIdMap[nID]
-        if (!model) {
+        // let track = udpServer.getTrack(nID)
+        if (!udpServer.getProperty(nID)) {
           const uri = getEntityModelUri(nID)
           if (!uri) {
             return
           }
-          model = udpServer.createModelPrimitive(uri, {
+          const track = udpServer.createModelTrack(uri, {
             ...options,
-            scale: 20,
-            onReady: (primitive) => {
-              if (!fly) {
-                fly = true
-                udpServer.flyTo(primitive, { tx: options.longitude, ty: options.latitude, tz: options.height })
-              }
-            }
+            scale: 1
           })
+          udpServer.addProperty(nID, track)
+          // if (index === 0) {
+          //   udpServer.viewer.flyToPosition([options.longitude, options.latitude, options.height, options.heading, -90, options.roll])
+          // }
           // let num = 1
           // setInterval(() => {
-          //   udpServer.updateModelMatrix(model, {
-          //     tx: options.longitude + 0.002 * num,
-          //     ty: options.latitude,
-          //     tz: options.heading,
-          //     rx: options.heading,
-          //     ry: options.pitch,
-          //     rz: options.roll
+          //   udpServer.moveTrack(nID, {
+          //     longitude: options.longitude + 0.002 * num,
+          //     latitude: options.latitude,
+          //     height: options.height,
+          //     duration: 20
           //   })
           //   num++
           // }, 500)
-          // console.log('model =', model)
-          udpServer.nIdMap[nID] = model
         } else {
-          udpServer.updateModelMatrix(model, {
-            tx: options.longitude,
-            ty: options.latitude,
-            tz: options.heading,
-            rx: options.heading,
-            ry: options.pitch,
-            rz: options.roll
+          udpServer.moveProperty(nID, {
+            longitude: options.longitude,
+            latitude: options.latitude,
+            height: options.height
           })
-          // test: 添加连线
-          // udpServer.dataSource.entities.add({
-          //   polyline: {
-          //     positions: []
-          //   }
-          // })
         }
       })
     }

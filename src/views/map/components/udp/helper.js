@@ -2,6 +2,7 @@ import request from '@/utils/request'
 import Socket from '@/utils/socket'
 import { isEmpty, isFunction } from 'lodash'
 import MessageHandler from './message'
+import { TrackController, Track, State } from '@/plugins/dc-sdk'
 
 const {
   Cartesian3,
@@ -16,8 +17,18 @@ const {
   Entity,
   Primitive,
   JulianDate,
+  ColorBlendMode,
   Math: CesiumMath
 } = window.Cesium
+
+export const ENTITY_CHILD_NAME = {
+  track: 'track',
+  sphereWaveHuskTrack: 'sphereWaveHuskTrack',
+  sphereWaveTrack: 'sphereWaveTrack',
+  coneWaveHuskTrack: 'coneWaveHuskTrack',
+  coneWaveTrack: 'coneWaveTrack',
+}
+
 /**
  * UDP接收
  */
@@ -27,6 +38,7 @@ export default class UdpHelper {
     this._options = options || {}
     this._socket = null
     this._nIdMap = {}
+    this._trackController = new TrackController(viewer)
     const dataSource = new CustomDataSource('udp-dataSource')
     viewer.dataSources.add(dataSource)
     this._dataSource = dataSource
@@ -44,8 +56,9 @@ export default class UdpHelper {
     //   })
     // }
     // this.socket?.connect()
-    ;['/data/EntsPacket01.txt'].forEach(url => {
-      request.get(url, { baseURL: '/', responseType: 'blob' }).then((response) => {
+    const promises = ['/data/ConeWavesPacket.txt'].map(url => request.get(url, { baseURL: '/', responseType: 'blob' }))
+    Promise.all(promises).then(responses => {
+      responses.forEach(response => {
         response.text().then(text => {
           const geoJson = JSON.parse(text)
           console.log('geojson =', geoJson)
@@ -56,13 +69,17 @@ export default class UdpHelper {
   }
 
   clear() {
-    Object.values(this.nIdMap).forEach(item => {
-      if (item instanceof Entity) {
-        this.dataSource.entities.remove(item)
-      } else if (item instanceof Primitive) {
-        this.viewer.scene.primitives.remove(item)
+    const ids = Object.keys(this.nIdMap)
+    ids.forEach(id => {
+      const model = this.nIdMap[id].model
+      if (model instanceof Entity) {
+        this.dataSource.entities.remove(model)
+      } else if (model instanceof Primitive) {
+        this.viewer.scene.primitives.remove(model)
       }
+      delete this.nIdMap[id]
     })
+    this._trackController?.clear()
   }
 
   close() {
@@ -184,20 +201,25 @@ export default class UdpHelper {
     })
   }
 
-  updateModelMatrixByTransform(model, transform) {
-    const {
-      Pos: { dLon, dLat, fAlt },
-      Rot: { fAz, fEl, fRoll }
-    } = transform
-    this.updateModelMatrix(model, {
-      tx: Number(dLon),
-      ty: Number(dLat),
-      // tz: Number(fAlt),
-      tz: 200,
-      rx: Number(fAz),
-      ry: Number(fEl),
-      rz: Number(fRoll)
-    })
+  createModelTrack(modelUrl, { longitude, latitude, height = 200, heading = 0, pitch = 0, roll = 0, scale = 1, color, translateX = 0, translateY = 0, translateZ = 0, onReady, duration = 0.5 }) {
+    // 计算位置和方向
+    const { position, orientation, modelMatrix } = this._createModelMatrix({ longitude, latitude, height, heading, pitch, roll, translateX, translateY, translateZ })
+
+    const track = new Track([position], duration, null, { headingOffset: heading })
+    // track._delegate.position = position
+    // track._delegate.orientation = orientation
+    console.log('track =', modelUrl, position, orientation, modelMatrix)
+    const modelStyle = { modelMatrix, scale, runAnimations: true, show: true }
+    if (color) {
+      modelStyle.color = color
+      modelStyle.colorBlendMode = ColorBlendMode.REPLACE
+    }
+    track.setModel(modelUrl, modelStyle)
+    this._trackController.addTrack(track)
+    if (this._trackController.state !== State.PLAY) {
+      // this._trackController.play()
+    }
+    return track
   }
 
   /**
@@ -257,6 +279,88 @@ export default class UdpHelper {
         }
       })
     })
+  }
+
+  getModel(nId) {
+    return this.getNId((nId)).model
+  }
+
+  addProperty(entityId, val, key = ENTITY_CHILD_NAME.track) {
+    console.log('add other track =', entityId, val, this.nIdMap[entityId])
+    if (!this.nIdMap[entityId]) {
+      this.nIdMap[entityId] = { lastTime: Date.now() }
+    }
+    this.nIdMap[entityId][key] = val
+  }
+
+  getProperty(nId, key = ENTITY_CHILD_NAME.track) {
+    return this.getNId((nId))?.[key]
+  }
+
+  removeProperty(nId, key = ENTITY_CHILD_NAME.track) {
+    this._trackController.removeTrack(this.getProperty(nId, key))
+  }
+
+  // removeChildTrack(nId, trackName) {
+  //   this._trackController.removeTrack(this.getChildTrack(nId, trackName))
+  // }
+
+  getNId(nId) {
+    return this.nIdMap[nId] || {}
+  }
+
+  moveProperty(entityId, options, key = ENTITY_CHILD_NAME.track) {
+    this._moveTrack(this.getProperty(entityId, key), options)
+  }
+
+  _moveTrack(track, { longitude, latitude, height, heading = 0, pitch = 0, roll = 0, translateX = 0, translateY = 0, translateZ = 0, time = Date.now() }) {
+    if (track) {
+      // 计算位置和方向
+      const { position } = this._createModelMatrix({ longitude, latitude, height, heading, pitch, roll, translateX, translateY, translateZ })
+      if (track._options.headingOffset !== heading) {
+        track._options.headingOffset = heading
+      }
+      // const dis = distance(track.positions[track.positions.length - 1], position)
+      // const lastTime = this.nIdMap[nId].lastTime
+      // track.duration = duration
+      // track._delegate.orientation = orientation
+      // track._delegate.model.modelMatrix = modelMatrix
+      track.addPosition(position)
+      // this.nIdMap[entityId].lastTime = time
+    }
+  }
+
+  /**
+   * 计算位置和方向
+   * @param longitude
+   * @param latitude
+   * @param height
+   * @param scale
+   * @param heading
+   * @param pitch
+   * @param roll
+   * @param translateX
+   * @param translateY
+   * @param translateZ
+   * @returns {{position: *, orientation: Quaternion, modelMatrix: Matrix4}}
+   * @private
+   */
+  _createModelMatrix({ longitude, latitude, height = 200, scale = 1, heading = 0, pitch = 0, roll = 0, translateX = 0, translateY = 0, translateZ = 0 }) {
+    let position = Cartesian3.fromDegrees(longitude, latitude, height)
+    const hpr = new HeadingPitchRoll(CesiumMath.toRadians(heading), CesiumMath.toRadians(pitch), CesiumMath.toRadians(roll))
+    const orientation = Transforms.headingPitchRollQuaternion(position, hpr)
+    if (translateX !== 0 || translateY !== 0 || translateZ !== 0) {
+      // 东-北-上参考系构造出4*4的矩阵
+      let transform = Transforms.eastNorthUpToFixedFrame(position)
+      // 构造平移矩阵
+      const m = Matrix4.setTranslation(Matrix4.IDENTITY, new Cartesian3(translateX, translateY, translateZ), new Matrix4())
+      // 将当前位置矩阵乘以平移矩阵得到平移之后的位置矩阵
+      transform = Matrix4.multiply(transform, m, transform)
+      // 从位置矩阵中取出坐标信息
+      position = Matrix4.getTranslation(transform, position)
+    }
+    const modelMatrix = Transforms.headingPitchRollToFixedFrame(position, hpr)
+    return { position, orientation, modelMatrix }
   }
 
   get viewer() {

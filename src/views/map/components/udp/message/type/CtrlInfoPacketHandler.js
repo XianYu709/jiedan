@@ -1,3 +1,4 @@
+import { Track } from '@/plugins/dc-sdk'
 /**
  * 控制信息包
  * TDSMsgHead    stMsgHeader
@@ -10,28 +11,35 @@
 export default class CtrlInfoPacketHandler {
   static handler(udpServer, data) {
     const { nId, nAction, nType } = data
-    const obj = udpServer.nIdMap[nId]
+    const obj = udpServer.getNId(nId)
     if (!obj) {
       return false
     }
-    // TODO
     if (nAction === 1) {
-      if ([0, 4, 5, 7, 8].includes(nType)) {
-        udpServer.viewer.scene.primitives.remove(obj)
-      } else if ([2, 3].includes(nType)) {
-        // 删除波束
-        udpServer.dataSource.entities.remove(obj)
-        // 删除波束外壳
-        const id2 = `${nId}-${nType === 2 ? 'sphere' : 'cone'}`
-        udpServer.viewer.scene.primitives.remove(udpServer.nIdMap[id2])
+      if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(nType)) {
+        const keys = Object.keys(obj)
+        keys.forEach(key => {
+          if (obj[key] instanceof Track) {
+            udpServer.removeProperty(nId, key)
+            delete obj[key]
+          }
+        })
       }
     } else if (nAction === 2) {
-      if ([0, 2, 3, 4, 5, 7, 8].includes(nType)) {
-        obj.show = false
+      if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(nType)) {
+        Object.values(obj).forEach(val => {
+          if (val instanceof Track) {
+            val._delegate.show = false
+          }
+        })
       }
     } else if (nAction === 3) {
-      if ([0, 2, 3, 4, 5, 7, 8].includes(nType)) {
-        obj.show = true
+      if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(nType)) {
+        Object.values(obj).forEach(val => {
+          if (val instanceof Track) {
+            val._delegate.show = true
+          }
+        })
       }
     }
   }

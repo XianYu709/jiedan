@@ -9,10 +9,10 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" size="mini" @click="saveHandler"
+        <el-button type="primary" size="mini" @click="saveHandler" plain
           >保存修改</el-button
         >
-        <el-button type="primary" size="mini" @click="uploadSmlFile"
+        <el-button type="primary" size="mini" @click="uploadSmlFile" plain
           >选择本地文件并上传</el-button
         >
       </el-form-item>
@@ -36,6 +36,17 @@
           >
         </el-input>
       </el-form-item>
+      <div style="margin: 10px 0">
+        <el-button type="primary" size="mini" @click="execute('play')"
+          >态势推演</el-button
+        >
+        <el-button type="primary" size="mini" @click="execute('pause')"
+          >暂停</el-button
+        >
+        <el-button type="primary" size="mini" @click="execute('reset')"
+          >复位</el-button
+        >
+      </div>
     </el-form>
     <el-tree
       :data="treeData"
@@ -51,7 +62,7 @@
   </div>
 </template>
 <script>
-import useHellper from "./helper";
+import useHellper from "../military/helper";
 
 export default {
   name: "CesiumDrawer",
@@ -68,6 +79,8 @@ export default {
       },
       helper: null,
       treeData: [],
+      labelKeys: [],
+      hasAni: false,
       sitDataManager: null,
     };
   },
@@ -78,9 +91,21 @@ export default {
     this.initPlot();
   },
   beforeDestroy() {
+    this.aniMationManager.removeAllGOAnimation();
     this.helper.clearAll();
+    this.helper.destroy();
   },
   methods: {
+    execute(type) {
+      if (!this.hasAni) {
+        this.$message({
+          message: "此态势图无对应动画",
+          type: "info",
+        });
+        return;
+      }
+      this.aniMationManager[type]();
+    },
     down() {
       if (this.allParmas.downloadUrl) {
         window.open(this.allParmas.downloadUrl);
@@ -143,9 +168,8 @@ export default {
         })
       );
       this.treeData = JSON.parse(JSON.stringify([]));
-      const resp = await fetch(
-        "https://www.supermapol.com/realspace/services/plot-TY/rest/plot/smlInfos.rjson?start=0&count=10"
-      );
+      const url = window.plotHost + window.plotCollectUrl;
+      const resp = await fetch(url);
       const data = await resp.json();
       let temp = data.map((it) => {
         const { SMLFileName, ...other } = it;
@@ -158,25 +182,44 @@ export default {
           }),
         };
       });
+      this.labelKeys = temp.map((it) => it.label);
+      temp = temp.filter((it) => !it.label.endsWith("-evo"));
       this.treeData = temp;
     },
     initPlot() {
-      const serverUrl =
-        "http://www.supermapol.com/realspace/services/plot-TY/rest/plot";
+      const serverUrl = window.plotHost + window.plotSuffix;
       const viewer = window.viewer;
       const helper = useHellper(
+        "collectLayer",
         viewer,
         viewer.scene,
-        serverUrl,
-        this.loadTreeData
+        serverUrl
       );
       this.helper = helper;
       this.sitDataManager = helper.getDataManager();
+      this.aniMationManager = this.helper.getAniMationManager();
+      this.sitDataManager.saveSmlFileCompleted.addEventListener(() => {
+        this.loadTreeData();
+      });
+
+      this.sitDataManager.deleteSmlFileCompleted.addEventListener(() => {
+        this.loadTreeData();
+      });
     },
     nodeClick(node, data) {
+      if (!data.children) return;
+      this.aniMationManager.removeAllGOAnimation();
+      this.helper.clearAll();
       const url = this.sitDataManager.downloadSmlFileUrl(data.label);
       this.allParmas.downloadUrl = url;
       this.allParmas.smlFileName = data.label;
+      let name = data.label + "-evo";
+      if (this.labelKeys.includes(name)) {
+        this.hasAni = true;
+        this.aniMationManager.openEvoFileOnServer(name);
+      } else {
+        this.hasAni = false;
+      }
       this.sitDataManager.openSmlFileOnServer(data.label);
     },
   },

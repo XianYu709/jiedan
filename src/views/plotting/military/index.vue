@@ -45,7 +45,6 @@
               :disabled="!feature"
             >
               <el-option label="生长动画" value="ANIMATION_GROW"></el-option>
-              <el-option label="比例动画" value="ANIMATION_SCALE"></el-option>
               <el-option label="闪烁动画" value="ANIMATION_BLINK"></el-option>
               <el-option label="显隐动画" value="ANIMATION_SHOW"></el-option>
             </el-select>
@@ -59,14 +58,11 @@
               size="small"
             ></el-input>
           </el-form-item>
-          <template
-            v-if="
-              form.type == 'ANIMATION_GROW' || form.type == 'ANIMATION_SCALE'
-            "
-          >
+          <template v-if="form.type == 'ANIMATION_GROW'">
             <el-form-item label="开始比例">
               <el-input
                 :disabled="!feature"
+                :min="0"
                 v-model="form.startScale"
                 type="number"
                 size="small"
@@ -74,6 +70,7 @@
             </el-form-item>
             <el-form-item label="结束比例">
               <el-input
+                :min="0"
                 :disabled="!feature"
                 v-model="form.endScale"
                 type="number"
@@ -119,7 +116,13 @@
               </el-select>
             </el-form-item>
           </template>
-          <div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            "
+          >
             <el-button
               type="primary"
               size="small"
@@ -144,14 +147,23 @@
               @click="delte"
               >清除动画</el-button
             >
-            <el-button
-              type="primary"
-              size="small"
-              plain
+            <el-input
               :disabled="!feature"
-              @click="save"
-              >保存</el-button
+              v-model="form.saveFileName"
+              placeholder="保存名称"
+              style="margin-left: 8px"
+              size="small"
             >
+              <el-button
+                slot="append"
+                type="primary"
+                size="small"
+                plain
+                :disabled="!feature"
+                @click="save"
+                >保存</el-button
+              >
+            </el-input>
           </div>
         </el-form>
       </el-tab-pane>
@@ -171,10 +183,12 @@ export default {
       plotEditControl: null,
       plotDrawControl: null,
       aniMationManager: null,
+      sitDataManager: null,
       activeName: "标号库",
       feature: null,
       form: {
         type: "",
+        saveFileName: "",
         duration: 5,
         startScale: 0,
         endScale: 1,
@@ -193,7 +207,8 @@ export default {
     this.initPlot();
   },
   beforeDestroy() {
-    this.plottingHelper.clearAll();
+    this.aniMationManager.removeAllGOAnimation();
+    this.plottingHelper.destroy();
   },
   methods: {
     add() {
@@ -216,7 +231,6 @@ export default {
 
       switch (this.form.type) {
         case "ANIMATION_GROW":
-        case "ANIMATION_SCALE":
           animation.startScale = Number(this.form.startScale);
           animation.endScale = Number(this.form.endScale);
           break;
@@ -253,8 +267,41 @@ export default {
     },
     delte() {
       this.aniMationManager.removeGOAnimationByFeature(this.feature);
+      this.form = JSON.parse(
+        JSON.stringify({
+          type: "",
+          saveFileName: "",
+          duration: 5,
+          startScale: 0,
+          endScale: 1,
+          interval: 500,
+          color: "#FF0000",
+          colorStart: "#0000FF",
+          startVisibility: "show",
+          endVisibility: "hide",
+        })
+      );
     },
-    save() {},
+    save() {
+      const smlName = this.form.saveFileName;
+      if (smlName.length !== 0) {
+        this.sitDataManager.saveAsSmlFile(smlName);
+      } else {
+        this.$message({
+          message: "请输入文件名",
+          type: "info",
+        });
+      }
+      this.aniMationManager.saveEvoFile(smlName + "-evo", true);
+      this.sitDataManager.saveSmlFileCompleted.addEventListener(() => {
+        this.$message({
+          message: "保存成功",
+          type: "success",
+          duration: 1800,
+        });
+        this.plottingHelper.clearAll();
+      });
+    },
     getImg(node, data) {
       let names = [];
       const getLable = (parent) => {
@@ -299,10 +346,17 @@ export default {
     initPlot() {
       const serverUrl = window.plotHost + window.plotSuffix;
       const viewer = window.viewer;
-      this.plottingHelper = useHellper(viewer, viewer.scene, serverUrl, (e) => {
-        this.feature = e;
-      });
+      this.plottingHelper = useHellper(
+        "militaryLayer",
+        viewer,
+        viewer.scene,
+        serverUrl,
+        (e) => {
+          this.feature = e;
+        }
+      );
       this.aniMationManager = this.plottingHelper.getAniMationManager();
+      this.sitDataManager = this.plottingHelper.getDataManager();
     },
     nodeClick(node, data) {
       this.plottingHelper.drawSymbol(data.libID, data.symbolCode);

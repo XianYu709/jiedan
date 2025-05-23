@@ -17,3 +17,16 @@ export function getPosition(viewer, screenPosition) {
   }
   return cartesian
 }
+
+/**
+ * 坐标是否在中国
+ * @param lon
+ * @param lat
+ * @returns {boolean}
+ */
+export function outOfChina(lon, lat) {
+  if (lon < 72.004 || lon > 137.8347) {
+    return true
+  }
+  return lat < 0.8293 || lat > 55.8271
+}

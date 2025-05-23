@@ -21,9 +21,9 @@ import 'bootstrap'
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
-// 如果想要中文版 element-ui，按如下方式声明
+// 如果想要中文版 element-ui，按如下方式声 明
 // Vue.use(ElementUI)
-Vue.config.productionTip = false
+Vue.config.productionTip = false 
 
 new Vue({
   el: '#app',

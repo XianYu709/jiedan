@@ -1,18 +1,19 @@
 <script>
+import { Viewer as DcViewer } from '@/plugins/dc-sdk/'
+
 export default {
   name: 'BaseMap',
   data() {
     return {
-      url: ''
+      // url: 'http://192.168.0.100:8088/freexserver/dataserver/htc/service/wmts'
     }
   },
   mounted() {
-    this.url = 'http://192.168.0.100:8088/freexserver/dataserver/htc/service/wmts'
     this.initMap()
   },
   methods: {
     initMap() {
-      const viewer = new window.Cesium.Viewer(this.$refs.cesiumContainer, {
+      const viewer = new DcViewer(this.$refs.cesiumContainer, {
         // imageryProvider: new window.Cesium.BingMapsImageryProvider({
         //   url: 'https://dev.virtualearth.net',
         //   mapStyle: window.Cesium.BingMapsStyle.AERIAL,

@@ -1,6 +1,7 @@
-import { getEntityModelUri } from '../util'
-
 import { isEmpty } from 'lodash'
+import { getEntityModelUri } from '../util'
+import { ENTITY_CHILD_NAME } from '../../helper'
+
 const {
   Cartographic,
   Matrix4,
@@ -41,9 +42,9 @@ export default class SphereWavesPacketHandler {
   static handler(udpServer, data) {
     const { sphereWave = [] } = data
     if (!isEmpty(sphereWave)) {
-      sphereWave.forEach(item => {
+      sphereWave.forEach((item, index) => {
         const {
-          nID,
+          nId,
           nEntityID,
           Transform,
           Color: { R, G, B, A },
@@ -56,12 +57,13 @@ export default class SphereWavesPacketHandler {
           spare
         } = item
         // 实体模型
-        let entityModel = udpServer.nIdMap[nEntityID]
-        if (!entityModel) {
+        let { track, waveHuskTrack, waveTrack } = udpServer.getNId(nEntityID)
+        // if (!track) {
+        //   return
+        // }
+        if (index !== 1) {
           return
         }
-        // 定义球形外壳模型id
-        const sphereModelId = `${nID}-sphere`
         const options = {
           longitude: Transform.Pos.dLon,
           latitude: Transform.Pos.dLat,
@@ -70,54 +72,71 @@ export default class SphereWavesPacketHandler {
           pitch: Transform.Rot.fEl,
           roll: Transform.Rot.fRoll
         }
-        // 外壳模型
-        let sphereModel = udpServer.nIdMap[sphereModelId]
-        let sphereWaveModel = udpServer.nIdMap[nID]
         // 加载实体
-        // if (!entityModel) {
+        // if (!track) {
         //   const uri = getEntityModelUri(nEntityID)
-        //   if (!uri) {
-        //     return
-        //   }
-        //   entityModel = udpServer.createModelPrimitive(uri, {
+        //   track = udpServer.createModelTrack(uri, {
         //     ...options,
-        //     scale: 1,
+        //     // duration: 50,
+        //     // heading: 180,
+        //     // scale: 10,
         //   })
-        //   udpServer[nEntityID] = entityModel
-        //   // udpServer.flyTo(entityModel, { tx: Transform.Pos.dLon, ty: Transform.Pos.dLat })
-        //   // udpServer.viewer.clock.multiplier = 10
+        //   udpServer.addProperty(nEntityID, track)
         // }
         // 加载波束外壳
-        if (!sphereModel) {
-          sphereModel = udpServer.createModelPrimitive(sphereGltfUri, {
+        if (!waveHuskTrack) {
+          waveHuskTrack = udpServer.createModelTrack(sphereGltfUri, {
             ...options,
-            // heading: 180,
-            // scale: 10,
+            scale: nRadius / 10,
             translateX: 5,
-            color: Color.RED.withAlpha(1)
+            color: Color.RED.withAlpha(0.5)
           })
-          udpServer[sphereModelId] = sphereModel
+          udpServer.addProperty(nEntityID, waveHuskTrack, ENTITY_CHILD_NAME.sphereWaveHuskTrack)
         } else {
-          udpServer.updateModelMatrix(sphereModel, {
-            tx: options.longitude,
-            ty: options.latitude,
-            tz: options.heading,
-            rx: options.heading,
-            ry: options.pitch,
-            rz: options.roll
-          })
+          udpServer.moveProperty(nEntityID, {
+            ...options,
+            translateX: 5
+          }, ENTITY_CHILD_NAME.sphereWaveHuskTrack)
         }
         // 加载波束
-        if (!sphereWaveModel) {
-          sphereWaveModel = udpServer.createModelEntity(sphereWavesGltfUri, {
+        if (!waveTrack) {
+          waveTrack = udpServer.createModelTrack(sphereWavesGltfUri, {
             ...options,
-            // heading: 180,
-            // scale: 5,
+            scale: nRadius / 10,
             translateX: 5
           })
-          udpServer[nID] = sphereWaveModel
+          // if (index === 1) {
+          //   udpServer.viewer.flyToPosition([options.longitude, options.latitude, options.height, 0, -90, 0])
+          // }
+          udpServer.addProperty(nEntityID, waveTrack, ENTITY_CHILD_NAME.sphereWaveTrack)
+          // 测试移动
+          // let num = 1
+          // setInterval(() => {
+          //   udpServer.moveProperty(nEntityID, {
+          //     ...options,
+          //     longitude: options.longitude + 0.002 * num
+          //   })
+          //   udpServer.moveProperty(nEntityID, {
+          //     ...options,
+          //     longitude: options.longitude + 0.002 * num,
+          //     // heading: 180,
+          //     // scale: 10,
+          //     translateX: 5
+          //   }, ENTITY_CHILD_NAME.sphereWaveHuskTrack)
+          //   udpServer.moveProperty(nEntityID, {
+          //     ...options,
+          //     longitude: options.longitude + 0.002 * num,
+          //     // heading: 180,
+          //     // scale: 10,
+          //     translateX: 5
+          //   }, ENTITY_CHILD_NAME.sphereWaveTrack)
+          //   num++
+          // }, 3000)
         } else {
-          udpServer.updateEntityPosition(sphereWaveModel, options)
+          udpServer.moveProperty(nEntityID, {
+            ...options,
+            translateX: 5
+          }, ENTITY_CHILD_NAME.sphereWaveTrack)
         }
       })
     }

@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash'
 import { getEntityModelUri } from '../util'
+import { ENTITY_CHILD_NAME } from '../../helper'
 
 const {
   Color
@@ -45,7 +46,7 @@ export default class ConeWavesPacketHandler {
   static handler(udpServer, data) {
     const { coneWave = [] } = data
     if (!isEmpty(coneWave)) {
-      coneWave.forEach(item => {
+      coneWave.forEach((item, index) => {
         const {
           nEntId,
           Transform,
@@ -64,57 +65,100 @@ export default class ConeWavesPacketHandler {
           fBeamAz,
           fBeamEl
         } = item
-        // 实体模型
-        let entityModel = udpServer.nIdMap[nEntId]
-        if (!entityModel) {
+        if (index !== 1) {
           return
         }
-        // 定义圆锥形外壳模型id
-        const coneModelId = nTgtId || `${nBeamId}-cone`
+        // 实体模型
+        let { track, waveHuskTrack, waveTrack } = udpServer.getNId(nEntId)
+        console.log('cone waves =', nEntId, track, waveHuskTrack, waveTrack)
+        // if (!track) {
+        //   return
+        // }
         const options = {
           longitude: Transform.Pos.dLon,
           latitude: Transform.Pos.dLat,
-          height: 200 // Transform.Pos.fAlt
+          height: Transform.Pos.fAlt
         }
-        // 外壳模型
-        let coneModel = udpServer.nIdMap[coneModelId]
-        // 波束模型
-        let coneWaveModel = udpServer.nIdMap[nBeamId]
         if (nBeamId !== 0) {
           // 加载实体
-          if (!entityModel) {
+          if (!track) {
             const uri = getEntityModelUri(nEntId)
-            if (!uri) {
-              return
-            }
-            entityModel = udpServer.createModelPrimitive(uri, {
-              ...options
+            track = udpServer.createModelTrack(uri, {
+              ...options,
+              // duration: 50,
+              // heading: 180,
+              // scale: 10,
             })
-            udpServer[nEntId] = entityModel
-            // udpServer.flyTo(entityModel, { tx: Transform.Pos.dLon, ty: Transform.Pos.dLat })
+            udpServer.addProperty(nEntId, track)
           }
           // 加载波束外壳
-          if (!coneModel) {
-            coneModel = udpServer.createModelPrimitive(coneGltfUri, {
+          if (!waveHuskTrack) {
+            udpServer.createModelPrimitive(coneGltfUri, {
               ...options,
+              height: 0,
               heading: 180,
-              scale: 10,
-              translateX: -8,
+              pitch: 90,
+              scale: 1,
+              translateX: 5,
               color: Color.GREEN.withAlpha(0.3)
             })
-            udpServer[coneModelId] = coneModel
-          }
-          // 加载波束
-          if (!coneWaveModel) {
-            coneWaveModel = udpServer.createModelEntity(coneWavesGltfUri, {
+            waveHuskTrack = udpServer.createModelTrack(coneGltfUri, {
               ...options,
               heading: 180,
-              scale: 10,
+              scale: 30,
+              translateX: 5,
+              color: Color.GREEN.withAlpha(0.3)
+            })
+            udpServer.addProperty(nEntId, waveHuskTrack, ENTITY_CHILD_NAME.coneWaveHuskTrack)
+          } else {
+            udpServer.moveProperty(nEntId, {
+              ...options,
+              heading: 180,
+              translateX: 5
+            }, ENTITY_CHILD_NAME.coneWaveHuskTrack)
+          }
+          // 加载波束
+          if (!waveTrack) {
+            waveTrack = udpServer.createModelTrack(coneWavesGltfUri, {
+              ...options,
+              // duration: 50,
+              heading: 180,
+              scale: 30,
               translateX: 8
             })
-            udpServer[nBeamId] = coneWaveModel
+            udpServer.addProperty(nEntId, waveTrack, ENTITY_CHILD_NAME.coneWaveTrack)
+            if (index === 1) {
+              udpServer.viewer.flyToPosition([options.longitude, options.latitude, options.height, 0, -90, 0])
+            }
+            // 测试移动
+            // let num = 1
+            // setInterval(() => {
+            //   udpServer.moveProperty(nEntId, {
+            //     ...options,
+            //     longitude: options.longitude + 0.002 * num
+            //   })
+            //   udpServer.moveProperty(nEntId, {
+            //     ...options,
+            //     longitude: options.longitude + 0.002 * num,
+            //     heading: 180,
+            //     // scale: 10,
+            //     translateX: 5
+            //   }, ENTITY_CHILD_NAME.coneWaveHuskTrack)
+            //   udpServer.moveProperty(nEntId, {
+            //     ...options,
+            //     longitude: options.longitude + 0.002 * num,
+            //     heading: 180,
+            //     // scale: 10,
+            //     translateX: 5
+            //   }, ENTITY_CHILD_NAME.coneWaveTrack)
+            //   num++
+            // }, 3000)
           } else {
-            udpServer.updateEntityPosition(coneWaveModel, options)
+            udpServer.moveProperty(nEntId, {
+              ...options,
+              heading: 180,
+              translateX: 5
+            }, ENTITY_CHILD_NAME.coneWaveTrack)
           }
         }
       })

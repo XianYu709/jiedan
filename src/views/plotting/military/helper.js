@@ -1,4 +1,4 @@
-export default (viewer, scene, serverUrl, select) => {
+export default (name, viewer, scene, serverUrl, select) => {
   if (!viewer || !scene || !serverUrl) {
     console.error("Invalid parameters passed to createPlottingHelper.");
     return null;
@@ -7,23 +7,38 @@ export default (viewer, scene, serverUrl, select) => {
     plotting,
     plotEditControl,
     plotDrawControl,
+    sitDataManager,
     animationManager;
   const cesium = window.Cesium;
+  name = name + Date.now();
   try {
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "military");
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, name);
   } catch (error) {
     plottingLayer = null;
     // 重试
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, "military");
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, name);
   }
   if (!viewer) {
     return;
   }
-  plottingLayer = new cesium.PlottingLayer(scene, "military");
   scene.plotLayers.add(plottingLayer);
 
   plotting = cesium.Plotting.getInstance(serverUrl, scene);
   animationManager = plotting.getGOAnimationManager();
+
+  sitDataManager = plotting.getSitDataManager();
+
+  sitDataManager.openSmlFileCompleted.addEventListener(function (result) {
+    var layers = sitDataManager.getPlottingLayers();
+    if (0 !== layers.length) {
+      var layer = layers[0];
+      plottingLayer = layer;
+      plotEditControl.setPlottingLayer(layer);
+      plotDrawControl.setPlottingLayer(layer);
+    }
+    plotEditControl.activate();
+  });
+
   function animate() {
     animationManager.execute();
     requestAnimationFrame(animate);
@@ -38,10 +53,10 @@ export default (viewer, scene, serverUrl, select) => {
   });
 
   plotEditControl.FeatureSelectedEvent.addEventListener(function (feature) {
-    select(feature);
+    select && select(feature);
   });
   plotEditControl.UnSelectedEvent.addEventListener(function (feature) {
-    select(null);
+    select && select(null);
   });
 
   return {
@@ -53,19 +68,20 @@ export default (viewer, scene, serverUrl, select) => {
     clearAll() {
       plotEditControl?.deactivate();
       plotDrawControl?.deactivate();
-      scene.plotLayers.remove("military");
+      scene.plotLayers.remove(name);
       plottingLayer.removeAll();
+    },
+    destroy() {
+      plottingLayer.removeAll();
+      plottingLayer.destroy();
     },
     deleteSelected() {
       plottingLayer.removeGeoGraphicObject(plottingLayer.selectedFeature);
     },
     plotEditControl,
     plotDrawControl,
-    getPlottingLayer() {
-      return plottingLayer;
-    },
-    getAniMationManager() {
-      return animationManager;
-    },
+    getDataManager: () => sitDataManager,
+    getPlottingLayer: () => plottingLayer,
+    getAniMationManager: () => animationManager,
   };
 };

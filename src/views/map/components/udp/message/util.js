@@ -2,6 +2,29 @@ const {
   Cartesian3,
   Math: CesiumMath
 } = window.Cesium
+
+const ENTITY_GLTF_URI = {
+  '1': '/data/gltf/J6_GLTF/j6w.gltf', // J6W
+  '2': '/data/gltf/WZ10_GLTF/wz10.gltf', // WZ10
+  '3': '/data/gltf/GJ11_GLTF/gj11.gltf', // 攻11
+  '4': '/data/gltf/YL2_GLTF/yl2d.gltf', // 翼龙2D
+  '6': '/data/gltf/J20_GLTF/j20.gltf', // J20
+  '7': '/data/gltf/C350A_GLTF/cs350a.gltf', // CS350A
+  '8': '/data/gltf/YL6_GLTF/yl6a.gltf', // 翼龙6A
+  '9': '/data/gltf/WZ7A_GLTF/wz7.gltf', // WZ7
+  '10002': '/data/gltf/HM_FTJ_GLTF/acford.gltf', // 福特级航空母舰，CVN-78
+  '10003': '/data/gltf/HM_NMZJ_GLTF/acnimitz.gltf', // 尼米兹航空母舰，CVN-68
+  '10200': '/data/gltf/LQGJJ_GLTF/aasamerica.gltf', // 两栖攻击舰
+  '20001': '/data/gltf/E2_GLTF/awacse2k.gltf', // E2-K预警机
+  '21001': '/data/gltf/CH130_GLTF/ewc130h.gltf', // C130H电子干扰机
+  '30001': '/data/gltf/XHH_DLJ_GLTF/lcharmon.gltf', // 中和级登陆艇（现有旭海号）
+  '101001': '/data/gltf/CGJ_HWJ_GLTF/frigatecgc.gltf', // 成功级护卫舰
+  '101002': '/data/gltf/JYJ_HWJ_GLTF/frigatekangding.gltf', // 康定级护卫舰（现有济阳级）
+  '102000': '/data/gltf/SLT_GLTF/msyongfeng.gltf', // 扫雷艇
+  '104001': '/data/gltf/GYJ_BJJ_GLTF/sswuyi.gltf', // 武夷号补给舰（现有供应级补给舰）
+  '105002': '/data/gltf/TKDLJ_XYJ_GLTF/cruiserticonderoga.gltf' // 提康德罗加巡洋舰
+}
+
 /**
  * 获取位置
  * @param positionInfo 位置信息
@@ -33,7 +56,7 @@ export function getPosition(positionInfo) {
 export function getTransform(transform = {}) {
   const {
     Pos,
-    Rot: { RotateType, fAz, fEl, fRoll },
+    Rot: { fAz, fEl, fRoll },
     Scale: { bValid, Scale_X, Scale_Y, Scale_Z }
   } = transform
   const position = getPosition(Pos)
@@ -43,4 +66,14 @@ export function getTransform(transform = {}) {
     roll: fRoll
   }
   return { position, orientation }
+}
+
+/**
+ * 获取实体模型路径
+ * @param entityId
+ * @param entityName
+ * @returns {*}
+ */
+export function getEntityModelUri(entityId, entityName) {
+  return ENTITY_GLTF_URI[entityId]
 }

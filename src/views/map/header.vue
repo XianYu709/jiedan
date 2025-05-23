@@ -43,7 +43,6 @@ export default {
             { code: 'buffer', label: '缓冲区', componentName: 'Buffer', cardOptions: { width: '350px',top:"350 px", }},
             { code: 'cutFillAnalyse', label: '填挖方', componentName: 'Excavation', cardOptions: { width: "400px", top:"350px", left:"75%" } },
             { code: 'sectionAnalyse', label: '剖面', componentName: 'Profile', cardOptions: { width: '350px',top:"350px", } },
-            { code: 'situationAnalyse', label: '态势分析', componentName: 'SituationAnalyse', cardOptions: {width: '600px', top: '150px'}}
           ]
         },
         {

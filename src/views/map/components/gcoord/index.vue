@@ -60,24 +60,23 @@ export default {
 </script>
 
 <template>
-<!--  <BaseCard
-    :visible.sync="visible"
-    width="460px"
-    title="坐标系转换"
-    class-name="gcoord-container"
-    show-close
-  >
-  </BaseCard>-->
-  <div class="gcoord-container">
-    <div class="row-item">
+  <el-form class="map-card-form gcoord-container" size="small" label-width="80px">
+    <el-form-item>
+      <template slot="label">
+        <span style="margin-right: 2px;">原坐标</span>
+        <el-tooltip placement="top" content="经度在前，纬度在后，使用英文逗号分隔。批量转换时坐标间使用英文分号分隔。">
+          <i class="el-icon-warning-outline" />
+        </el-tooltip>
+      </template>
       <el-input
         v-model="source"
         type="textarea"
-        :rows="3"
+        :rows="8"
         size="small"
+        resize="vertical"
         placeholder="请输入浮点数经纬度坐标，经度在前，纬度在后，使用英文逗号分隔。批量转换时坐标间使用英文分号分隔。"
       />
-    </div>
+    </el-form-item>
     <div class="row-item toolbar">
       <el-select v-model="sourceCoord" size="small" placeholder="请选择原坐标系">
         <el-option v-for="item in coords" :key="item.value" :label="item.label" :value="item.value" />
@@ -88,15 +87,16 @@ export default {
       </el-select>
       <el-button type="primary" size="small" @click="handleTransform">开始转换</el-button>
     </div>
-    <div class="row-item">
+    <el-form-item label="转换结果">
       <el-input
         v-model="targetResult"
         type="textarea"
-        :rows="3"
+        :rows="8"
         size="small"
+        resize="vertical"
       />
-    </div>
-  </div>
+    </el-form-item>
+  </el-form>
 </template>
 
 <style scoped lang="scss">

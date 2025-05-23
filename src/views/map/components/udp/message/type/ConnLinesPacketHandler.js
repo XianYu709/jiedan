@@ -19,9 +19,9 @@ const {
 export default class ConnLinesPacketHandler {
   static handler(udpServer, data) {
     const { nId, nEntId, nTgtId, fLineW, color: { R, G, B, A }} = data
-    let line = udpServer.nIdMap[nId]
-    const model = udpServer.nIdMap[nEntId]
-    const targetModel = udpServer.nIdMap[nTgtId]
+    let line = udpServer.getModel(nId)
+    const model = udpServer.getModel(nEntId)
+    const targetModel = udpServer.getModel(nTgtId)
     if (!line && model && targetModel) {
       const startPosition = Matrix4.getTranslation(model.modelMatrix, new Cartesian3())
       const targetPosition = Matrix4.getTranslation(targetModel.modelMatrix, new Cartesian3())

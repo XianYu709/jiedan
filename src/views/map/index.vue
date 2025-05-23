@@ -34,7 +34,6 @@ export default {
     Slope: () => import("./components/slope"),
     ViewshedIndex: () => import("./components/viewshed"),
     Profile: () => import("./components/profile"),
-    SituationAnalyse: () => import("./components/situationAnalyse"),
     BurstIndex: () => import("./components/specialEffects/burst.vue"),
     FireworksIndex: () => import("./components/specialEffects/fireworks.vue"),
   },
