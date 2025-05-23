@@ -90,10 +90,20 @@ export default {
   mounted() {
     this.initPlot();
   },
-  beforeDestroy() {
-    this.aniMationManager.removeAllGOAnimation();
-    this.helper.clearAll();
-    this.helper.destroy();
+  destroyed() {
+    // this.aniMationManager.removeAllGOAnimation();
+    // this.helper.clearAll();
+    // this.helper.destroy();
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        console.log(2);
+        this.plottingHelper?.clearAll?.();
+        this.plottingHelper?.destroy?.();
+        this.aniMationManager.removeAllGOAnimation();
+        this.helper.clearAll();
+        this.helper.destroy();
+      }, 1000);
+    }
   },
   methods: {
     execute(type) {
@@ -138,6 +148,11 @@ export default {
     },
     deleteHandler() {
       if (this.sitDataManager && this.allParmas.smlFileName) {
+        if (this.labelKeys.includes(name)) {
+          this.sitDataManager.deleteSmlFileOnServer(
+            this.allParmas.smlFileName + "-evo"
+          );
+        }
         this.sitDataManager.deleteSmlFileOnServer(this.allParmas.smlFileName);
       }
     },
@@ -183,7 +198,9 @@ export default {
         };
       });
       this.labelKeys = temp.map((it) => it.label);
-      temp = temp.filter((it) => !it.label.endsWith("-evo"));
+      temp = temp.filter((it) => {
+        return !it.label.endsWith("-evo");
+      });
       this.treeData = temp;
     },
     initPlot() {

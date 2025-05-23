@@ -10,13 +10,13 @@ export default (name, viewer, scene, serverUrl, select) => {
     sitDataManager,
     animationManager;
   const cesium = window.Cesium;
-  name = name + Date.now();
+  let uniName = name + Date.now();
   try {
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, name);
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, uniName);
   } catch (error) {
     plottingLayer = null;
     // 重试
-    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, name);
+    plottingLayer ??= new window.SuperMap3D.PlottingLayer(scene, uniName);
   }
   if (!viewer) {
     return;
@@ -68,8 +68,9 @@ export default (name, viewer, scene, serverUrl, select) => {
     clearAll() {
       plotEditControl?.deactivate();
       plotDrawControl?.deactivate();
-      scene.plotLayers.remove(name);
+      scene.plotLayers.remove(uniName);
       plottingLayer.removeAll();
+      // scene.plotLayers.remove(plottingLayer);
     },
     destroy() {
       plottingLayer.removeAll();

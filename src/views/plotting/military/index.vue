@@ -207,8 +207,14 @@ export default {
     this.initPlot();
   },
   beforeDestroy() {
-    this.aniMationManager.removeAllGOAnimation();
-    this.plottingHelper.destroy();
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        console.log(1);
+
+        this.aniMationManager.removeAllGOAnimation();
+        this.plottingHelper.destroy();
+      }, 1000);
+    }
   },
   methods: {
     add() {

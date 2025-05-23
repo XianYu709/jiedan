@@ -10,7 +10,7 @@ const wmtsUrl = `${freexServerUrl}/dataserver/htc/service/wmts`
 window.plotHost = "http://www.supermapol.com";
 window.plotSymbolLibPath = "/realspace/services/plot-TY/rest/plot/symbolLibs.json";
 window.plotSuffix = '/realspace/services/plot-TY/rest/plot';
-window.plotCollectUrl = '/realspace/services/plot-TY/rest/plot/smlInfos.rjson?start=0&count=10';
+window.plotCollectUrl = '/realspace/services/plot-TY/rest/plot/smlInfos.rjson?start=0&count=15';
 
 window.MAP_CONFIG = {
   iServerUrl,
