@@ -198,9 +198,7 @@ export default {
         };
       });
       this.labelKeys = temp.map((it) => it.label);
-      temp = temp.filter((it) => {
-        return !it.label.endsWith("-evo");
-      });
+      temp = temp.filter((it) => !it.label.endsWith("-evo"));
       this.treeData = temp;
     },
     initPlot() {
